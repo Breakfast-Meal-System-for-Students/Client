@@ -1,19 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, Container, Avatar, Grid } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { StyledSelect } from './RegisterPage.style';
 
 const theme = createTheme();
 
 export default function Register() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      firstName: data.get('firstName'),
-      lastName: data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
+  const [data, setData] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: ""
+  });
+  const [selectedRole, setSelectedRole] = useState('');
+  const handleSelectChange = (event) => {
+    setSelectedRole(event.target.value);
+  };
+
+  const handleChange = (event) => {
+    setData({
+      ...data,
+      [event.target.name]: event.target.value
+    })
+  }
+
+  const handleSubmit = () => {
+
+    fetch(`https://bms-fs-api.azurewebsites.net/api/Auth/register?role=${selectedRole}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json(); // Convert the response to JSON
+    })
+    .then(data => {
+        setData({
+          email: "",
+          firstName: "",
+          lastName: "",
+          password: ""
+        })
+        console.log('Success:', data); // Handle success
+    })
+    .catch(error => {
+        console.error('Error:', error); // Handle errors
     });
   };
 
@@ -34,7 +71,7 @@ export default function Register() {
           <Typography component="h1" variant="h5">
             Sign Up
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
+          <Box  sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -45,6 +82,7 @@ export default function Register() {
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  onChange={e => handleChange(e)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -55,6 +93,7 @@ export default function Register() {
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
+                  onChange={e => handleChange(e)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -65,6 +104,7 @@ export default function Register() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  onChange={e => handleChange(e)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -76,14 +116,25 @@ export default function Register() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={e => handleChange(e)}
                 />
               </Grid>
+              <StyledSelect item xs={12}>
+                <select id="roles" value={selectedRole} onChange={handleSelectChange} className="select-dropdown">
+                  <option value="">--Please choose an option--</option>
+                  <option value="1">User</option>
+                  <option value="2">Shop</option>
+                  <option value="3">Staff</option>
+                  <option value="4">Admin</option>
+                </select>
+              </StyledSelect>
             </Grid>
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 9, mb: 2 }}
+              onClick={handleSubmit}
             >
               Sign Up
             </Button>
