@@ -10,6 +10,7 @@ import RegisterPage from "./pages/RegisterPage/index.jsx";
 import { AuthProvider } from "./auth/AuthContext";
 import ProtectedRoute from "./ProtectedRoute.js";
 import MainLayout from "./components/MainLayout/index.jsx";
+import AdminPage from "./pages/StaffPage/index.jsx"; // Đảm bảo có route cho trang admin
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
             <Route path="/manage-staff" element={<ProtectedRoute element={<ManageStaffPage />} requiredRole={1} />} />
             <Route path="/customer-profile" element={<ProtectedRoute element={<CustomerProfilePage />} requiredRole={2} />} />
             <Route path="/orders" element={<ProtectedRoute element={<OrdersPage />} requiredRole={3} />} />
+            <Route path="/admin" element={<AdminPage />} /> // Đảm bảo có route cho trang admin
           </Route>
         </Routes>
       </Router>

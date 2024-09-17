@@ -3,7 +3,7 @@ import { TextField, Button, Box, Typography, Container, CssBaseline, Avatar } fr
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAuth } from '../../auth/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme();
 
@@ -11,21 +11,23 @@ export default function Login() {
   const [data, setData] = useState({
     email: '',
     password: '',
-  })
+  });
   const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(data.email, data.password);
-      
-      // Redirect to the page they were trying to access or default to home
-      const from = location.state?.from?.pathname || '/';
-      navigate(from, { replace: true });
+      const role = await login(data.email, data.password);
+      console.log(role+"ro"); // Gọi hàm login và lấy vai trò
+      if (role === 'Admin') {
+        navigate('/admin'); // Điều hướng đến trang admin
+      } else {
+     //   navigate('/user'); // Điều hướng đến trang người dùng
+      }
     } catch (error) {
       console.error('Login failed', error);
-      // Handle error (e.g., show an error message to the user)
+      // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };
 
@@ -33,8 +35,8 @@ export default function Login() {
     setData({
       ...data,
       [event.target.name]: event.target.value
-    })
-  }
+    });
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -64,7 +66,7 @@ export default function Login() {
               name="email"
               autoComplete="email"
               autoFocus
-              onChange={e => handleChange(e)}
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -75,7 +77,7 @@ export default function Login() {
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={e => handleChange(e)}
+              onChange={handleChange}
             />
             <Button
               type="submit"

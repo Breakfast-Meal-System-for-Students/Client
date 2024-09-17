@@ -23,15 +23,19 @@ export function AuthProvider({ children }) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'accept': '*/*',
       },
       body: JSON.stringify({ email, password }),
     });
-    console.log("~ decode", response)
-    if (response.statusCode === 200) {
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      const decoded = jwtDecode(data.token);
-      setUser(decoded);
+
+    const data = await response.json(); // Lấy dữ liệu từ phản hồi
+    if (data.isSuccess) {
+      localStorage.setItem('token', data.data.token); // Lưu token vào localStorage
+      const decoded = jwtDecode(data.data.token);
+      setUser(decoded); // Cập nhật user
+      return data.data.roles[0]; // Trả về vai trò đầu tiên
+    } else {
+      throw new Error(data.messages[0]?.content || 'Login failed'); // Xử lý lỗi
     }
   };
 
