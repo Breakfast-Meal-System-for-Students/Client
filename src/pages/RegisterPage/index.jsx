@@ -62,7 +62,7 @@ export default function Register() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #1abc9c, #16a085)', // Màu nền gradient xanh dương lục
+          background: 'linear-gradient(135deg, #1abc9c, #16a085)', 
           width: '100%',
           padding: '0',
           margin: '0',
@@ -175,7 +175,7 @@ export default function Register() {
             </Button>
 
             <Typography variant="body2" align="center">
-              <Link href="#" variant="body2" underline="none" color="primary">
+              <Link href="/login" variant="body2" underline="none" color="primary">
                 Already have an account? Sign in →
               </Link>
             </Typography>

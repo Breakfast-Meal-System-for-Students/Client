@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Container, Avatar, Link } from '@mui/material';
+import { TextField, Button, Box, Typography, Avatar } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
+import { Link as RouterLink, useNavigate } from 'react-router-dom'; // Import RouterLink và useNavigate
 import { useAuth } from '../../auth/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme();
 
@@ -42,14 +42,14 @@ export default function Login() {
     <ThemeProvider theme={theme}>
       <Box
         sx={{
-          minHeight: '100vh', // Ensures the box takes up the full viewport height
+          minHeight: '100vh',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #1abc9c, #16a085)', // Greenish-blue gradient
-          width: '100%', // Full width
-          padding: '0', // No padding to ensure background fits fully
-          margin: '0', // No margin
+          background: 'linear-gradient(135deg, #1abc9c, #16a085)',
+          width: '100%',
+          padding: '0',
+          margin: '0',
         }}
       >
         <Box
@@ -66,14 +66,12 @@ export default function Login() {
             maxWidth: '900px',
           }}
         >
-          {/* Image or illustration section */}
           <Box>
             <Avatar sx={{ width: 200, height: 200, bgcolor: 'secondary.light', marginBottom: 2 }}>
               <LockOutlinedIcon sx={{ fontSize: 100 }} />
             </Avatar>
           </Box>
 
-          {/* Login form section */}
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
             <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2 }}>
               Member Login
@@ -124,15 +122,15 @@ export default function Login() {
             </Button>
 
             <Typography variant="body2" align="center" sx={{ marginBottom: 2 }}>
-              <Link href="#" variant="body2" underline="none" color="primary">
+              <RouterLink to="/forgot-password" style={{ textDecoration: 'none', color: 'primary' }}>
                 Forgot Username / Password?
-              </Link>
+              </RouterLink>
             </Typography>
 
             <Typography variant="body2" align="center">
-              <Link href="#" variant="body2" underline="none" color="primary">
+              <RouterLink to="/register" style={{ textDecoration: 'none', color: 'primary' }}>
                 Create your Account →
-              </Link>
+              </RouterLink>
             </Typography>
           </Box>
         </Box>
