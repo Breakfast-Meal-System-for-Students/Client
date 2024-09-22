@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Container, CssBaseline, Avatar } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { TextField, Button, Box, Typography, Container, Avatar, Link } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import EmailIcon from '@mui/icons-material/Email';
+import LockIcon from '@mui/icons-material/Lock';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,78 +21,122 @@ export default function Login() {
     e.preventDefault();
     try {
       const role = await login(data.email, data.password);
-      console.log(role+"ro"); // Gọi hàm login và lấy vai trò
       if (role === 'Admin') {
-        navigate('/admin'); // Điều hướng đến trang admin
+        navigate('/admin');
       } else {
-     //   navigate('/user'); // Điều hướng đến trang người dùng
+        navigate('/user');
       }
     } catch (error) {
       console.error('Login failed', error);
-      // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };
 
   const handleChange = (event) => {
     setData({
       ...data,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
+      <Box
+        sx={{
+          minHeight: '100vh', // Ensures the box takes up the full viewport height
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          background: 'linear-gradient(135deg, #1abc9c, #16a085)', // Greenish-blue gradient
+          width: '100%', // Full width
+          padding: '0', // No padding to ensure background fits fully
+          margin: '0', // No margin
+        }}
+      >
         <Box
           sx={{
-            marginTop: 8,
+            backgroundColor: '#fff',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             alignItems: 'center',
+            justifyContent: 'space-around',
+            width: '100%',
+            maxWidth: '900px',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign In
-          </Typography>
-          <Box sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={handleChange}
-            />
+          {/* Image or illustration section */}
+          <Box>
+            <Avatar sx={{ width: 200, height: 200, bgcolor: 'secondary.light', marginBottom: 2 }}>
+              <LockOutlinedIcon sx={{ fontSize: 100 }} />
+            </Avatar>
+          </Box>
+
+          {/* Login form section */}
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
+            <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2 }}>
+              Member Login
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+              <EmailIcon sx={{ mr: 1 }} />
+              <TextField
+                variant="outlined"
+                placeholder="Email"
+                name="email"
+                required
+                fullWidth
+                onChange={handleChange}
+                InputProps={{
+                  style: { borderRadius: '30px' },
+                }}
+              />
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+              <LockIcon sx={{ mr: 1 }} />
+              <TextField
+                variant="outlined"
+                placeholder="Password"
+                name="password"
+                type="password"
+                required
+                fullWidth
+                onChange={handleChange}
+                InputProps={{
+                  style: { borderRadius: '30px' },
+                }}
+              />
+            </Box>
+
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={handleSubmit}
+              color="success"
+              sx={{
+                borderRadius: '30px',
+                padding: '10px 0',
+                margin: '20px 0',
+                fontSize: '18px',
+              }}
             >
-              Sign In
+              LOGIN
             </Button>
+
+            <Typography variant="body2" align="center" sx={{ marginBottom: 2 }}>
+              <Link href="#" variant="body2" underline="none" color="primary">
+                Forgot Username / Password?
+              </Link>
+            </Typography>
+
+            <Typography variant="body2" align="center">
+              <Link href="#" variant="body2" underline="none" color="primary">
+                Create your Account →
+              </Link>
+            </Typography>
           </Box>
         </Box>
-      </Container>
+      </Box>
     </ThemeProvider>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Container, Avatar, Grid } from '@mui/material';
+import { TextField, Button, Box, Typography, Container, Avatar, Grid, Link } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { StyledSelect } from './RegisterPage.style';
@@ -14,6 +14,7 @@ export default function Register() {
     password: ""
   });
   const [selectedRole, setSelectedRole] = useState('');
+
   const handleSelectChange = (event) => {
     setSelectedRole(event.target.value);
   };
@@ -22,11 +23,10 @@ export default function Register() {
     setData({
       ...data,
       [event.target.name]: event.target.value
-    })
-  }
+    });
+  };
 
   const handleSubmit = () => {
-
     fetch(`https://bms-fs-api.azurewebsites.net/api/Auth/register?role=${selectedRole}`, {
       method: "POST",
       headers: {
@@ -38,7 +38,7 @@ export default function Register() {
       if (!response.ok) {
           throw new Error('Network response was not ok');
       }
-      return response.json(); // Convert the response to JSON
+      return response.json();
     })
     .then(data => {
         setData({
@@ -46,23 +46,39 @@ export default function Register() {
           firstName: "",
           lastName: "",
           password: ""
-        })
-        console.log('Success:', data); // Handle success
+        });
+        console.log('Success:', data);
     })
     .catch(error => {
-        console.error('Error:', error); // Handle errors
+        console.error('Error:', error);
     });
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          background: 'linear-gradient(135deg, #1abc9c, #16a085)', // Màu nền gradient xanh dương lục
+          width: '100%',
+          padding: '0',
+          margin: '0',
+        }}
+      >
         <Box
           sx={{
-            marginTop: 8,
+            backgroundColor: '#fff',
+            padding: '30px',
+            borderRadius: '10px',
+            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            width: '100%',
+            maxWidth: '500px',
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -71,7 +87,7 @@ export default function Register() {
           <Typography component="h1" variant="h5">
             Sign Up
           </Typography>
-          <Box  sx={{ mt: 3 }}>
+          <Box sx={{ mt: 3, width: '100%' }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -82,7 +98,10 @@ export default function Register() {
                   id="firstName"
                   label="First Name"
                   autoFocus
-                  onChange={e => handleChange(e)}
+                  onChange={handleChange}
+                  InputProps={{
+                    style: { borderRadius: '30px' },
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -93,7 +112,10 @@ export default function Register() {
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
-                  onChange={e => handleChange(e)}
+                  onChange={handleChange}
+                  InputProps={{
+                    style: { borderRadius: '30px' },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -104,7 +126,10 @@ export default function Register() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  onChange={e => handleChange(e)}
+                  onChange={handleChange}
+                  InputProps={{
+                    style: { borderRadius: '30px' },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -116,7 +141,10 @@ export default function Register() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
-                  onChange={e => handleChange(e)}
+                  onChange={handleChange}
+                  InputProps={{
+                    style: { borderRadius: '30px' },
+                  }}
                 />
               </Grid>
               <StyledSelect item xs={12}>
@@ -133,14 +161,27 @@ export default function Register() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 9, mb: 2 }}
+              color="success"
+              sx={{
+                mt: 5,
+                mb: 2,
+                borderRadius: '30px',
+                padding: '10px 0',
+                fontSize: '18px',
+              }}
               onClick={handleSubmit}
             >
               Sign Up
             </Button>
+
+            <Typography variant="body2" align="center">
+              <Link href="#" variant="body2" underline="none" color="primary">
+                Already have an account? Sign in →
+              </Link>
+            </Typography>
           </Box>
         </Box>
-      </Container>
+      </Box>
     </ThemeProvider>
   );
 }
