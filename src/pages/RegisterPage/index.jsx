@@ -159,10 +159,10 @@ export default function Register() {
               <StyledSelect item xs={12}>
                 <select id="roles" value={selectedRole} onChange={handleSelectChange} className="select-dropdown">
                   <option value="">--Please choose an option--</option>
-                  <option value="1">User</option>
+                  <option value="1">Admin</option>
                   <option value="2">Shop</option>
                   <option value="3">Staff</option>
-                  <option value="4">Admin</option>
+                  
                 </select>
               </StyledSelect>
             </Grid>
