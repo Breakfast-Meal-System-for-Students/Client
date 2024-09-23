@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Container, Avatar, Grid, Link } from '@mui/material';
+import { TextField, Button, Box, Typography, Avatar, Grid, Link } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { StyledSelect } from './RegisterPage.style';
 
-const theme = createTheme();
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#3498db',
+    },
+    secondary: {
+      main: '#2ecc71',
+    },
+  },
+});
 
 export default function Register() {
   const [data, setData] = useState({
@@ -62,7 +71,7 @@ export default function Register() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #1abc9c, #16a085)', 
+          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)', // Cùng màu nền gradient với trang login
           width: '100%',
           padding: '0',
           margin: '0',
@@ -71,9 +80,9 @@ export default function Register() {
         <Box
           sx={{
             backgroundColor: '#fff',
-            padding: '30px',
-            borderRadius: '10px',
-            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+            padding: '40px',
+            borderRadius: '20px', // Bo góc giống trang login
+            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)', // Shadow giống trang login
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -81,7 +90,7 @@ export default function Register() {
             maxWidth: '500px',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: '#3498db' }}> {/* Cùng màu Avatar */}
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -100,7 +109,7 @@ export default function Register() {
                   autoFocus
                   onChange={handleChange}
                   InputProps={{
-                    style: { borderRadius: '30px' },
+                    style: { borderRadius: '30px' }, // Bo góc tròn cho TextField
                   }}
                 />
               </Grid>
@@ -114,7 +123,7 @@ export default function Register() {
                   autoComplete="family-name"
                   onChange={handleChange}
                   InputProps={{
-                    style: { borderRadius: '30px' },
+                    style: { borderRadius: '30px' }, // Bo góc tròn cho TextField
                   }}
                 />
               </Grid>
@@ -128,7 +137,7 @@ export default function Register() {
                   autoComplete="email"
                   onChange={handleChange}
                   InputProps={{
-                    style: { borderRadius: '30px' },
+                    style: { borderRadius: '30px' }, // Bo góc tròn cho TextField
                   }}
                 />
               </Grid>
@@ -143,7 +152,7 @@ export default function Register() {
                   autoComplete="new-password"
                   onChange={handleChange}
                   InputProps={{
-                    style: { borderRadius: '30px' },
+                    style: { borderRadius: '30px' }, // Bo góc tròn cho TextField
                   }}
                 />
               </Grid>
@@ -161,13 +170,15 @@ export default function Register() {
               type="submit"
               fullWidth
               variant="contained"
-              color="success"
+              color="primary" // Màu nút đồng nhất với trang login
               sx={{
                 mt: 5,
                 mb: 2,
-                borderRadius: '30px',
+                borderRadius: '30px', // Bo góc tròn cho nút
                 padding: '10px 0',
                 fontSize: '18px',
+                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)', // Gradient nút giống với trang login
+                boxShadow: '0px 6px 12px rgba(0,0,0,0.1)', // Shadow cho nút giống với trang login
               }}
               onClick={handleSubmit}
             >
@@ -175,7 +186,7 @@ export default function Register() {
             </Button>
 
             <Typography variant="body2" align="center">
-              <Link href="/login" variant="body2" underline="none" color="primary">
+              <Link href="/login" variant="body2" underline="none" sx={{ color: '#3498db' }}>
                 Already have an account? Sign in →
               </Link>
             </Typography>

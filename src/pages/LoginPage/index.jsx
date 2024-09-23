@@ -4,10 +4,19 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
-import { Link as RouterLink, useNavigate } from 'react-router-dom'; // Import RouterLink và useNavigate
+import { Link as RouterLink, useNavigate } from 'react-router-dom'; 
 import { useAuth } from '../../auth/AuthContext';
 
-const theme = createTheme();
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#3498db',
+    },
+    secondary: {
+      main: '#2ecc71',
+    },
+  },
+});
 
 export default function Login() {
   const [data, setData] = useState({
@@ -46,7 +55,7 @@ export default function Login() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #1abc9c, #16a085)',
+          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)', // Màu nền gradient nhẹ nhàng
           width: '100%',
           padding: '0',
           margin: '0',
@@ -55,9 +64,9 @@ export default function Login() {
         <Box
           sx={{
             backgroundColor: '#fff',
-            padding: '20px',
-            borderRadius: '10px',
-            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+            padding: '40px',
+            borderRadius: '20px', // Tăng bo góc
+            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)', // Tạo bóng nhẹ
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
@@ -67,7 +76,7 @@ export default function Login() {
           }}
         >
           <Box>
-            <Avatar sx={{ width: 200, height: 200, bgcolor: 'secondary.light', marginBottom: 2 }}>
+            <Avatar sx={{ width: 200, height: 200, bgcolor: '#3498db', marginBottom: 2 }}> {/* Đổi màu icon */}
               <LockOutlinedIcon sx={{ fontSize: 100 }} />
             </Avatar>
           </Box>
@@ -76,8 +85,8 @@ export default function Login() {
             <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2 }}>
               Member Login
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
-              <EmailIcon sx={{ mr: 1 }} />
+            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
+              <EmailIcon sx={{ mr: 1, color: '#3498db' }} />
               <TextField
                 variant="outlined"
                 placeholder="Email"
@@ -90,8 +99,8 @@ export default function Login() {
                 }}
               />
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
-              <LockIcon sx={{ mr: 1 }} />
+            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
+              <LockIcon sx={{ mr: 1, color: '#3498db' }} />
               <TextField
                 variant="outlined"
                 placeholder="Password"
@@ -110,25 +119,27 @@ export default function Login() {
               type="submit"
               fullWidth
               variant="contained"
-              color="success"
+              color="primary"
               sx={{
                 borderRadius: '30px',
                 padding: '10px 0',
                 margin: '20px 0',
                 fontSize: '18px',
+                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)', // Thêm gradient cho nút
+                boxShadow: '0px 6px 12px rgba(0,0,0,0.1)', // Tạo bóng cho nút
               }}
             >
               LOGIN
             </Button>
 
             <Typography variant="body2" align="center" sx={{ marginBottom: 2 }}>
-              <RouterLink to="/forgot-password" style={{ textDecoration: 'none', color: 'primary' }}>
+              <RouterLink to="/forgot-password" style={{ textDecoration: 'none', color: '#3498db' }}>
                 Forgot Username / Password?
               </RouterLink>
             </Typography>
 
             <Typography variant="body2" align="center">
-              <RouterLink to="/register" style={{ textDecoration: 'none', color: 'primary' }}>
+              <RouterLink to="/register" style={{ textDecoration: 'none', color: '#3498db' }}>
                 Create your Account →
               </RouterLink>
             </Typography>
