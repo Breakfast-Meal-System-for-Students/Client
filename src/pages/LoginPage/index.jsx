@@ -55,7 +55,7 @@ export default function Login() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)', // Màu nền gradient nhẹ nhàng
+          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)', 
           width: '100%',
           padding: '0',
           margin: '0',
@@ -65,8 +65,8 @@ export default function Login() {
           sx={{
             backgroundColor: '#fff',
             padding: '40px',
-            borderRadius: '20px', // Tăng bo góc
-            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)', // Tạo bóng nhẹ
+            borderRadius: '20px', 
+            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)', 
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
@@ -76,7 +76,7 @@ export default function Login() {
           }}
         >
           <Box>
-            <Avatar sx={{ width: 200, height: 200, bgcolor: '#3498db', marginBottom: 2 }}> {/* Đổi màu icon */}
+            <Avatar sx={{ width: 200, height: 200, bgcolor: '#3498db', marginBottom: 2 }}> 
               <LockOutlinedIcon sx={{ fontSize: 100 }} />
             </Avatar>
           </Box>
@@ -125,8 +125,8 @@ export default function Login() {
                 padding: '10px 0',
                 margin: '20px 0',
                 fontSize: '18px',
-                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)', // Thêm gradient cho nút
-                boxShadow: '0px 6px 12px rgba(0,0,0,0.1)', // Tạo bóng cho nút
+                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)', 
+                boxShadow: '0px 6px 12px rgba(0,0,0,0.1)', 
               }}
             >
               LOGIN

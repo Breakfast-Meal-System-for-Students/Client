@@ -162,7 +162,6 @@ export default function Register() {
                   <option value="1">Admin</option>
                   <option value="2">Shop</option>
                   <option value="3">Staff</option>
-                  
                 </select>
               </StyledSelect>
             </Grid>
