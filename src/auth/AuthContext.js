@@ -31,6 +31,7 @@ export function AuthProvider({ children }) {
     const data = await response.json(); // Lấy dữ liệu từ phản hồi
     if (data.isSuccess) {
       localStorage.setItem('token', data.data.token); // Lưu token vào localStorage
+      console.log("token ne"+localStorage.getItem('token'));
       const decoded = jwtDecode(data.data.token);
       setUser(decoded); // Cập nhật user
       return data.data.roles[0]; // Trả về vai trò đầu tiên

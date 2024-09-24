@@ -9,10 +9,12 @@ import {
   FaBars,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { useAuth } from "../auth/AuthContext"; // Import the auth context
 
 const Sidebar = () => {
   const [hoveredItem, setHoveredItem] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth(); // Get the logout function from context
 
   const handleMouseEnter = (index) => {
     setHoveredItem(index);
@@ -24,6 +26,27 @@ const Sidebar = () => {
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      // Fetch API call to logout
+      await fetch('https://bms-fs-api.azurewebsites.net/api/Auth/logout', {
+        method: 'POST', // Use POST method
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem("token")}` // Include token in the Authorization header
+        },
+      });
+
+      // Call the logout function to clear the token from context
+      await logout();
+
+      // Optionally, you can redirect to the login page after logout
+      // window.location.href = '/login'; // Uncomment if you want to redirect
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -57,7 +80,7 @@ const Sidebar = () => {
         ))}
       </ul>
       <div style={styles.signOutSection}>
-        <Link to="/sign-out" style={styles.link}>
+        <Link to="/login" onClick={handleLogout} style={styles.link}>
           <FaSignOutAlt style={styles.menuIcon} />
           {isOpen && <span style={styles.menuText}>Sign Out</span>}
         </Link>
@@ -67,7 +90,7 @@ const Sidebar = () => {
 };
 
 const menuItems = [
-  { text: "HomeStaff", icon: FaHome, path: "/" },
+  { text: "HomeStaff", icon: FaHome, path: "/home-staff" },
   {
     text: "Account",
     icon: FaFileAlt,
@@ -120,9 +143,9 @@ const styles = {
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
-    justifyContent: "flex-start", // Align text and icon to the left
-    width: "100%", // Ensure the header has the same width as the sidebar
-    paddingLeft: "20px", // Align header text with menu items
+    justifyContent: "flex-start",
+    width: "100%",
+    paddingLeft: "20px",
   },
   sidebarMenu: {
     listStyleType: "none",
@@ -146,7 +169,7 @@ const styles = {
   },
   headerText: {
     fontSize: "25px",
-    marginLeft: "15px", // Align the text with the icons in the menu
+    marginLeft: "15px",
   },
   menuText: {
     fontSize: "16px",
