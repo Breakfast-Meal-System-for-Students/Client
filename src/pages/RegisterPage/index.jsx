@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Container, Avatar, Grid } from '@mui/material';
+import { TextField, Button, Box, Typography, Avatar, Grid, Link } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { StyledSelect } from './RegisterPage.style';
 
-const theme = createTheme();
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#3498db',
+    },
+    secondary: {
+      main: '#2ecc71',
+    },
+  },
+});
 
 export default function Register() {
   const [data, setData] = useState({
@@ -14,6 +23,7 @@ export default function Register() {
     password: ""
   });
   const [selectedRole, setSelectedRole] = useState('');
+
   const handleSelectChange = (event) => {
     setSelectedRole(event.target.value);
   };
@@ -22,11 +32,10 @@ export default function Register() {
     setData({
       ...data,
       [event.target.name]: event.target.value
-    })
-  }
+    });
+  };
 
   const handleSubmit = () => {
-
     fetch(`https://bms-fs-api.azurewebsites.net/api/Auth/register?role=${selectedRole}`, {
       method: "POST",
       headers: {
@@ -38,7 +47,7 @@ export default function Register() {
       if (!response.ok) {
           throw new Error('Network response was not ok');
       }
-      return response.json(); // Convert the response to JSON
+      return response.json();
     })
     .then(data => {
         setData({
@@ -46,32 +55,48 @@ export default function Register() {
           firstName: "",
           lastName: "",
           password: ""
-        })
-        console.log('Success:', data); // Handle success
+        });
+        console.log('Success:', data);
     })
     .catch(error => {
-        console.error('Error:', error); // Handle errors
+        console.error('Error:', error);
     });
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)', // Cùng màu nền gradient với trang login
+          width: '100%',
+          padding: '0',
+          margin: '0',
+        }}
+      >
         <Box
           sx={{
-            marginTop: 8,
+            backgroundColor: '#fff',
+            padding: '40px',
+            borderRadius: '20px', // Bo góc giống trang login
+            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)', // Shadow giống trang login
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            width: '100%',
+            maxWidth: '500px',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: '#3498db' }}> {/* Cùng màu Avatar */}
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign Up
           </Typography>
-          <Box  sx={{ mt: 3 }}>
+          <Box sx={{ mt: 3, width: '100%' }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -82,7 +107,10 @@ export default function Register() {
                   id="firstName"
                   label="First Name"
                   autoFocus
-                  onChange={e => handleChange(e)}
+                  onChange={handleChange}
+                  InputProps={{
+                    style: { borderRadius: '30px' }, // Bo góc tròn cho TextField
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -93,7 +121,10 @@ export default function Register() {
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
-                  onChange={e => handleChange(e)}
+                  onChange={handleChange}
+                  InputProps={{
+                    style: { borderRadius: '30px' }, // Bo góc tròn cho TextField
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -104,7 +135,10 @@ export default function Register() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  onChange={e => handleChange(e)}
+                  onChange={handleChange}
+                  InputProps={{
+                    style: { borderRadius: '30px' }, // Bo góc tròn cho TextField
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -116,16 +150,18 @@ export default function Register() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
-                  onChange={e => handleChange(e)}
+                  onChange={handleChange}
+                  InputProps={{
+                    style: { borderRadius: '30px' }, // Bo góc tròn cho TextField
+                  }}
                 />
               </Grid>
               <StyledSelect item xs={12}>
                 <select id="roles" value={selectedRole} onChange={handleSelectChange} className="select-dropdown">
                   <option value="">--Please choose an option--</option>
-                  <option value="1">User</option>
+                  <option value="1">Admin</option>
                   <option value="2">Shop</option>
                   <option value="3">Staff</option>
-                  <option value="4">Admin</option>
                 </select>
               </StyledSelect>
             </Grid>
@@ -133,14 +169,29 @@ export default function Register() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 9, mb: 2 }}
+              color="primary" // Màu nút đồng nhất với trang login
+              sx={{
+                mt: 5,
+                mb: 2,
+                borderRadius: '30px', // Bo góc tròn cho nút
+                padding: '10px 0',
+                fontSize: '18px',
+                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)', // Gradient nút giống với trang login
+                boxShadow: '0px 6px 12px rgba(0,0,0,0.1)', // Shadow cho nút giống với trang login
+              }}
               onClick={handleSubmit}
             >
               Sign Up
             </Button>
+
+            <Typography variant="body2" align="center">
+              <Link href="/login" variant="body2" underline="none" sx={{ color: '#3498db' }}>
+                Already have an account? Sign in →
+              </Link>
+            </Typography>
           </Box>
         </Box>
-      </Container>
+      </Box>
     </ThemeProvider>
   );
 }

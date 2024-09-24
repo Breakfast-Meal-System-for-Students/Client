@@ -1,16 +1,16 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from './auth/AuthContext';
 
-function ProtectedRoute({ element: Element, requiredRole }) {
+const ProtectedRoute = ({ element, requiredRole }) => {
   const { user } = useAuth();
-  console.log("~ user", user)
-  const location = useLocation();
-  if (!user || user.role !== requiredRole) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+
+  // Kiểm tra xem người dùng có đăng nhập và có quyền truy cập không
+  if (!user || user.role < requiredRole) {
+    return <Navigate to="/login" />;
   }
 
-  return <Element />;
-}
+  return element;
+};
 
 export default ProtectedRoute;

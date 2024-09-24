@@ -3,13 +3,14 @@ import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, IconButton
 import HomeIcon from '@mui/icons-material/Home';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import SettingsIcon from '@mui/icons-material/Settings';
+import PersonIcon from '@mui/icons-material/Person'
 import { Link } from 'react-router-dom';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 
 const sidebarItems = [
   { text: 'Dashboard', icon: <HomeIcon />, path: "/" },
   { text: 'Staff', icon: <AnalyticsIcon />, path: "/manage-staff" },
-  { text: 'Customer', icon: <SettingsIcon />, path: "/customer" },
+  { text: 'Customer', icon: <PersonIcon />, path: "/customer" },
   { text: 'Orders', icon: <SettingsIcon />, path: "/orders" },
 ];
 
