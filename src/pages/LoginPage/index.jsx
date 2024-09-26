@@ -29,16 +29,25 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const role = await login(data.email, data.password);
-      if (role === 'Admin') {
-        navigate('/admin');
-      } else {
-        navigate('/user');
-      }
+        // Login function returns the user's role
+        const role = await login(data.email, data.password);
+
+        // Redirect based on role
+        if (role === 'Admin') {
+            navigate('/admin');
+        } else if (role === 'Staff') {
+            navigate('/home-staff'); // Redirect to the staff home page
+        } else if (role === 'Shop') { // Add this condition
+            navigate('/shop-home-page'); // Redirect to the shop home page
+        } else {
+            console.error('Unauthorized role:', role);
+            // Optionally, show an error message to the user
+        }
     } catch (error) {
-      console.error('Login failed', error);
+        console.error('Login failed', error);
+        // Optionally, show an error message to the user
     }
-  };
+};
 
   const handleChange = (event) => {
     setData({
