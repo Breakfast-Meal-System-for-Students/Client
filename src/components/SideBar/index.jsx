@@ -37,8 +37,7 @@ const Sidebar = () => {
       if (response.ok) {
         // If logout is successful, remove token from localStorage
         localStorage.removeItem('token');
-        
-        // Redirect to login page
+
         navigate('/login');
       } else {
         console.error('Failed to log out');
@@ -61,7 +60,7 @@ const Sidebar = () => {
             color: '#fff',
           },
         }}
-        variant="persistent" // Can also use temporary for mobile-friendly
+        variant="persistent" 
         anchor="left"
         open
       >
@@ -70,7 +69,12 @@ const Sidebar = () => {
           <Box sx={{ minWidth: "56px" }}>
             <DensityMediumIcon />
           </Box>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            sx={{ flexGrow: 1 }}
+            onClick={() => navigate('/')} // Điều hướng về trang "/"
+            style={{ cursor: 'pointer' }}  // Thêm style để thay đổi con trỏ chuột khi di chuột lên Typography
+          >
             Admin Panel
           </Typography>
         </Toolbar>

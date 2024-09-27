@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Avatar, Grid, Link } from '@mui/material';
+import { TextField, Button, Box, Typography, Avatar, Grid, Link, InputAdornment, IconButton } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { StyledSelect } from './RegisterPage.style';
 
@@ -23,6 +25,7 @@ export default function Register() {
     password: ""
   });
   const [selectedRole, setSelectedRole] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // State cho hiển thị/ẩn mật khẩu
 
   const handleSelectChange = (event) => {
     setSelectedRole(event.target.value);
@@ -63,6 +66,10 @@ export default function Register() {
     });
   };
 
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);  
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -71,7 +78,7 @@ export default function Register() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)', // Cùng màu nền gradient với trang login
+          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)', 
           width: '100%',
           padding: '0',
           margin: '0',
@@ -81,8 +88,8 @@ export default function Register() {
           sx={{
             backgroundColor: '#fff',
             padding: '40px',
-            borderRadius: '20px', // Bo góc giống trang login
-            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)', // Shadow giống trang login
+            borderRadius: '20px', 
+            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)', 
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -90,7 +97,7 @@ export default function Register() {
             maxWidth: '500px',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: '#3498db' }}> {/* Cùng màu Avatar */}
+          <Avatar sx={{ m: 1, bgcolor: '#3498db' }}> 
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -109,7 +116,7 @@ export default function Register() {
                   autoFocus
                   onChange={handleChange}
                   InputProps={{
-                    style: { borderRadius: '30px' }, // Bo góc tròn cho TextField
+                    style: { borderRadius: '30px' },
                   }}
                 />
               </Grid>
@@ -123,7 +130,7 @@ export default function Register() {
                   autoComplete="family-name"
                   onChange={handleChange}
                   InputProps={{
-                    style: { borderRadius: '30px' }, // Bo góc tròn cho TextField
+                    style: { borderRadius: '30px' }, 
                   }}
                 />
               </Grid>
@@ -137,7 +144,7 @@ export default function Register() {
                   autoComplete="email"
                   onChange={handleChange}
                   InputProps={{
-                    style: { borderRadius: '30px' }, // Bo góc tròn cho TextField
+                    style: { borderRadius: '30px' }, 
                   }}
                 />
               </Grid>
@@ -147,12 +154,19 @@ export default function Register() {
                   fullWidth
                   name="password"
                   label="Password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   id="password"
                   autoComplete="new-password"
                   onChange={handleChange}
                   InputProps={{
-                    style: { borderRadius: '30px' }, // Bo góc tròn cho TextField
+                    style: { borderRadius: '30px' }, 
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleClickShowPassword}>
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
                   }}
                 />
               </Grid>
@@ -169,15 +183,15 @@ export default function Register() {
               type="submit"
               fullWidth
               variant="contained"
-              color="primary" // Màu nút đồng nhất với trang login
+              color="primary" 
               sx={{
                 mt: 5,
                 mb: 2,
-                borderRadius: '30px', // Bo góc tròn cho nút
+                borderRadius: '30px', 
                 padding: '10px 0',
                 fontSize: '18px',
-                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)', // Gradient nút giống với trang login
-                boxShadow: '0px 6px 12px rgba(0,0,0,0.1)', // Shadow cho nút giống với trang login
+                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)', 
+                boxShadow: '0px 6px 12px rgba(0,0,0,0.1)', 
               }}
               onClick={handleSubmit}
             >
