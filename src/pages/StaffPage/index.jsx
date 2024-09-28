@@ -164,49 +164,6 @@ const ManageStaffPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
-      {/* Edit Staff Dialog */}
-      <Dialog open={editOpen} onClose={handleEditClose}>
-        <DialogTitle>Edit Staff</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="edit-name"
-            label="Staff Name"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={editStaffName}
-            onChange={(e) => setEditStaffName(e.target.value)}
-          />
-
-          <StyledSelect item xs={12}>
-            <select id="roles" value={selectedRole} onChange={handleSelectChange} className="select-dropdown">
-              <option value="" disabled>
-                --Please choose an option--
-              </option>
-              <option value="Admin" disabled={editStaffPosition === 'Admin'}>
-                Admin
-              </option>
-              <option value="Shop" disabled={editStaffPosition === 'Shop'}>
-                Shop
-              </option>
-              <option value="Staff" disabled={editStaffPosition === 'Staff'}>
-                Staff
-              </option>
-            </select>
-          </StyledSelect>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleEditClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleUpdateStaff} color="primary" variant="contained">
-            Update
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };

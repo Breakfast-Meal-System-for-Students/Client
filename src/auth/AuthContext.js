@@ -28,15 +28,15 @@ export function AuthProvider({ children }) {
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await response.json(); // Lấy dữ liệu từ phản hồi
+    const data = await response.json(); 
     if (data.isSuccess) {
       localStorage.setItem('token', data.data.token); // Lưu token vào localStorage
       console.log("token ne"+localStorage.getItem('token'));
       const decoded = jwtDecode(data.data.token);
-      setUser(decoded); // Cập nhật user
-      return data.data.roles[0]; // Trả về vai trò đầu tiên
+      setUser(decoded); 
+      return data.data.roles; 
     } else {
-      throw new Error(data.messages[0]?.content || 'Login failed'); // Xử lý lỗi
+      throw new Error(data.messages[0]?.content || 'Login failed'); 
     }
   };
 

@@ -5,8 +5,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff'; 
-import { Link as RouterLink, useNavigate } from 'react-router-dom'; 
+import VisibilityOff from '@mui/icons-material/VisibilityOff'; // Import icon Visibility
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 
 const theme = createTheme({
@@ -38,14 +38,14 @@ export default function Login() {
     }
 
     try {
-      const role = await login(data.email, data.password);
-
-      if (role === 'Admin') {
+      const roles = await login(data.email, data.password);
+      console.log(roles);
+      if (roles.includes('Admin')) {
         navigate('/admin');
-      } else if (role === 'Staff') {
+      } else if (roles.includes('Staff')) {
         navigate('/home-staff');
-      } else if (role === 'Shop') {
-        navigate('/shop-home-page');
+      } else if (roles.includes('Shop')) {
+        navigate('/ShopPage');
       } else {
         setError('Unauthorized role');
       }
@@ -74,7 +74,7 @@ export default function Login() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)', 
+          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)',
           width: '100%',
           padding: '0',
           margin: '0',
@@ -84,8 +84,8 @@ export default function Login() {
           sx={{
             backgroundColor: '#fff',
             padding: '40px',
-            borderRadius: '20px', 
-            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)', 
+            borderRadius: '20px',
+            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)',
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
@@ -95,7 +95,7 @@ export default function Login() {
           }}
         >
           <Box>
-            <Avatar sx={{ width: 200, height: 200, bgcolor: '#3498db', marginBottom: 2 }}> 
+            <Avatar sx={{ width: 200, height: 200, bgcolor: '#3498db', marginBottom: 2 }}>
               <LockOutlinedIcon sx={{ fontSize: 100 }} />
             </Avatar>
           </Box>
@@ -132,7 +132,7 @@ export default function Login() {
                 variant="outlined"
                 placeholder="Password"
                 name="password"
-                type={showPassword ? 'text' : 'password'} 
+                type={showPassword ? 'text' : 'password'}
                 required
                 fullWidth
                 onChange={handleChange}
@@ -163,8 +163,8 @@ export default function Login() {
                 padding: '10px 0',
                 margin: '20px 0',
                 fontSize: '18px',
-                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)', 
-                boxShadow: '0px 6px 12px rgba(0,0,0,0.1)', 
+                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)',
+                boxShadow: '0px 6px 12px rgba(0,0,0,0.1)',
               }}
             >
               LOGIN

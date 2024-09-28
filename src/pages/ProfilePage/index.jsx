@@ -94,8 +94,7 @@ export default function ProfilePage() {
       const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Account', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`, // Add token to the header
-          // Do NOT set 'Content-Type' here; the browser will set it automatically for FormData
+          'Authorization': `Bearer ${token}`, 
         },
         body: formData,
       });
