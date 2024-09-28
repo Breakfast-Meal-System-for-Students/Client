@@ -4,25 +4,25 @@ import FeedbackCard from '../../components/FeedbackCard/FeedbackCard';
 
 const feedbackData = [
   {
-    name: 'Nina Holloway',
-    date: '29 Aug 2017',
+    name: 'Nguyễn Quốc Huy',
+    date: '29 Aug 2024',
     rating: 4,
-    comment: 'A wonderful way to spend an afternoon. The tour was well-organized and enjoyable.',
-    comments: 7,
+    comment: 'Đồ ăn vẫn còn nóng , không cần mất thời gian chờ',
+ 
   },
   {
-    name: 'Steve Fletcher',
-    date: '30 Aug 2017',
+    name: 'Đặng Đình Huy',
+    date: '30 Aug 2024',
     rating: 5,
-    comment: 'A memorable experience with great food and service. Highly recommend!',
-    comments: 6,
+    comment: 'Tiết kiệm thời gian khá nhiều ',
+    
   },
   {
-    name: 'Oscar Rogers',
-    date: '29 Aug 2017',
+    name: 'Nguyễn Gia Khiêm',
+    date: '29 Aug 2024',
     rating: 3,
-    comment: 'Good experience but could have been better in terms of service.',
-    comments: 2,
+    comment: 'Phần hướng dẫn đường đi còn hơi phức tạp , nhưng không cần chờ đợi lấy đồ ăn như mọi khi',
+  
   },
 ];
 

@@ -13,17 +13,18 @@ import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import PortraitIcon from '@mui/icons-material/Portrait';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
-import RateReviewIcon from '@mui/icons-material/RateReview';
+import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 
 const drawerWidth = 240;
 
 const Sidebar = () => {
-  const navigate = useNavigate();  // useNavigate is used to redirect the user to login page after logout
+  const navigate = useNavigate();
   const {user} = useAuth();
   let sidebarItems =  [
     { text: 'Dashboard', icon: <HomeIcon />, path: "/" },
     { text: 'Staff', icon: <AnalyticsIcon />, path: "/manage-staff" },
-    { text: 'Customer', icon: <PersonIcon />, path: "/customer" },
+    { text: 'Customer', icon: <PersonIcon />, path: "/customer-profile" },
     { text: 'Orders', icon: <SettingsIcon />, path: "/orders" },
     { text: 'Profile', icon: <PortraitIcon />, path: "/profile" },
   ];
@@ -35,19 +36,17 @@ const Sidebar = () => {
     
   } else if (user && user.role.includes("Shop")) {
     sidebarItems = [
-      { text: 'Add Voucher', icon: <ConfirmationNumberIcon />, path: "/orders" },
-      { text: 'Breakfast Menu', icon: <RestaurantMenuIcon />, path: "/orders" },
-      { text: 'Feedback', icon: <SettingsIcon />, path: "/Feedback" },
-      { text: 'Package', icon: <RateReviewIcon />, path: "/orders" },
+      { text: 'Voucher', icon: <ConfirmationNumberIcon />, path: "/orders" },
+      { text: 'Breakfast-Menu', icon: <RestaurantMenuIcon />, path: "/orders" },
+      { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/Feedback" },
+      { text: 'Package', icon: <Inventory2OutlinedIcon />, path: "/orders" },
       { text: 'Location', icon: <FmdGoodOutlinedIcon />, path: "/orders" },
       { text: 'Profile', icon: <PortraitIcon />, path: "/profile" },
     ];
   }
 
-  // Handle user logout
   const handleLogout = async () => {
     try {
-      // Fetch logout API
       const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Auth/logout', {
         method: 'POST',
         headers: {
@@ -57,7 +56,6 @@ const Sidebar = () => {
       });
 
       if (response.ok) {
-        // If logout is successful, remove token from localStorage
         localStorage.removeItem('token');
 
         navigate('/login');

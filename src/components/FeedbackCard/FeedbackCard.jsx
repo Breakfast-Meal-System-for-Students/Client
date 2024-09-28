@@ -28,9 +28,6 @@ const FeedbackCard = ({ feedback }) => {
               {[...Array(5)].map((_, i) => (
                 <StarIcon key={i} color={i < feedback.rating ? 'warning' : 'disabled'} />
               ))}
-              <Typography variant="caption" ml={1}>
-                {feedback.comments} comments
-              </Typography>
             </Box>
           </Grid>
         </Grid>
@@ -43,10 +40,10 @@ const FeedbackCard = ({ feedback }) => {
           <Grid item>
             <IconButton>
               <ChatBubbleOutlineIcon />
-            </IconButton>
             <Typography variant="caption" ml={1}>
               Reply
             </Typography>
+            </IconButton>
           </Grid>
           <Grid item>
             <Button startIcon={<ShareIcon />} variant="outlined" color="primary" size="small">

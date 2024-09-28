@@ -54,7 +54,6 @@ function App() {
             />
             <Route
               path="/admin"
-              element={<ProtectedRoute element={<AdminPage />} requiredRole={"Admin"} />}
             />
             <Route
               path="/profile" 
@@ -74,11 +73,14 @@ function App() {
             />
             <Route
               path="/profile" 
+           
+            />
+            <Route
+              path="/Menu" 
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
             />
           </Route>
-
-
+            
 
           {/* Staff Routes */}
           <Route element={<MainLayout />}>
