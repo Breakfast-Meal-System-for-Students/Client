@@ -8,19 +8,41 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import InfoIcon from '@mui/icons-material/Info'
 import { Link, useNavigate } from 'react-router-dom';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
-
-const sidebarItems = [
-  { text: 'Dashboard', icon: <HomeIcon />, path: "/" },
-  { text: 'Staff', icon: <AnalyticsIcon />, path: "/manage-staff" },
-  { text: 'Customer', icon: <PersonIcon />, path: "/customer" },
-  { text: 'Orders', icon: <SettingsIcon />, path: "/orders" },
-  { text: 'Profile', icon: <InfoIcon />, path: "/profile" },
-];
+import { useAuth } from '../../auth/AuthContext';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
+import PortraitIcon from '@mui/icons-material/Portrait';
+import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
+import RateReviewIcon from '@mui/icons-material/RateReview';
 
 const drawerWidth = 240;
 
 const Sidebar = () => {
   const navigate = useNavigate();  // useNavigate is used to redirect the user to login page after logout
+  const {user} = useAuth();
+  let sidebarItems =  [
+    { text: 'Dashboard', icon: <HomeIcon />, path: "/" },
+    { text: 'Staff', icon: <AnalyticsIcon />, path: "/manage-staff" },
+    { text: 'Customer', icon: <PersonIcon />, path: "/customer" },
+    { text: 'Orders', icon: <SettingsIcon />, path: "/orders" },
+    { text: 'Profile', icon: <PortraitIcon />, path: "/profile" },
+  ];
+
+  if (user && user.role.includes("Staff")) {
+    sidebarItems = [
+      { text: 'Staff', icon: <AnalyticsIcon />, path: "/manage-staff" },
+    ];
+    
+  } else if (user && user.role.includes("Shop")) {
+    sidebarItems = [
+      { text: 'Add Voucher', icon: <ConfirmationNumberIcon />, path: "/orders" },
+      { text: 'Breakfast Menu', icon: <RestaurantMenuIcon />, path: "/orders" },
+      { text: 'Feedback', icon: <SettingsIcon />, path: "/Feedback" },
+      { text: 'Package', icon: <RateReviewIcon />, path: "/orders" },
+      { text: 'Location', icon: <FmdGoodOutlinedIcon />, path: "/orders" },
+      { text: 'Profile', icon: <PortraitIcon />, path: "/profile" },
+    ];
+  }
 
   // Handle user logout
   const handleLogout = async () => {
@@ -75,7 +97,7 @@ const Sidebar = () => {
             onClick={() => navigate('/')} // Điều hướng về trang "/"
             style={{ cursor: 'pointer' }}  // Thêm style để thay đổi con trỏ chuột khi di chuột lên Typography
           >
-            Admin Panel
+         
           </Typography>
         </Toolbar>
         <Divider />

@@ -24,7 +24,7 @@ import MainLayout from "./components/MainLayout/index.jsx";
 import AdminPage from "./pages/StaffPage/index.jsx";
 import ShopPage from "./pages/ShopPage/index.jsx";
 import ProfilePage from "./pages/ProfilePage/index.jsx";
-
+import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
 function App() {
   return (
     <AuthProvider>
@@ -38,43 +38,52 @@ function App() {
           <Route element={<MainLayout />} path="/">
             <Route
               path="/"
-              element={<ProtectedRoute element={<DashboardPage />} requiredRole={4} />}
+              element={<ProtectedRoute element={<DashboardPage />} requiredRole={"Admin"} />}
             />
             <Route
               path="/manage-staff"
-              element={<ProtectedRoute element={<ManageStaffPage />} requiredRole={4} />}
+              element={<ProtectedRoute element={<ManageStaffPage />} requiredRole={"Admin"} />}
             />
             <Route
               path="/customer-profile"
-              element={<ProtectedRoute element={<CustomerProfilePage />} requiredRole={4} />}
+              element={<ProtectedRoute element={<CustomerProfilePage />} requiredRole={"Admin"} />}
             />
             <Route
               path="/orders"
-              element={<ProtectedRoute element={<OrdersPage />} requiredRole={4} />}
+              element={<ProtectedRoute element={<OrdersPage />} requiredRole={"Admin"} />}
             />
             <Route
               path="/admin"
-              element={<ProtectedRoute element={<AdminPage />} requiredRole={4} />}
+              element={<ProtectedRoute element={<AdminPage />} requiredRole={"Admin"} />}
             />
             <Route
-              path="/profile"
-              element={<ProtectedRoute element={<ProfilePage />} requiredRole={4} />}
+              path="/profile" 
+              element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Admin"} />}
             />
           </Route>
 
-            {/* Shop Routes */}
+          {/* Shop Routes */}
           <Route element={<MainLayout />} path="/">
-          <Route
+            <Route
               path="/ShopPage"
-              element={<ProtectedRoute element={<ShopPage />} requiredRole={4} />}
+              element={<ProtectedRoute element={<ShopPage />} requiredRole={"Shop"} />}
             />
-            </Route>
-            
+            <Route
+              path="/Feedback"
+              element={<ProtectedRoute element={<FeedbackPage />} requiredRole={"Shop"} />}
+            />
+            <Route
+              path="/profile" 
+              element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
+            />
+          </Route>
+
+
 
           {/* Staff Routes */}
           <Route element={<MainLayout />}>
             <Route path="/home-staff" element={<HomeStaff />} />
-            <Route element={<ProtectedRoute requiredRole={2} />}>
+            <Route element={<ProtectedRoute requiredRole={"Staff"} />}>
               <Route path="/setting" element={<Setting />} />
               <Route path="/account" element={<Account />} />
               <Route path="/crud-category" element={<CRUDCategory />} />
@@ -87,7 +96,7 @@ function App() {
           </Route>
 
           {/* Shop Routes */}
-        
+
 
           {/* General Routes */}
           <Route path="/detail-application/:id" element={<DetailApplication />} />
