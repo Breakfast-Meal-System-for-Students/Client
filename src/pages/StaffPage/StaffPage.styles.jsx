@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-  Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,IconButton, 
-  Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField,Toolbar, Typography, InputAdornment, Pagination
+  Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton,
+  Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Toolbar, Typography, InputAdornment, Pagination, Chip
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -9,15 +9,15 @@ import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 
 const StaffPage = ({
-  staff,searchTerm,setSearchTerm,open,handleClickOpen,handleClose,handleAddStaff,
-  editOpen,handleEditOpen,handleEditClose,handleUpdateStaff,handleDeleteStaff,
-  pageIndex,pageSize,totalCount,handlePageChange,newStaff,setNewStaff,editStaff,setEditStaff,
+  staff, searchTerm, setSearchTerm, open, handleClickOpen, handleClose, handleAddStaff,
+  editOpen, handleEditOpen, handleEditClose, handleUpdateStaff, handleDeleteStaff,
+  pageIndex, pageSize, totalCount, handlePageChange, newStaff, setNewStaff, editStaff, setEditStaff,
 }) => {
   return (
-    <Box sx={{ padding: 3 }}>
-      <Paper elevation={3} sx={{ padding: 3, borderRadius: '15px', backgroundColor: '#f5f5f5' }}>
+    <Box sx={{ padding: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+      <Paper sx={{ padding: 3, borderRadius: '10px', backgroundColor: '#fff', elevation: 0 }}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h5" sx={{ flexGrow: 1 }}>
+          <Typography variant="h5" sx={{ flexGrow: 1, color: '#333' }}>
             Manage Staff
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -46,10 +46,12 @@ const StaffPage = ({
             <TableHead>
               <TableRow>
                 <TableCell>Avatar</TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>Full Name</TableCell>
                 <TableCell>Email</TableCell>
-                <TableCell>Phone</TableCell>
-                <TableCell>Position</TableCell>
+                <TableCell>Role</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Joined Date</TableCell>
+                <TableCell>2F Auth</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -60,13 +62,25 @@ const StaffPage = ({
                     {staffMember.avatar ? (
                       <img src={staffMember.avatar} alt="Avatar" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
                     ) : (
-                      <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#ccc' }} />
+                      <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#ddd' }} />
                     )}
                   </TableCell>
                   <TableCell>{`${staffMember.firstName} ${staffMember.lastName}`}</TableCell>
                   <TableCell>{staffMember.email}</TableCell>
-                  <TableCell>{staffMember.phone}</TableCell>
                   <TableCell>{staffMember.position}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={staffMember.status === 'Active' ? 'Active' : 'Inactive'}
+                      color={staffMember.status === 'Active' ? 'success' : 'error'}
+                    />
+                  </TableCell>
+                  <TableCell>{staffMember.joinedDate}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={staffMember.twoFactorAuthEnabled ? 'Enabled' : 'Disabled'}
+                      color={staffMember.twoFactorAuthEnabled ? 'success' : 'error'}
+                    />
+                  </TableCell>
                   <TableCell align="right">
                     <IconButton color="primary" onClick={() => handleEditOpen(staffMember)}>
                       <EditIcon />
@@ -90,7 +104,7 @@ const StaffPage = ({
             variant="outlined"
             color="primary"
           />
-          <Typography sx={{ margin: '0 10px' }}>
+          <Typography sx={{ margin: '0 10px', color: '#666' }}>
             Page {pageIndex} of {Math.ceil(totalCount / pageSize)}
           </Typography>
         </Box>

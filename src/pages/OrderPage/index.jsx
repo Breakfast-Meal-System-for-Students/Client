@@ -1,20 +1,50 @@
-// src/components/ManageOrdersPage.js
-import React, { useState } from 'react';
+// index.jsx
+import React, { useEffect, useState } from 'react';
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
-  Button, Select, MenuItem, FormControl, InputLabel, Toolbar, Typography
+  Button,Select,MenuItem,FormControl,InputLabel,Typography,Toolbar,TableBody,
 } from '@mui/material';
-
-// Sample initial orders data
-const initialOrders = [
-  { id: 1, customer: 'John Doe', date: '2024-09-01', status: 'Pending' },
-  { id: 2, customer: 'Jane Smith', date: '2024-09-02', status: 'Shipped' },
-  { id: 3, customer: 'Alice Brown', date: '2024-09-03', status: 'Delivered' },
-];
+import {
+  StyledPaper,StyledTableContainer,StyledTable,StyledTableHead,StyledTableRow,StyledTableCell,
+} from './ManageOrders.style';
 
 const ManageOrdersPage = () => {
-  const [orders, setOrders] = useState(initialOrders);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [editingStatus, setEditingStatus] = useState({});
+
+  // Fetch orders from the API
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Order/GetListOrders?pageIndex=2&pageSize=5', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch orders');
+      }
+
+      const data = await response.json();
+      console.log(data);
+
+      if (Array.isArray(data.data.data)) {
+        setOrders(data.data.data);
+      } else {
+        console.error('Fetched data is not an array', data.data.data);
+        setOrders([]);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   // Handle status change
   const handleStatusChange = (id, newStatus) => {
@@ -32,33 +62,42 @@ const ManageOrdersPage = () => {
     setOrders(updatedOrders);
   };
 
+  if (loading) {
+    return <Typography variant="h6">Loading orders...</Typography>;
+  }
+
+  if (!Array.isArray(orders) || orders.length === 0) {
+    return <Typography variant="h6">No orders available.</Typography>;
+  }
+
   return (
-    <Paper sx={{ padding: 2 }}>
-      <Toolbar>
+    <StyledPaper>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           Manage Orders
         </Typography>
       </Toolbar>
 
-      {/* Orders Table */}
-      <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="orders table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Order ID</TableCell>
-              <TableCell>Customer</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell align="right">Actions</TableCell>
-            </TableRow>
-          </TableHead>
+      <StyledTableContainer>
+        <StyledTable aria-label="orders table">
+          <StyledTableHead>
+            <StyledTableRow>
+              <StyledTableCell>Order ID</StyledTableCell>
+              <StyledTableCell>Customer ID</StyledTableCell>
+              <StyledTableCell>Shop ID</StyledTableCell>
+              <StyledTableCell>Total Price</StyledTableCell>
+              <StyledTableCell>Status</StyledTableCell>
+              <StyledTableCell>Actions</StyledTableCell>
+            </StyledTableRow>
+          </StyledTableHead>
           <TableBody>
             {orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>{order.id}</TableCell>
-                <TableCell>{order.customer}</TableCell>
-                <TableCell>{order.date}</TableCell>
-                <TableCell>
+              <StyledTableRow key={order.id}>
+                <StyledTableCell>{order.id}</StyledTableCell>
+                <StyledTableCell>{order.customerId}</StyledTableCell>
+                <StyledTableCell>{order.shopId}</StyledTableCell>
+                <StyledTableCell>${order.totalPrice.toFixed(2)}</StyledTableCell>
+                <StyledTableCell>
                   <FormControl fullWidth>
                     <InputLabel>Status</InputLabel>
                     <Select
@@ -66,14 +105,15 @@ const ManageOrdersPage = () => {
                       label="Status"
                       onChange={(e) => handleStatusChange(order.id, e.target.value)}
                     >
-                      <MenuItem value="Pending">Pending</MenuItem>
-                      <MenuItem value="Shipped">Shipped</MenuItem>
-                      <MenuItem value="Delivered">Delivered</MenuItem>
-                      <MenuItem value="Cancelled">Cancelled</MenuItem>
+                      <MenuItem value="DRAFT">Draft</MenuItem>
+                      <MenuItem value="PENDING">Pending</MenuItem>
+                      <MenuItem value="PREPARED">Prepared</MenuItem>
+                      <MenuItem value="COMPLETE">Complete</MenuItem>
+                      <MenuItem value="CANCELLED">Cancelled</MenuItem>
                     </Select>
                   </FormControl>
-                </TableCell>
-                <TableCell align="right">
+                </StyledTableCell>
+                <StyledTableCell align="right">
                   <Button
                     variant="contained"
                     color="primary"
@@ -81,13 +121,13 @@ const ManageOrdersPage = () => {
                   >
                     Update
                   </Button>
-                </TableCell>
-              </TableRow>
+                </StyledTableCell>
+              </StyledTableRow>
             ))}
           </TableBody>
-        </Table>
-      </TableContainer>
-    </Paper>
+        </StyledTable>
+      </StyledTableContainer>
+    </StyledPaper>
   );
 };
 

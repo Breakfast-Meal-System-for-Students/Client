@@ -2,10 +2,9 @@ import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, Toolbar, Typography, Box } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
-import SettingsIcon from '@mui/icons-material/Settings';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
-import InfoIcon from '@mui/icons-material/Info'
+import StoreOutlinedIcon from '@mui/icons-material/StoreOutlined';
 import { Link, useNavigate } from 'react-router-dom';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 import { useAuth } from '../../auth/AuthContext';
@@ -25,7 +24,7 @@ const Sidebar = () => {
     { text: 'Dashboard', icon: <HomeIcon />, path: "/" },
     { text: 'Staff', icon: <AnalyticsIcon />, path: "/manage-staff" },
     { text: 'Customer', icon: <PersonIcon />, path: "/customer-profile" },
-    { text: 'Orders', icon: <SettingsIcon />, path: "/orders" },
+    { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/orders" },
     { text: 'Profile', icon: <PortraitIcon />, path: "/profile" },
   ];
 
@@ -51,7 +50,7 @@ const Sidebar = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Pass the token in Authorization header
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
 

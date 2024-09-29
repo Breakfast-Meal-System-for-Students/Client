@@ -14,7 +14,7 @@ import ShopApplication from "./components/ShopApplication";
 import DetailApplication from "./components/DetailApplication";
 import DashboardPage from "./pages/DashboardPage/index.jsx";
 import ManageStaffPage from "./pages/StaffPage/index.jsx";
-import CustomerProfilePage from "./pages/CustomerPage/index.jsx";
+import CustomerDetails from "./pages/CustomerPage/index.jsx";
 import OrdersPage from "./pages/OrderPage/index.jsx";
 import LoginPage from "./pages/LoginPage/index.jsx";
 import RegisterPage from "./pages/RegisterPage/index.jsx";
@@ -25,6 +25,7 @@ import AdminPage from "./pages/StaffPage/index.jsx";
 import ShopPage from "./pages/ShopPage/index.jsx";
 import ProfilePage from "./pages/ProfilePage/index.jsx";
 import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
+import Menu from  "./pages/MenuPage/MenuPage.jsx";
 function App() {
   return (
     <AuthProvider>
@@ -46,7 +47,7 @@ function App() {
             />
             <Route
               path="/customer-profile"
-              element={<ProtectedRoute element={<CustomerProfilePage />} requiredRole={"Admin"} />}
+              element={<ProtectedRoute element={<CustomerDetails />} requiredRole={"Admin"} />}
             />
             <Route
               path="/orders"
@@ -73,7 +74,7 @@ function App() {
             />
             <Route
               path="/profile" 
-           
+              element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
             />
             <Route
               path="/Menu" 
