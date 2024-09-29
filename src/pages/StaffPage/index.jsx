@@ -1,85 +1,78 @@
-import React, { useState } from 'react';
-import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
-  IconButton, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Toolbar, Typography, Box
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import { styled } from '@mui/system';
-
-const StyledSelect = styled(Box)(({ theme }) => ({
-  '& .select-dropdown': {
-    width: '100%',
-    padding: '10px',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-    fontSize: '16px',
-    marginTop: '8px',
-  },
-}));
-
-const initialStaff = [
-  { id: 1, name: 'John Doe', position: 'Admin' }, // Example role as Admin
-  { id: 2, name: 'Jane Smith', position: 'Staff' },
-];
+import React, { useEffect, useState } from 'react';
+import StaffPage from './StaffPage.styles'; // Import the styled component
 
 const ManageStaffPage = () => {
-  const [staff, setStaff] = useState(initialStaff);
+  const [staff, setStaff] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
-  const [newStaffName, setNewStaffName] = useState('');
-  const [newStaffPosition, setNewStaffPosition] = useState('');
+  const [newStaff, setNewStaff] = useState({ email: '', firstName: '', lastName: '', phone: '', avatar: '', position: '' });
   const [editStaffId, setEditStaffId] = useState(null);
-  const [editStaffName, setEditStaffName] = useState('');
-  const [editStaffPosition, setEditStaffPosition] = useState('');
-  const [selectedRole, setSelectedRole] = useState('');
+  const [editStaff, setEditStaff] = useState({ email: '', firstName: '', lastName: '', phone: '', avatar: '', position: '' });
+  const [pageIndex, setPageIndex] = useState(1);
+  const [pageSize, setPageSize] = useState(2);
+  const [totalCount, setTotalCount] = useState(0);
+  const token = localStorage.getItem('token');
 
-  // Handle role select change
-  const handleSelectChange = (event) => {
-    setSelectedRole(event.target.value);
-  };
+  // Fetch staff data from API
+  useEffect(() => {
+    const fetchStaff = async () => {
+      try {
+        const response = await fetch(`https://bms-fs-api.azurewebsites.net/api/Staff/GetListStaff?search=${searchTerm}&isDesc=true&pageIndex=${pageIndex}&pageSize=${pageSize}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.isSuccess && Array.isArray(data.data.data)) {
+          setStaff(data.data.data);
+          setTotalCount(data.data.total);
+        } else {
+          console.error("Invalid data format:", data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch staff data:", error);
+      }
+    };
+
+    fetchStaff();
+  }, [token, pageIndex, pageSize, searchTerm]);
 
   // Open add staff dialog
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const handleClickOpen = () => setOpen(true);
 
   // Close add staff dialog
   const handleClose = () => {
     setOpen(false);
-    setNewStaffName('');
-    setNewStaffPosition('');
+    setNewStaff({ email: '', firstName: '', lastName: '', phone: '', avatar: '', position: '' });
   };
 
   // Add new staff
   const handleAddStaff = () => {
-    const newStaff = {
-      id: staff.length + 1,
-      name: newStaffName,
-      position: newStaffPosition,
-    };
-    setStaff([...staff, newStaff]);
+    const staffToAdd = { ...newStaff, id: staff.length + 1 };
+    setStaff([...staff, staffToAdd]);
     handleClose();
   };
 
   // Open edit staff dialog
   const handleEditOpen = (staffMember) => {
     setEditStaffId(staffMember.id);
-    setEditStaffName(staffMember.name);
-    setEditStaffPosition(staffMember.position); // Set current role
-    setSelectedRole(staffMember.position); // Set current role
+    setEditStaff({ ...staffMember });
     setEditOpen(true);
   };
 
   // Close edit staff dialog
-  const handleEditClose = () => {
-    setEditOpen(false);
-  };
+  const handleEditClose = () => setEditOpen(false);
 
   // Update staff information
   const handleUpdateStaff = () => {
-    setStaff(staff.map((s) => (s.id === editStaffId ? { ...s, name: editStaffName, position: selectedRole } : s)));
+    setStaff(staff.map((s) => (s.id === editStaffId ? { ...s, ...editStaff } : s)));
     handleEditClose();
   };
 
@@ -88,126 +81,32 @@ const ManageStaffPage = () => {
     setStaff(staff.filter((s) => s.id !== id));
   };
 
+  // Handle page change
+  const handlePageChange = (event, value) => setPageIndex(value);
+
   return (
-    <Box sx={{ padding: 3 }}>
-      <Paper elevation={3} sx={{ padding: 3, borderRadius: '15px', backgroundColor: '#f5f5f5' }}>
-        <Toolbar>
-          <Typography variant="h5" sx={{ flexGrow: 1 }}>
-            Manage Staff
-          </Typography>
-          <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleClickOpen}>
-            Add Staff
-          </Button>
-        </Toolbar>
-
-        <TableContainer sx={{ marginTop: 2 }}>
-          <Table sx={{ minWidth: 650 }} aria-label="staff table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Position</TableCell>
-                <TableCell align="right">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {staff.map((staffMember) => (
-                <TableRow key={staffMember.id}>
-                  <TableCell>{staffMember.name}</TableCell>
-                  <TableCell>{staffMember.position}</TableCell>
-                  <TableCell align="right">
-                    <IconButton color="primary" onClick={() => handleEditOpen(staffMember)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton color="secondary" onClick={() => handleDeleteStaff(staffMember.id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-
-      {/* Add Staff Dialog */}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add New Account</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Staff Name"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newStaffName}
-            onChange={(e) => setNewStaffName(e.target.value)}
-          />
-          <TextField
-            margin="dense"
-            id="position"
-            label="Position"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newStaffPosition}
-            onChange={(e) => setNewStaffPosition(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleAddStaff} color="primary" variant="contained">
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Edit Staff Dialog */}
-      <Dialog open={editOpen} onClose={handleEditClose}>
-        <DialogTitle>Edit Staff</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="edit-name"
-            label="Staff Name"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={editStaffName}
-            onChange={(e) => setEditStaffName(e.target.value)}
-          />
-
-          <StyledSelect item xs={12}>
-            <select id="roles" value={selectedRole} onChange={handleSelectChange} className="select-dropdown">
-              <option value="" disabled>
-                --Please choose an option--
-              </option>
-              <option value="Admin" disabled={editStaffPosition === 'Admin'}>
-                Admin
-              </option>
-              <option value="Shop" disabled={editStaffPosition === 'Shop'}>
-                Shop
-              </option>
-              <option value="Staff" disabled={editStaffPosition === 'Staff'}>
-                Staff
-              </option>
-            </select>
-          </StyledSelect>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleEditClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleUpdateStaff} color="primary" variant="contained">
-            Update
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+    <StaffPage
+      staff={staff}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
+      open={open}
+      handleClickOpen={handleClickOpen}
+      handleClose={handleClose}
+      handleAddStaff={handleAddStaff}
+      editOpen={editOpen}
+      handleEditOpen={handleEditOpen}
+      handleEditClose={handleEditClose}
+      handleUpdateStaff={handleUpdateStaff}
+      handleDeleteStaff={handleDeleteStaff}
+      pageIndex={pageIndex}
+      pageSize={pageSize}
+      totalCount={totalCount}
+      handlePageChange={handlePageChange}
+      newStaff={newStaff}
+      setNewStaff={setNewStaff}
+      editStaff={editStaff}
+      setEditStaff={setEditStaff}
+    />
   );
 };
 

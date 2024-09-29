@@ -18,7 +18,7 @@ export default function ProfilePage() {
     phone: '',
     createDate: '',
     lastUpdateDate: '',
-    role: [],
+    role: '', // Change from array to string to reflect single role
   });
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -46,7 +46,15 @@ export default function ProfilePage() {
 
         if (response.ok) {
           const data = await response.json();
-          setUserData(data.data); // Assuming the user data is in the 'data' field
+          setUserData({
+            firstName: data.data.firstName,
+            lastName: data.data.lastName,
+            avatar: data.data.avatar,
+            phone: data.data.phone,
+            createDate: data.data.createDate,
+            lastUpdateDate: data.data.lastUpdateDate,
+            role: data.data.role, 
+          });
         } else {
           console.error('Failed to fetch profile data');
         }
@@ -94,8 +102,7 @@ export default function ProfilePage() {
       const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Account', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`, // Add token to the header
-          // Do NOT set 'Content-Type' here; the browser will set it automatically for FormData
+          'Authorization': `Bearer ${token}`, 
         },
         body: formData,
       });
@@ -138,7 +145,7 @@ export default function ProfilePage() {
 
         <NameTypography variant="h5">{`${userData.firstName} ${userData.lastName}`}</NameTypography>
         <RoleTypography variant="subtitle1" color="textSecondary">
-          Role: {userData.role.join(', ')}
+          Role: {userData.role} {/* Displaying single role */}
         </RoleTypography>
 
         <StyledList>
@@ -185,7 +192,7 @@ export default function ProfilePage() {
             />
             <input
               type="file"
-              onChange={(e) => setSelectedFile(e.target.files[0])} // Capture selected file
+              onChange={(e) => setSelectedFile(e.target.files[0])} 
             />
           </DialogContent>
           <DialogActions>
