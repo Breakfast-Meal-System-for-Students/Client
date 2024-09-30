@@ -1,113 +1,110 @@
-import React, { useEffect, useState } from 'react';
-import StaffPage from './StaffPage.styles'; // Import the styled component
+import React, { useState, useEffect } from 'react';
+import StaffPageContainer from './StaffPageContainer.styles.jsx'; // Importing the styled component
+import axios from 'axios';
 
-const ManageStaffPage = () => {
+const StaffPageContainer = () => {
   const [staff, setStaff] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [open, setOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
-  const [newStaff, setNewStaff] = useState({ email: '', firstName: '', lastName: '', phone: '', avatar: '', position: '' });
-  const [editStaffId, setEditStaffId] = useState(null);
-  const [editStaff, setEditStaff] = useState({ email: '', firstName: '', lastName: '', phone: '', avatar: '', position: '' });
+  const [newStaff, setNewStaff] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+  });
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(2);
+  const [pageSize] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
-  const token = localStorage.getItem('token');
+  const [confirmOpen, setConfirmOpen] = useState(false); // State for confirmation dialog
+  const [staffToDelete, setStaffToDelete] = useState(null); // State to hold the staff ID to delete
 
   // Fetch staff data from API
+  const fetchStaff = async () => {
+    try {
+      const response = await axios.get(`/api/staff?searchTerm=${searchTerm}&page=${pageIndex}&pageSize=${pageSize}`);
+      setStaff(response.data.data); // Assuming response has staff list in 'data'
+      setTotalCount(response.data.totalCount);
+    } catch (error) {
+      console.error('Error fetching staff:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchStaff = async () => {
-      try {
-        const response = await fetch(`https://bms-fs-api.azurewebsites.net/api/Staff/GetListStaff?search=${searchTerm}&isDesc=true&pageIndex=${pageIndex}&pageSize=${pageSize}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        if (data.isSuccess && Array.isArray(data.data.data)) {
-          setStaff(data.data.data);
-          setTotalCount(data.data.total);
-        } else {
-          console.error("Invalid data format:", data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch staff data:", error);
-      }
-    };
-
     fetchStaff();
-  }, [token, pageIndex, pageSize, searchTerm]);
+  }, [searchTerm, pageIndex]);
 
-  // Open add staff dialog
-  const handleClickOpen = () => setOpen(true);
+  // Add new staff member
+  const handleAddStaff = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('firstName', newStaff.firstName);
+      formData.append('lastName', newStaff.lastName);
+      formData.append('email', newStaff.email);
 
-  // Close add staff dialog
-  const handleClose = () => {
-    setOpen(false);
-    setNewStaff({ email: '', firstName: '', lastName: '', phone: '', avatar: '', position: '' });
+      await axios.post('https://bms-fs-api.azurewebsites.net/api/Staff', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer <your_token_here>`, // Replace with your actual token
+        },
+      });
+
+      setOpen(false);
+      setNewStaff({ firstName: '', lastName: '', email: '' });
+      fetchStaff(); // Refetch updated staff list
+    } catch (error) {
+      console.error("Error adding staff:", error);
+    }
   };
 
-  // Add new staff
-  const handleAddStaff = () => {
-    const staffToAdd = { ...newStaff, id: staff.length + 1 };
-    setStaff([...staff, staffToAdd]);
-    handleClose();
+  // Delete a staff member
+  const handleDeleteStaff = async (id) => {
+    try {
+      await axios.delete(`https://bms-fs-api.azurewebsites.net/api/Staff?id=${id}`, {
+        headers: {
+          Authorization: `Bearer <your_token_here>`, // Replace with your actual token
+        },
+      });
+
+      fetchStaff(); // Refetch the updated staff list after deletion
+      setStaffToDelete(null); // Resetting staffToDelete after deletion
+    } catch (error) {
+      console.error("Error deleting staff:", error);
+    }
   };
 
-  // Open edit staff dialog
-  const handleEditOpen = (staffMember) => {
-    setEditStaffId(staffMember.id);
-    setEditStaff({ ...staffMember });
-    setEditOpen(true);
+  // Open confirmation dialog
+  const handleConfirmDelete = (id) => {
+    setStaffToDelete(id); // Set the staff ID to delete
+    setConfirmOpen(true); // Open confirmation dialog
   };
 
-  // Close edit staff dialog
-  const handleEditClose = () => setEditOpen(false);
-
-  // Update staff information
-  const handleUpdateStaff = () => {
-    setStaff(staff.map((s) => (s.id === editStaffId ? { ...s, ...editStaff } : s)));
-    handleEditClose();
+  // Confirm deletion
+  const confirmDelete = () => {
+    if (staffToDelete) {
+      handleDeleteStaff(staffToDelete); // Delete the staff member
+      setConfirmOpen(false); // Close confirmation dialog
+    }
   };
-
-  // Delete staff
-  const handleDeleteStaff = (id) => {
-    setStaff(staff.filter((s) => s.id !== id));
-  };
-
-  // Handle page change
-  const handlePageChange = (event, value) => setPageIndex(value);
 
   return (
-    <StaffPage
+    <StaffPageContainer
       staff={staff}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
       open={open}
-      handleClickOpen={handleClickOpen}
-      handleClose={handleClose}
+      handleClickOpen={() => setOpen(true)}
+      handleClose={() => setOpen(false)}
       handleAddStaff={handleAddStaff}
-      editOpen={editOpen}
-      handleEditOpen={handleEditOpen}
-      handleEditClose={handleEditClose}
-      handleUpdateStaff={handleUpdateStaff}
-      handleDeleteStaff={handleDeleteStaff}
+      handleConfirmDelete={handleConfirmDelete} // Pass the confirm function
+      confirmOpen={confirmOpen} // Pass confirmation dialog state
+      confirmDelete={confirmDelete} // Pass confirm deletion function
+      setConfirmOpen={setConfirmOpen} // Pass function to set confirm dialog state
       pageIndex={pageIndex}
       pageSize={pageSize}
       totalCount={totalCount}
-      handlePageChange={handlePageChange}
       newStaff={newStaff}
       setNewStaff={setNewStaff}
-      editStaff={editStaff}
-      setEditStaff={setEditStaff}
     />
   );
 };
 
-export default ManageStaffPage;
+export default StaffPageContainer;

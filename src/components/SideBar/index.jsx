@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   Drawer,
@@ -36,14 +37,14 @@ const drawerWidth = 240;
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
 
-  let sidebarItems = [
-    { text: "Dashboard", icon: <HomeIcon />, path: "/" },
-    { text: "Staff", icon: <AnalyticsIcon />, path: "/manage-staff" },
-    { text: "Customer", icon: <PersonIcon />, path: "/customer-profile" },
-    { text: "Orders", icon: <ConfirmationNumberIcon />, path: "/orders" },
-    { text: "Profile", icon: <PortraitIcon />, path: "/profile" },
+  const {user} = useAuth();
+  let sidebarItems =  [
+    { text: 'Dashboard', icon: <HomeIcon />, path: "/" },
+    { text: 'Staff', icon: <AnalyticsIcon />, path: "/manage-staff" },
+    { text: 'Customer', icon: <PersonIcon />, path: "/customer-profile" },
+    { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/orders" },
+    { text: 'Profile', icon: <PortraitIcon />, path: "/profile" },
   ];
 
   if (user && user.role.includes("Staff")) {
@@ -73,6 +74,7 @@ const Sidebar = () => {
 
   const handleLogout = async () => {
     try {
+
       const response = await fetch(
         "https://bms-fs-api.azurewebsites.net/api/Auth/logout",
         {
@@ -81,6 +83,7 @@ const Sidebar = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
+
         }
       );
 

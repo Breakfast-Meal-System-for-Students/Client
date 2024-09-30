@@ -12,9 +12,11 @@ import EditCategory from "./pages/Category/EditCategory.js";
 import AddCategory from "./pages/Category/AddCategory.js";
 import ShopApplication from "./pages/ShopApplication/ShopApplication.js";
 import DetailApplication from "./pages/DetailApplication/DetailApplication.js";
+
+
+
 import DashboardPage from "./pages/DashboardPage/index.jsx";
-import ManageStaffPage from "./pages/StaffPage/index.jsx";
-import CustomerProfilePage from "./pages/CustomerPage/index.jsx";
+import CustomerDetails from "./pages/CustomerPage/index.jsx";
 import OrdersPage from "./pages/OrderPage/index.jsx";
 import LoginPage from "./pages/LoginPage/index.jsx";
 import RegisterPage from "./pages/RegisterPage/index.jsx";
@@ -25,6 +27,8 @@ import ShopPage from "./pages/ShopPage/index.jsx"; // Sửa tên chính xác
 import ProfilePage from "./pages/ProfilePage/index.jsx";
 import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
 
+import Menu from  "./pages/MenuPage/MenuPage.jsx";
+import StaffPageContainer from "./pages/StaffPage/StaffPageContainer.styles.jsx";
 function App() {
   return (
     <AuthProvider>
@@ -47,39 +51,20 @@ function App() {
             />
             <Route
               path="/manage-staff"
-              element={
-                <ProtectedRoute
-                  element={<ManageStaffPage />}
-                  requiredRole={"Admin"}
-                />
-              }
+
+              element={<ProtectedRoute element={<StaffPageContainer />} requiredRole={"Admin"} />}
             />
             <Route
               path="/customer-profile"
-              element={
-                <ProtectedRoute
-                  element={<CustomerProfilePage />}
-                  requiredRole={"Admin"}
-                />
-              }
+              element={<ProtectedRoute element={<CustomerDetails />} requiredRole={"Admin"} />}
             />
             <Route
               path="/orders"
-              element={
-                <ProtectedRoute
-                  element={<OrdersPage />}
-                  requiredRole={"Admin"}
-                />
-              }
+              element={<ProtectedRoute element={<OrdersPage />} requiredRole={"Admin"} />}
             />
             <Route
-              path="/profile"
-              element={
-                <ProtectedRoute
-                  element={<ProfilePage />}
-                  requiredRole={"Admin"}
-                />
-              }
+              path="/profile" 
+              element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Admin"} />}
             />
           </Route>
 
@@ -101,13 +86,10 @@ function App() {
               }
             />
             <Route
-              path="/profile"
-              element={
-                <ProtectedRoute
-                  element={<ProfilePage />}
-                  requiredRole={"Shop"}
-                />
-              }
+
+              path="/profile" 
+              element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
+
             />
             <Route
               path="/shop-application"
