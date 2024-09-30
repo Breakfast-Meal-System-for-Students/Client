@@ -34,6 +34,7 @@ const StaffPageContainer = ({
   totalCount,
   newStaff,
   setNewStaff,
+  setPageIndex, // Đảm bảo rằng bạn đã truyền setPageIndex
 }) => {
   return (
     <div>
