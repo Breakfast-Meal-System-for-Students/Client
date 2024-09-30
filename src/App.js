@@ -5,7 +5,6 @@ import Setting from "./components/Setting";
 import Account from "./components/Account";
 import CRUDCategory from "./components/CRUDCategory";
 import Feedback from "./components/Feedback";
-import Sidebar from "./components/Sidebar";
 import SendFeedbackPage from "./components/SendFeedbackPage";
 import ShopDetails from "./components/ShopDetails";
 import EditCategory from "./components/EditCategory";
@@ -13,7 +12,6 @@ import AddCategory from "./components/AddCategory";
 import ShopApplication from "./components/ShopApplication";
 import DetailApplication from "./components/DetailApplication";
 import DashboardPage from "./pages/DashboardPage/index.jsx";
-import ManageStaffPage from "./pages/StaffPage/index.jsx";
 import CustomerDetails from "./pages/CustomerPage/index.jsx";
 import OrdersPage from "./pages/OrderPage/index.jsx";
 import LoginPage from "./pages/LoginPage/index.jsx";
@@ -21,11 +19,11 @@ import RegisterPage from "./pages/RegisterPage/index.jsx";
 import { AuthProvider } from "./auth/AuthContext";
 import ProtectedRoute from "./ProtectedRoute.js";
 import MainLayout from "./components/MainLayout/index.jsx";
-import AdminPage from "./pages/StaffPage/index.jsx";
 import ShopPage from "./pages/ShopPage/index.jsx";
 import ProfilePage from "./pages/ProfilePage/index.jsx";
 import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
 import Menu from  "./pages/MenuPage/MenuPage.jsx";
+import StaffPageContainer from "./pages/StaffPage/StaffPageContainer.styles.jsx";
 function App() {
   return (
     <AuthProvider>
@@ -43,7 +41,7 @@ function App() {
             />
             <Route
               path="/manage-staff"
-              element={<ProtectedRoute element={<ManageStaffPage />} requiredRole={"Admin"} />}
+              element={<ProtectedRoute element={<StaffPageContainer />} requiredRole={"Admin"} />}
             />
             <Route
               path="/customer-profile"
@@ -52,9 +50,6 @@ function App() {
             <Route
               path="/orders"
               element={<ProtectedRoute element={<OrdersPage />} requiredRole={"Admin"} />}
-            />
-            <Route
-              path="/admin"
             />
             <Route
               path="/profile" 
