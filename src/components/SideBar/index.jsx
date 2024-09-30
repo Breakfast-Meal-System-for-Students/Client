@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   Drawer,
@@ -32,6 +31,7 @@ import {
 } from "react-icons/fa"; // Import react-icons
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
+import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
 
 const drawerWidth = 240;
 

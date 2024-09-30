@@ -3,7 +3,7 @@ import StaffPageContainer from './StaffPageContainer.styles.jsx'; // Importing t
 import axios from 'axios';
 
 const StaffPageContainer = () => {
-  const [staff, setStaff] = useState([]);
+  const [staff, setStaff] = useState([]); // Khởi tạo staff là một mảng rỗng
   const [searchTerm, setSearchTerm] = useState('');
   const [open, setOpen] = useState(false);
   const [newStaff, setNewStaff] = useState({
@@ -21,7 +21,7 @@ const StaffPageContainer = () => {
   const fetchStaff = async () => {
     try {
       const response = await axios.get(`/api/staff?searchTerm=${searchTerm}&page=${pageIndex}&pageSize=${pageSize}`);
-      setStaff(response.data.data); // Assuming response has staff list in 'data'
+      setStaff(response.data.data || []); // Đảm bảo rằng staff luôn là một mảng
       setTotalCount(response.data.totalCount);
     } catch (error) {
       console.error('Error fetching staff:', error);
@@ -86,24 +86,15 @@ const StaffPageContainer = () => {
   };
 
   return (
-    <StaffPageContainer
-      staff={staff}
-      searchTerm={searchTerm}
-      setSearchTerm={setSearchTerm}
-      open={open}
-      handleClickOpen={() => setOpen(true)}
-      handleClose={() => setOpen(false)}
-      handleAddStaff={handleAddStaff}
-      handleConfirmDelete={handleConfirmDelete} // Pass the confirm function
-      confirmOpen={confirmOpen} // Pass confirmation dialog state
-      confirmDelete={confirmDelete} // Pass confirm deletion function
-      setConfirmOpen={setConfirmOpen} // Pass function to set confirm dialog state
-      pageIndex={pageIndex}
-      pageSize={pageSize}
-      totalCount={totalCount}
-      newStaff={newStaff}
-      setNewStaff={setNewStaff}
-    />
+    <div>
+      {Array.isArray(staff) && staff.length > 0 ? (
+        staff.map((member) => (
+          <div key={member.id}>{member.firstName} {member.lastName}</div>
+        ))
+      ) : (
+        <div>No staff members found.</div>
+      )}
+    </div>
   );
 };
 
