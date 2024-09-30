@@ -45,7 +45,7 @@ const AddCategory = () => {
       if (response.data.isSuccess) {
         // Show success message
         alert("Thêm danh mục thành công!"); // Alert message in Vietnamese
-        navigate("/crud-category"); // Redirect to crud-category page after successful addition
+        navigate("/category"); // Redirect to crud-category page after successful addition
       } else {
         setError("Có lỗi xảy ra khi thêm danh mục");
       }
