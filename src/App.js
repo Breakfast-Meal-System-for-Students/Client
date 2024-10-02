@@ -22,7 +22,7 @@ import MainLayout from "./components/MainLayout/index.jsx";
 import ShopPage from "./pages/ShopPage/index.jsx";
 import ProfilePage from "./pages/ProfilePage/index.jsx";
 import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
-import Menu from  "./pages/MenuPage/MenuPage.jsx";
+import Menu from "./pages/MenuPage/MenuPage.jsx";
 import StaffPageContainer from "./pages/StaffPage/StaffPageContainer.styles.jsx";
 function App() {
   return (
@@ -52,9 +52,15 @@ function App() {
               element={<ProtectedRoute element={<OrdersPage />} requiredRole={"Admin"} />}
             />
             <Route
-              path="/profile" 
+              path="/profile"
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Admin"} />}
             />
+
+            <Route
+              path="/Feedback"
+              element={<ProtectedRoute element={<FeedbackPage />} requiredRole={"Admin"} />}
+            />
+
           </Route>
 
           {/* Shop Routes */}
@@ -63,20 +69,17 @@ function App() {
               path="/ShopPage"
               element={<ProtectedRoute element={<ShopPage />} requiredRole={"Shop"} />}
             />
+
             <Route
-              path="/Feedback"
-              element={<ProtectedRoute element={<FeedbackPage />} requiredRole={"Shop"} />}
-            />
-            <Route
-              path="/profile" 
+              path="/profile"
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
             />
             <Route
-              path="/Menu" 
+              path="/Menu"
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
             />
           </Route>
-            
+
 
           {/* Staff Routes */}
           <Route element={<MainLayout />}>

@@ -26,6 +26,7 @@ const Sidebar = () => {
     { text: 'Customer', icon: <PersonIcon />, path: "/customer-profile" },
     { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/orders" },
     { text: 'Profile', icon: <PortraitIcon />, path: "/profile" },
+    { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/Feedback" },
   ];
 
   if (user && user.role.includes("Staff")) {
@@ -37,7 +38,6 @@ const Sidebar = () => {
     sidebarItems = [
       { text: 'Voucher', icon: <ConfirmationNumberIcon />, path: "/orders" },
       { text: 'Breakfast-Menu', icon: <RestaurantMenuIcon />, path: "/orders" },
-      { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/Feedback" },
       { text: 'Package', icon: <Inventory2OutlinedIcon />, path: "/orders" },
       { text: 'Location', icon: <FmdGoodOutlinedIcon />, path: "/orders" },
       { text: 'Profile', icon: <PortraitIcon />, path: "/profile" },

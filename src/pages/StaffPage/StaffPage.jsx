@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import StaffPageContainer from './StaffPageContainer.styles.jsx'; // Importing the styled component
 import axios from 'axios';
 
-const StaffPageContainer = () => {
+const StaffPage = () => {
   const [staff, setStaff] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [open, setOpen] = useState(false);
@@ -12,7 +12,7 @@ const StaffPageContainer = () => {
     email: '',
   });
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(5); // Set to 5 according to your API requirements
   const [totalCount, setTotalCount] = useState(0);
   const [confirmOpen, setConfirmOpen] = useState(false); // State for confirmation dialog
   const [staffToDelete, setStaffToDelete] = useState(null); // State to hold the staff ID to delete
@@ -20,11 +20,12 @@ const StaffPageContainer = () => {
   // Fetch staff data from API
   const fetchStaff = async () => {
     try {
-      const response = await axios.get(`/api/staff?searchTerm=${searchTerm}&page=${pageIndex}&pageSize=${pageSize}`);
+      const response = await axios.get(`https://bms-fs-api.azurewebsites.net/api/Staff/GetListStaff?search=${searchTerm}&pageIndex=${pageIndex}&pageSize=${pageSize}`);
       setStaff(response.data.data); // Assuming response has staff list in 'data'
-      setTotalCount(response.data.totalCount);
+      setTotalCount(response.data.total); // Set total count from the response
     } catch (error) {
       console.error('Error fetching staff:', error);
+      alert("Failed to fetch staff data. Please check your API.");
     }
   };
 
@@ -91,20 +92,21 @@ const StaffPageContainer = () => {
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
       open={open}
-      handleClickOpen={() => setOpen(true)}
-      handleClose={() => setOpen(false)}
+      handleClickOpen={() => setOpen(true)} // Set to true to open dialog
+      handleClose={() => setOpen(false)} // Set to false to close dialog
       handleAddStaff={handleAddStaff}
-      handleConfirmDelete={handleConfirmDelete} // Pass the confirm function
-      confirmOpen={confirmOpen} // Pass confirmation dialog state
-      confirmDelete={confirmDelete} // Pass confirm deletion function
-      setConfirmOpen={setConfirmOpen} // Pass function to set confirm dialog state
+      handleConfirmDelete={handleConfirmDelete}
+      confirmOpen={confirmOpen}
+      confirmDelete={confirmDelete}
+      setConfirmOpen={setConfirmOpen}
       pageIndex={pageIndex}
       pageSize={pageSize}
       totalCount={totalCount}
       newStaff={newStaff}
       setNewStaff={setNewStaff}
+      setPageIndex={setPageIndex} // Make sure to include setPageIndex here
     />
   );
 };
 
-export default StaffPageContainer;
+export default StaffPage;
