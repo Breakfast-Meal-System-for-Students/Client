@@ -82,10 +82,10 @@ function App() {
                 <ProtectedRoute element={<ShopPage />} requiredRole={"Shop"} />
               }
             />
-            <Route
+            {/* <Route
               path="/Feedback"
               element={<ProtectedRoute element={<FeedbackPage />} requiredRole={"Shop"} />}
-            />
+            /> */}
             <Route
               path="/profile" 
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
