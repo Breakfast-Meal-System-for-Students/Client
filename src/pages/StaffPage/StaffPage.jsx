@@ -20,9 +20,9 @@ const StaffPage = () => {
   // Fetch staff data from API
   const fetchStaff = async () => {
     try {
-      const response = await axios.get(`https://bms-fs-api.azurewebsites.net/api/Staff/GetListStaff?search=${searchTerm}&pageIndex=${pageIndex}&pageSize=${pageSize}`);
+      const response = await axios.get(`/api/staff?searchTerm=${searchTerm}&page=${pageIndex}&pageSize=${pageSize}`);
       setStaff(response.data.data); // Assuming response has staff list in 'data'
-      setTotalCount(response.data.total); // Set total count from the response
+      setTotalCount(response.data.totalCount);
     } catch (error) {
       console.error('Error fetching staff:', error);
       alert("Failed to fetch staff data. Please check your API.");
@@ -92,19 +92,18 @@ const StaffPage = () => {
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
       open={open}
-      handleClickOpen={() => setOpen(true)} // Set to true to open dialog
-      handleClose={() => setOpen(false)} // Set to false to close dialog
+      handleClickOpen={() => setOpen(true)}
+      handleClose={() => setOpen(false)}
       handleAddStaff={handleAddStaff}
-      handleConfirmDelete={handleConfirmDelete}
-      confirmOpen={confirmOpen}
-      confirmDelete={confirmDelete}
-      setConfirmOpen={setConfirmOpen}
+      handleConfirmDelete={handleConfirmDelete} // Pass the confirm function
+      confirmOpen={confirmOpen} // Pass confirmation dialog state
+      confirmDelete={confirmDelete} // Pass confirm deletion function
+      setConfirmOpen={setConfirmOpen} // Pass function to set confirm dialog state
       pageIndex={pageIndex}
       pageSize={pageSize}
       totalCount={totalCount}
       newStaff={newStaff}
       setNewStaff={setNewStaff}
-      setPageIndex={setPageIndex} // Make sure to include setPageIndex here
     />
   );
 };

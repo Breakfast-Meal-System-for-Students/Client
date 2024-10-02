@@ -1,16 +1,20 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import HomeStaff from "./components/HomeStaff";
-import Setting from "./components/Setting";
-import Account from "./components/Account";
-import CRUDCategory from "./components/CRUDCategory";
-import Feedback from "./components/Feedback";
-import SendFeedbackPage from "./components/SendFeedbackPage";
-import ShopDetails from "./components/ShopDetails";
-import EditCategory from "./components/EditCategory";
-import AddCategory from "./components/AddCategory";
-import ShopApplication from "./components/ShopApplication";
-import DetailApplication from "./components/DetailApplication";
+import HomeStaff from "./pages/HomeStaff/HomeStaff.js";
+import Setting from "./pages/Setting/Setting.js";
+
+import Category from "./pages/Category/Category.js";
+import Feedback from "./pages/Feedback/Feedback.js";
+// import Sidebar from "./components/Sidebar";
+import SendFeedbackPage from "./pages/Feedback/SendFeedbackPage.js";
+import ShopDetails from "./pages/ShopDetails/ShopDetails.js";
+import EditCategory from "./pages/Category/EditCategory.js";
+import AddCategory from "./pages/Category/AddCategory.js";
+import ShopApplication from "./pages/ShopApplication/ShopApplication.js";
+import DetailApplication from "./pages/DetailApplication/DetailApplication.js";
+
+
+
 import DashboardPage from "./pages/DashboardPage/index.jsx";
 import CustomerDetails from "./pages/CustomerPage/index.jsx";
 import OrdersPage from "./pages/OrderPage/index.jsx";
@@ -19,10 +23,11 @@ import RegisterPage from "./pages/RegisterPage/index.jsx";
 import { AuthProvider } from "./auth/AuthContext";
 import ProtectedRoute from "./ProtectedRoute.js";
 import MainLayout from "./components/MainLayout/index.jsx";
-import ShopPage from "./pages/ShopPage/index.jsx";
+import ShopPage from "./pages/ShopPage/index.jsx"; // Sửa tên chính xác
 import ProfilePage from "./pages/ProfilePage/index.jsx";
 import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
-import Menu from "./pages/MenuPage/MenuPage.jsx";
+
+import Menu from  "./pages/MenuPage/MenuPage.jsx";
 import StaffPageContainer from "./pages/StaffPage/StaffPageContainer.styles.jsx";
 function App() {
   return (
@@ -36,11 +41,17 @@ function App() {
           {/* Admin Routes */}
           <Route element={<MainLayout />} path="/">
             <Route
-              path="/"
-              element={<ProtectedRoute element={<DashboardPage />} requiredRole={"Admin"} />}
+              path="/admin"
+              element={
+                <ProtectedRoute
+                  element={<DashboardPage />}
+                  requiredRole={"Admin"}
+                />
+              }
             />
             <Route
               path="/manage-staff"
+
               element={<ProtectedRoute element={<StaffPageContainer />} requiredRole={"Admin"} />}
             />
             <Route
@@ -66,41 +77,109 @@ function App() {
           {/* Shop Routes */}
           <Route element={<MainLayout />} path="/">
             <Route
-              path="/ShopPage"
-              element={<ProtectedRoute element={<ShopPage />} requiredRole={"Shop"} />}
+              path="/shop"
+              element={
+                <ProtectedRoute element={<ShopPage />} requiredRole={"Shop"} />
+              }
             />
-
             <Route
-              path="/profile"
+              path="/Feedback"
+              element={<ProtectedRoute element={<FeedbackPage />} requiredRole={"Shop"} />}
+            />
+            <Route
+              path="/profile" 
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
+
             />
             <Route
-              path="/Menu"
+              path="/Menu" 
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
             />
           </Route>
-
+            
 
           {/* Staff Routes */}
           <Route element={<MainLayout />}>
-            <Route path="/home-staff" element={<HomeStaff />} />
-            <Route element={<ProtectedRoute requiredRole={"Staff"} />}>
-              <Route path="/setting" element={<Setting />} />
-              <Route path="/account" element={<Account />} />
-              <Route path="/crud-category" element={<CRUDCategory />} />
-              <Route path="/edit-category/:id" element={<EditCategory />} />
-              <Route path="/add-category" element={<AddCategory />} />
-              <Route path="/feedback" element={<Feedback />} />
-              <Route path="/send-feedback" element={<SendFeedbackPage />} />
-              <Route path="/shop-application" element={<ShopApplication />} />
-            </Route>
+            <Route
+              path="/home-staff"
+              element={
+                <ProtectedRoute
+                  element={<HomeStaff />}
+                  requiredRole={"Staff"}
+                />
+              }
+            />
+
+            <Route
+              path="/category"
+              element={
+                <ProtectedRoute element={<Category />} requiredRole={"Staff"} />
+              }
+            />
+            <Route
+              path="/feedback"
+              element={
+                <ProtectedRoute element={<Feedback />} requiredRole={"Staff"} />
+              }
+            />
+            <Route
+              path="/setting"
+              element={
+                <ProtectedRoute element={<Setting />} requiredRole={"Staff"} />
+              }
+            />
+            <Route
+              path="/shop-application"
+              element={
+                <ProtectedRoute
+                  element={<ShopApplication />}
+                  requiredRole={"Staff"}
+                />
+              }
+            />
+            <Route
+              path="/sendFeedbackPage"
+              element={
+                <ProtectedRoute
+                  element={<SendFeedbackPage />}
+                  requiredRole={"Staff"}
+                />
+              }
+            />
+            <Route
+              path="/edit-category"
+              element={
+                <ProtectedRoute
+                  element={<EditCategory />}
+                  requiredRole={"Staff"}
+                />
+              }
+            />
+            <Route
+              path="/edit-category/:id"
+              element={
+                <ProtectedRoute
+                  element={<EditCategory />}
+                  requiredRole={"Staff"}
+                />
+              }
+            />
+            <Route
+              path="/add-category"
+              element={
+                <ProtectedRoute
+                  element={<AddCategory />}
+                  requiredRole={"Staff"}
+                />
+              }
+            />
           </Route>
 
-          {/* Shop Routes */}
-
-
           {/* General Routes */}
-          <Route path="/detail-application/:id" element={<DetailApplication />} />
+          <Route
+            path="/detail-application/:id"
+            element={<DetailApplication />}
+          />
           <Route path="/shop/:id" element={<ShopDetails />} />
         </Routes>
       </Router>

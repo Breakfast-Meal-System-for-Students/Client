@@ -4,42 +4,48 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useNavigate } from "react-router-dom";
 
 const CRUDCategory = () => {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1); // Mặc định pageIndex = 1
-  const [categoriesPerPage, setCategoriesPerPage] = useState(1); // Mặc định pageSize = 1
-  const navigate = useNavigate();
+  const [categories, setCategories] = useState([]); // Danh sách categories
+  const [loading, setLoading] = useState(true); // Trạng thái loading
+  const [searchTerm, setSearchTerm] = useState(""); // Từ khóa tìm kiếm
+  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+  const [categoriesPerPage] = useState(5); // Số lượng categories trên mỗi trang
+  const [totalCategories, setTotalCategories] = useState(0); // Tổng số lượng categories để phân trang
+  const navigate = useNavigate(); // Điều hướng sử dụng useNavigate
 
-  // Fetch categories từ API
+  // Lấy dữ liệu từ API với phân trang và tìm kiếm
   useEffect(() => {
     const fetchCategories = async () => {
+      setLoading(true); // Bật trạng thái loading
       try {
         const response = await axios.get(
-          `https://bms-fs-api.azurewebsites.net/api/Category?pageSize=${categoriesPerPage}&pageIndex=${currentPage}`
+          `https://bms-fs-api.azurewebsites.net/api/Category?pageIndex=${currentPage}&pageSize=${categoriesPerPage}&search=${encodeURIComponent(
+            searchTerm
+          )}`
         );
 
         if (response.data.isSuccess) {
-          setCategories(response.data.data.data);
+          setCategories(response.data.data.data); // Lưu danh sách categories
+          setTotalCategories(response.data.data.total); // Lưu tổng số lượng categories
         }
-        setLoading(false);
       } catch (error) {
         console.error(error);
-        setLoading(false);
+      } finally {
+        setLoading(false); // Tắt trạng thái loading
       }
     };
-    fetchCategories();
-  }, [categoriesPerPage, currentPage]); // Cập nhật khi categoriesPerPage hoặc currentPage thay đổi
 
-  // Hàm xử lý edit category
+    fetchCategories(); // Gọi hàm fetchCategories
+  }, [searchTerm, currentPage]); // Cập nhật khi từ khóa tìm kiếm hoặc trang thay đổi
+
+  // Hàm xử lý chỉnh sửa category
   const handleEdit = (id) => {
     navigate(`/edit-category/${id}`);
   };
 
-  // Hàm xử lý delete category
+  // Hàm xử lý xóa category
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(
+      await axios.delete(
         `https://bms-fs-api.azurewebsites.net/api/Category/${id}`,
         {
           headers: {
@@ -47,41 +53,23 @@ const CRUDCategory = () => {
           },
         }
       );
-      if (response.status === 200) {
-        setCategories((prevCategories) =>
-          prevCategories.filter((category) => category.id !== id)
-        );
-      }
+      setCategories((prevCategories) =>
+        prevCategories.filter((category) => category.id !== id)
+      ); // Loại bỏ category đã xóa khỏi danh sách
     } catch (error) {
       console.error("Error deleting category:", error);
     }
   };
 
-  // Điều hướng tới trang thêm category
+  // Hàm điều hướng tới trang thêm category
   const handleAddCategory = () => {
     navigate("/add-category");
   };
 
-  // Lọc category theo từ khóa tìm kiếm
-  const filteredCategories = Array.isArray(categories)
-    ? categories.filter(
-        (category) =>
-          category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          category.description.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : [];
-
-  // Phân trang category
-  const indexOfLastCategory = currentPage * categoriesPerPage;
-  const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
-  const currentCategories = filteredCategories.slice(
-    indexOfFirstCategory,
-    indexOfLastCategory
-  );
-
-  // Hàm phân trang
+  // Hàm xử lý phân trang
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // Hiển thị trạng thái loading khi đang tải dữ liệu
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -89,13 +77,17 @@ const CRUDCategory = () => {
   return (
     <div className="category-list-container">
       <div className="header-container">
+        {/* Tìm kiếm */}
         <div className="search-container">
           <input
             type="text"
             className="search-input"
             placeholder="Search categories..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value); // Cập nhật từ khóa tìm kiếm
+              setCurrentPage(1); // Reset về trang đầu tiên khi thay đổi tìm kiếm
+            }}
           />
           <button className="search-button">
             <i className="fas fa-search"></i>
@@ -106,6 +98,7 @@ const CRUDCategory = () => {
         </button>
       </div>
 
+      {/* Bảng danh sách categories */}
       <table className="category-table">
         <thead>
           <tr>
@@ -115,7 +108,7 @@ const CRUDCategory = () => {
           </tr>
         </thead>
         <tbody>
-          {currentCategories.map((category) => (
+          {categories.map((category) => (
             <tr key={category.id}>
               <td>
                 <div className="category-name">
@@ -150,7 +143,7 @@ const CRUDCategory = () => {
       {/* Pagination */}
       <div className="pagination">
         {Array.from(
-          { length: Math.ceil(filteredCategories.length / categoriesPerPage) },
+          { length: Math.ceil(totalCategories / categoriesPerPage) },
           (_, i) => (
             <button
               key={i + 1}

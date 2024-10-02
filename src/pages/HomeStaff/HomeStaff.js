@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import CRUDCategory from "./CRUDCategory";
-import Feedback from "./Feedback";
+import CRUDCategory from "../Category/Category";
+import Feedback from "../Feedback/Feedback";
 
 const HomeStaff = () => {
   const [categories, setCategories] = useState([]);
