@@ -1,14 +1,7 @@
 import React from "react";
 import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  Toolbar,
-  Typography,
-  Box,
+  Drawer, List, ListItem, ListItemIcon, ListItemText, Divider,
+  Toolbar, Typography, Box
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
@@ -23,11 +16,7 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import {
-  FaHome,
-  FaFileAlt,
-  FaListAlt,
-  FaComments,
-  FaCog,
+  FaHome, FaFileAlt, FaListAlt, FaComments, FaCog,
 } from "react-icons/fa"; // Import react-icons
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
@@ -37,35 +26,32 @@ const drawerWidth = 240;
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const {user} = useAuth();
-  let sidebarItems =  [
+  // Default sidebar items
+  let sidebarItems = [
     { text: 'Dashboard', icon: <HomeIcon />, path: "/" },
     { text: 'Staff', icon: <AnalyticsIcon />, path: "/manage-staff" },
+    { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/Feedback" },
     { text: 'Customer', icon: <PersonIcon />, path: "/customer-profile" },
     { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/orders" },
     { text: 'Profile', icon: <PortraitIcon />, path: "/profile" },
-    { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/Feedback" },
   ];
 
-  if (user && user.role.includes("Staff")) {
+  // Ensure user and user.role are defined before using them
+  if (user && user.role && user.role.includes("Staff")) {
     sidebarItems = [
       { text: "HomeStaff", icon: <FaHome />, path: "/home-staff" },
-
       { text: "Category", icon: <FaListAlt />, path: "/category" },
       { text: "Feedback", icon: <FaComments />, path: "/feedback" },
       { text: "Settings", icon: <FaCog />, path: "/setting" },
-      {
-        text: "Shop Application",
-        icon: <FaListAlt />,
-        path: "/shop-application",
-      },
+      { text: "Shop Application", icon: <FaListAlt />, path: "/shop-application" },
       { text: "Profile", icon: <PortraitIcon />, path: "/profile" },
     ];
-  } else if (user && user.role.includes("Shop")) {
+  } else if (user && user.role && user.role.includes("Shop")) {
     sidebarItems = [
       { text: "Voucher", icon: <ConfirmationNumberIcon />, path: "/orders" },
-      { text: "Breakfast-Menu", icon: <RestaurantMenuIcon />, path: "/orders" },
+      { text: "Breakfast-Menu", icon: <RestaurantMenuIcon />, path: "/Menu" },
       { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/Feedback" },
       { text: "Package", icon: <Inventory2OutlinedIcon />, path: "/orders" },
       { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/orders" },
@@ -75,7 +61,6 @@ const Sidebar = () => {
 
   const handleLogout = async () => {
     try {
-
       const response = await fetch(
         "https://bms-fs-api.azurewebsites.net/api/Auth/logout",
         {
@@ -84,7 +69,6 @@ const Sidebar = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-
         }
       );
 
@@ -125,7 +109,7 @@ const Sidebar = () => {
           onClick={() => navigate("/")}
           style={{ cursor: "pointer" }}
         >
-          Staff
+          {user?.role || "User"} {/* Dynamically display the role */}
         </Typography>
       </Toolbar>
       <Divider />

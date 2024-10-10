@@ -45,7 +45,7 @@ export default function Login() {
       } else if (roles.includes('Staff')) {
         navigate('/home-staff');
       } else if (roles.includes('Shop')) {
-        navigate('/ShopPage');
+        navigate('/shop');
       } else {
         setError('Unauthorized role');
       }

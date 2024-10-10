@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomeStaff from "./pages/HomeStaff/HomeStaff.js";
 import Setting from "./pages/Setting/Setting.js";
-
 import Category from "./pages/Category/Category.js";
 import Feedback from "./pages/Feedback/Feedback.js";
 // import Sidebar from "./components/Sidebar";
@@ -12,9 +11,6 @@ import EditCategory from "./pages/Category/EditCategory.js";
 import AddCategory from "./pages/Category/AddCategory.js";
 import ShopApplication from "./pages/ShopApplication/ShopApplication.js";
 import DetailApplication from "./pages/DetailApplication/DetailApplication.js";
-
-
-
 import DashboardPage from "./pages/DashboardPage/index.jsx";
 import CustomerDetails from "./pages/CustomerPage/index.jsx";
 import OrdersPage from "./pages/OrderPage/index.jsx";
@@ -26,9 +22,10 @@ import MainLayout from "./components/MainLayout/index.jsx";
 import ShopPage from "./pages/ShopPage/index.jsx"; // Sửa tên chính xác
 import ProfilePage from "./pages/ProfilePage/index.jsx";
 import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
-
-import Menu from  "./pages/MenuPage/MenuPage.jsx";
 import StaffPageContainer from "./pages/StaffPage/StaffPageContainer.styles.jsx";
+import MenuPage from "./pages/MenuPage/MenuPage.jsx";
+import ProductPage from "./pages/ProductPage/ProductPage.jsx";
+
 function App() {
   return (
     <AuthProvider>
@@ -42,16 +39,10 @@ function App() {
           <Route element={<MainLayout />} path="/">
             <Route
               path="/admin"
-              element={
-                <ProtectedRoute
-                  element={<DashboardPage />}
-                  requiredRole={"Admin"}
-                />
-              }
+              element={<ProtectedRoute element={<DashboardPage />} requiredRole={"Admin"} />}
             />
             <Route
               path="/manage-staff"
-
               element={<ProtectedRoute element={<StaffPageContainer />} requiredRole={"Admin"} />}
             />
             <Route
@@ -79,24 +70,27 @@ function App() {
             <Route
               path="/shop"
               element={
-                <ProtectedRoute element={<ShopPage />} requiredRole={"Shop"} />
-              }
+                <ProtectedRoute element={<ShopPage />} requiredRole={"Shop"} />}
+            />
+            <Route
+              path="/MenuShop"
+              element={
+                <ProtectedRoute element={<MenuPage />} requiredRole={"Shop"} />}
             />
             {/* <Route
               path="/Feedback"
               element={<ProtectedRoute element={<FeedbackPage />} requiredRole={"Shop"} />}
             /> */}
             <Route
-              path="/profile" 
+              path="/profile"
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
-
             />
             <Route
-              path="/Menu" 
-              element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
+              path="/Menu"
+              element={<ProtectedRoute element={<ProductPage />} requiredRole={"Shop"} />}
             />
           </Route>
-            
+
 
           {/* Staff Routes */}
           <Route element={<MainLayout />}>
