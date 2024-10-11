@@ -1,18 +1,18 @@
 import React from 'react';
-import './ProductPage.scss';
+import './ProductPage.scss'; // Make sure you have this file created for card-specific styles
 
-const ProductCard = ({ product, onEdit, onDelete }) => {
+const ProductCard = ({ name, price, description, images }) => {
   return (
     <div className="product-card">
-      <img src={product.images[0].url} alt={product.name} className="product-image" />
+      <img src={images[0]?.url || 'default_image_url.jpg'} alt={name} className="product-image" />
       <div className="product-details">
         <h3 className="product-name">
-          {product.name} <span className="product-price">${product.price}</span>
+          {name} <span className="product-price">${price}</span>
         </h3>
-        <p className="product-description">{product.description}</p>
+        <p className="product-description">{description}</p>
         <div className="product-actions">
-          <button className="edit-btn" onClick={() => onEdit(product.id)}>Edit</button>
-          <button className="delete-btn" onClick={() => onDelete(product.id)}>Delete</button>
+          <button className="edit-btn">Edit</button>
+          <button className="delete-btn">Delete</button>
         </div>
       </div>
     </div>
