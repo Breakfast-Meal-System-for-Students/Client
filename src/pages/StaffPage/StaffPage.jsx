@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import StaffPageContainer from './StaffPageContainer.styles.jsx'; // Importing the styled component
+import { TextField, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button, Pagination, 
+  Dialog, DialogTitle, DialogContent, DialogActions, Grid, Avatar, Typography, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import './StaffPage.scss'; 
 import axios from 'axios';
+import { useAuth } from '../../auth/AuthContext';
 
 const StaffPage = () => {
   const [staff, setStaff] = useState([]);
@@ -12,17 +16,29 @@ const StaffPage = () => {
     email: '',
   });
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize] = useState(5); // Set to 5 according to your API requirements
+  const [pageSize] = useState(8);
   const [totalCount, setTotalCount] = useState(0);
-  const [confirmOpen, setConfirmOpen] = useState(false); // State for confirmation dialog
-  const [staffToDelete, setStaffToDelete] = useState(null); // State to hold the staff ID to delete
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [staffToDelete, setStaffToDelete] = useState(null);
 
-  // Fetch staff data from API
+  const { user } = useAuth();
+
   const fetchStaff = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("No authentication token found. Please log in.");
+      return;
+    }
+  
     try {
-      const response = await axios.get(`/api/staff?searchTerm=${searchTerm}&page=${pageIndex}&pageSize=${pageSize}`);
-      setStaff(response.data.data); // Assuming response has staff list in 'data'
-      setTotalCount(response.data.totalCount);
+      const response = await axios.get(`https://bms-fs-api.azurewebsites.net/api/Staff/GetListStaff?search=a&isDesc=true&pageIndex=${pageIndex}&pageSize=${pageSize}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Response data:", response.data); // Log the response data
+      setStaff(response.data.data); 
+      setTotalCount(response.data.totalCount); 
     } catch (error) {
       console.error('Error fetching staff:', error);
       alert("Failed to fetch staff data. Please check your API.");
@@ -33,8 +49,13 @@ const StaffPage = () => {
     fetchStaff();
   }, [searchTerm, pageIndex]);
 
-  // Add new staff member
   const handleAddStaff = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("No authentication token found. Please log in.");
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append('firstName', newStaff.firstName);
@@ -44,67 +65,197 @@ const StaffPage = () => {
       await axios.post('https://bms-fs-api.azurewebsites.net/api/Staff', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer <your_token_here>`, // Replace with your actual token
+          Authorization: `Bearer ${token}`,
         },
       });
 
       setOpen(false);
       setNewStaff({ firstName: '', lastName: '', email: '' });
-      fetchStaff(); // Refetch updated staff list
+      fetchStaff(); 
     } catch (error) {
       console.error("Error adding staff:", error);
+      alert("Failed to add staff. Please check your input.");
     }
   };
 
-  // Delete a staff member
   const handleDeleteStaff = async (id) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("No authentication token found. Please log in.");
+      return;
+    }
+
     try {
       await axios.delete(`https://bms-fs-api.azurewebsites.net/api/Staff?id=${id}`, {
         headers: {
-          Authorization: `Bearer <your_token_here>`, // Replace with your actual token
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      fetchStaff(); // Refetch the updated staff list after deletion
-      setStaffToDelete(null); // Resetting staffToDelete after deletion
+      fetchStaff(); 
+      setStaffToDelete(null); 
     } catch (error) {
       console.error("Error deleting staff:", error);
+      alert("Failed to delete staff member.");
     }
   };
 
-  // Open confirmation dialog
   const handleConfirmDelete = (id) => {
-    setStaffToDelete(id); // Set the staff ID to delete
-    setConfirmOpen(true); // Open confirmation dialog
+    setStaffToDelete(id); 
+    setConfirmOpen(true); 
   };
 
-  // Confirm deletion
   const confirmDelete = () => {
     if (staffToDelete) {
-      handleDeleteStaff(staffToDelete); // Delete the staff member
-      setConfirmOpen(false); // Close confirmation dialog
+      handleDeleteStaff(staffToDelete); 
+      setConfirmOpen(false); 
     }
   };
 
   return (
-    <StaffPageContainer
-      staff={staff}
-      searchTerm={searchTerm}
-      setSearchTerm={setSearchTerm}
-      open={open}
-      handleClickOpen={() => setOpen(true)}
-      handleClose={() => setOpen(false)}
-      handleAddStaff={handleAddStaff}
-      handleConfirmDelete={handleConfirmDelete} // Pass the confirm function
-      confirmOpen={confirmOpen} // Pass confirmation dialog state
-      confirmDelete={confirmDelete} // Pass confirm deletion function
-      setConfirmOpen={setConfirmOpen} // Pass function to set confirm dialog state
-      pageIndex={pageIndex}
-      pageSize={pageSize}
-      totalCount={totalCount}
-      newStaff={newStaff}
-      setNewStaff={setNewStaff}
-    />
+    <div className="staff-page">
+      <div className="staff-header">
+        <Typography variant="h4">Manage Staff</Typography>
+        <div className="staff-actions">
+          <TextField
+            label="Search Staff"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            variant="outlined"
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            className="search-bar"
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpen(true)}
+          >
+            Add Account
+          </Button>
+        </div>
+      </div>
+
+      {/* Staff Table */}
+      <div className="staff-table-container">
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Avatar</TableCell>
+                <TableCell>First Name</TableCell>
+                <TableCell>Last Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Phone</TableCell>
+                <TableCell>Create Date</TableCell>
+                <TableCell>Role</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {staff.length > 0 ? (
+                staff.map((staffMember) => (
+                  <TableRow key={staffMember.id}>
+                    <TableCell>
+                      <Avatar alt={staffMember.firstName} src={staffMember.avatar} />
+                    </TableCell>
+                    <TableCell>{staffMember.firstName}</TableCell>
+                    <TableCell>{staffMember.lastName}</TableCell>
+                    <TableCell>{staffMember.email}</TableCell>
+                    <TableCell>{staffMember.phone || 'N/A'}</TableCell>
+                    <TableCell>{new Date(staffMember.createDate).toLocaleDateString()}</TableCell>
+                    <TableCell>{staffMember.role || 'N/A'}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleConfirmDelete(staffMember.id)}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} align="center">
+                    <Typography variant="h6">No staff found.</Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        {/* Pagination */}
+        <Pagination
+          count={Math.ceil(totalCount / pageSize)}
+          page={pageIndex}
+          onChange={(event, value) => setPageIndex(value)} 
+          color="primary"
+          className="pagination"
+        />
+      </div>
+
+      {/* Add Staff Dialog */}
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>Add New Staff</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="First Name"
+                fullWidth
+                value={newStaff.firstName || ''}
+                onChange={(e) => setNewStaff({ ...newStaff, firstName: e.target.value })}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Last Name"
+                fullWidth
+                value={newStaff.lastName || ''}
+                onChange={(e) => setNewStaff({ ...newStaff, lastName: e.target.value })}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Email"
+                fullWidth
+                type="email"
+                value={newStaff.email || ''}
+                onChange={(e) => setNewStaff({ ...newStaff, email: e.target.value })}
+                required
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={handleAddStaff} color="primary">Add Staff</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to delete this staff member?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
+          <Button onClick={confirmDelete} color="secondary">Delete</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 };
 

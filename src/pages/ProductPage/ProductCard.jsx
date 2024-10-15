@@ -1,22 +1,46 @@
-import React from 'react';
-import './ProductPage.scss'; // Make sure you have this file created for card-specific styles
+// ProductCard.jsx
+import React, { useEffect, useState } from 'react';
+import './ProductStyle.scss';
 
-const ProductCard = ({ name, price, description, images }) => {
-  return (
-    <div className="product-card">
-      <img src={images[0]?.url || 'default_image_url.jpg'} alt={name} className="product-image" />
-      <div className="product-details">
-        <h3 className="product-name">
-          {name} <span className="product-price">${price}</span>
-        </h3>
-        <p className="product-description">{description}</p>
-        <div className="product-actions">
-          <button className="edit-btn">Edit</button>
-          <button className="delete-btn">Delete</button>
+const ProductCard = ({ productId, onEdit, onDelete }) => {
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Fetch product details based on the provided productId
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const response = await fetch(`https://bms-fs-api.azurewebsites.net/api/Product/${productId}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setProduct(data); // Assuming the API returns the product data directly
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProduct();
+    }, [productId]); // Fetch when productId changes
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error fetching product: {error.message}</div>;
+    if (!product) return <div>No product found.</div>;
+
+    return (
+        <div className="product-card">
+            <img src={product.images[0]?.url} alt={product.name} />
+            <h3>{product.name}</h3>
+            <p>{product.description}</p>
+            <p>Price: ${product.price.toFixed(2)}</p>
+            <button onClick={onEdit}>Edit</button>
+            <button onClick={onDelete}>Delete</button>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default ProductCard;

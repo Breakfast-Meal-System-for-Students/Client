@@ -22,9 +22,9 @@ import MainLayout from "./components/MainLayout/index.jsx";
 import ShopPage from "./pages/ShopPage/index.jsx"; // Sửa tên chính xác
 import ProfilePage from "./pages/ProfilePage/index.jsx";
 import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
-import StaffPageContainer from "./pages/StaffPage/StaffPageContainer.styles.jsx";
 import MenuPage from "./pages/MenuPage/MenuPage.jsx";
 import ProductPage from "./pages/ProductPage/ProductPage.jsx";
+import StaffPage from "./pages/StaffPage/StaffPage.jsx";
 
 function App() {
   return (
@@ -43,7 +43,7 @@ function App() {
             />
             <Route
               path="/manage-staff"
-              element={<ProtectedRoute element={<StaffPageContainer />} requiredRole={"Admin"} />}
+              element={<ProtectedRoute element={<StaffPage />} requiredRole={"Admin"} />}
             />
             <Route
               path="/customer-profile"
