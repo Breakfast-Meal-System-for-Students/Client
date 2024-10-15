@@ -4,7 +4,6 @@ import HomeStaff from "./pages/HomeStaff/HomeStaff.js";
 import Setting from "./pages/Setting/Setting.js";
 import Category from "./pages/Category/Category.js";
 import Feedback from "./pages/Feedback/Feedback.js";
-// import Sidebar from "./components/Sidebar";
 import SendFeedbackPage from "./pages/Feedback/SendFeedbackPage.js";
 import ShopDetails from "./pages/ShopDetails/ShopDetails.js";
 import EditCategory from "./pages/Category/EditCategory.js";
@@ -25,6 +24,7 @@ import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
 import MenuPage from "./pages/MenuPage/MenuPage.jsx";
 import ProductPage from "./pages/ProductPage/ProductPage.jsx";
 import StaffPage from "./pages/StaffPage/StaffPage.jsx";
+import AddProduct from "./pages/ProductPage/AddProduct"; // Import AddProduct
 
 function App() {
   return (
@@ -57,124 +57,75 @@ function App() {
               path="/profile"
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Admin"} />}
             />
-
             <Route
-              path="/Feedback"
+              path="/feedback"
               element={<ProtectedRoute element={<FeedbackPage />} requiredRole={"Admin"} />}
             />
-
           </Route>
 
           {/* Shop Routes */}
           <Route element={<MainLayout />} path="/">
             <Route
               path="/shop"
-              element={
-                <ProtectedRoute element={<ShopPage />} requiredRole={"Shop"} />}
+              element={<ProtectedRoute element={<ShopPage />} requiredRole={"Shop"} />}
             />
             <Route
-              path="/MenuShop"
-              element={
-                <ProtectedRoute element={<MenuPage />} requiredRole={"Shop"} />}
+              path="/menu-shop"
+              element={<ProtectedRoute element={<MenuPage />} requiredRole={"Shop"} />}
             />
-            {/* <Route
-              path="/Feedback"
-              element={<ProtectedRoute element={<FeedbackPage />} requiredRole={"Shop"} />}
-            /> */}
             <Route
               path="/profile"
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
             />
             <Route
-              path="/Menu"
+              path="/menu"
               element={<ProtectedRoute element={<ProductPage />} requiredRole={"Shop"} />}
             />
+            <Route
+              path="/add-product"
+              element={<ProtectedRoute element={<AddProduct />} requiredRole={"Shop"} />} // Add route for AddProduct
+            />
           </Route>
-
 
           {/* Staff Routes */}
           <Route element={<MainLayout />}>
             <Route
               path="/home-staff"
-              element={
-                <ProtectedRoute
-                  element={<HomeStaff />}
-                  requiredRole={"Staff"}
-                />
-              }
+              element={<ProtectedRoute element={<HomeStaff />} requiredRole={"Staff"} />}
             />
-
             <Route
               path="/category"
-              element={
-                <ProtectedRoute element={<Category />} requiredRole={"Staff"} />
-              }
+              element={<ProtectedRoute element={<Category />} requiredRole={"Staff"} />}
             />
             <Route
               path="/feedback"
-              element={
-                <ProtectedRoute element={<Feedback />} requiredRole={"Staff"} />
-              }
+              element={<ProtectedRoute element={<Feedback />} requiredRole={"Staff"} />}
             />
             <Route
-              path="/setting"
-              element={
-                <ProtectedRoute element={<Setting />} requiredRole={"Staff"} />
-              }
+              path="/send-feedback"
+              element={<ProtectedRoute element={<SendFeedbackPage />} requiredRole={"Staff"} />}
             />
             <Route
-              path="/shop-application"
-              element={
-                <ProtectedRoute
-                  element={<ShopApplication />}
-                  requiredRole={"Staff"}
-                />
-              }
-            />
-            <Route
-              path="/sendFeedbackPage"
-              element={
-                <ProtectedRoute
-                  element={<SendFeedbackPage />}
-                  requiredRole={"Staff"}
-                />
-              }
-            />
-            <Route
-              path="/edit-category"
-              element={
-                <ProtectedRoute
-                  element={<EditCategory />}
-                  requiredRole={"Staff"}
-                />
-              }
+              path="/shop-details"
+              element={<ProtectedRoute element={<ShopDetails />} requiredRole={"Staff"} />}
             />
             <Route
               path="/edit-category/:id"
-              element={
-                <ProtectedRoute
-                  element={<EditCategory />}
-                  requiredRole={"Staff"}
-                />
-              }
+              element={<ProtectedRoute element={<EditCategory />} requiredRole={"Staff"} />}
             />
             <Route
               path="/add-category"
-              element={
-                <ProtectedRoute
-                  element={<AddCategory />}
-                  requiredRole={"Staff"}
-                />
-              }
+              element={<ProtectedRoute element={<AddCategory />} requiredRole={"Staff"} />}
+            />
+            <Route
+              path="/shop-application"
+              element={<ProtectedRoute element={<ShopApplication />} requiredRole={"Staff"} />}
+            />
+            <Route
+              path="/detail-application/:id"
+              element={<ProtectedRoute element={<DetailApplication />} requiredRole={"Staff"} />}
             />
           </Route>
-
-          {/* General Routes */}
-          <Route
-            path="/detail-application/:id"
-            element={<DetailApplication />}
-          />
-          <Route path="/shop/:id" element={<ShopDetails />} />
         </Routes>
       </Router>
     </AuthProvider>
