@@ -41,11 +41,11 @@ export default function Login() {
       const roles = await login(data.email, data.password);
       console.log(roles);
       if (roles.includes('Admin')) {
-        navigate('/admin');
+        navigate('/');
       } else if (roles.includes('Staff')) {
         navigate('/home-staff');
       } else if (roles.includes('Shop')) {
-        navigate('/ShopPage');
+        navigate('/shop');
       } else {
         setError('Unauthorized role');
       }

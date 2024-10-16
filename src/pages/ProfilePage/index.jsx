@@ -53,7 +53,7 @@ export default function ProfilePage() {
             phone: data.data.phone,
             createDate: data.data.createDate,
             lastUpdateDate: data.data.lastUpdateDate,
-            role: data.data.role, 
+            role: data.data.role,
           });
         } else {
           console.error('Failed to fetch profile data');
@@ -102,7 +102,7 @@ export default function ProfilePage() {
       const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Account', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`, 
+          'Authorization': `Bearer ${token}`,
         },
         body: formData,
       });
@@ -192,7 +192,7 @@ export default function ProfilePage() {
             />
             <input
               type="file"
-              onChange={(e) => setSelectedFile(e.target.files[0])} 
+              onChange={(e) => setSelectedFile(e.target.files[0])}
             />
           </DialogContent>
           <DialogActions>

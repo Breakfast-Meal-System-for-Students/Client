@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const StyledSidebar = styled.div`
-  height: 100vh;
-  width: ${props => props.open ? '240px' : '60px'};
+   height: 100vh;
+  width: ${(props) => (props.open ? "240px" : "60px")};
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@ export const StyledSidebar = styled.div`
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   color: white;
   padding-top: 20px;
-
+  
   .logo {
     text-align: center;
     padding: 20px;
