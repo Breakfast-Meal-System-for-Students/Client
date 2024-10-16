@@ -11,7 +11,6 @@ import AddCategory from "./pages/Category/AddCategory.js";
 import ShopApplication from "./pages/ShopApplication/ShopApplication.js";
 import DetailApplication from "./pages/DetailApplication/DetailApplication.js";
 import DashboardPage from "./pages/DashboardPage/index.jsx";
-import CustomerDetails from "./pages/CustomerPage/index.jsx";
 import OrdersPage from "./pages/OrderPage/index.jsx";
 import LoginPage from "./pages/LoginPage/index.jsx";
 import RegisterPage from "./pages/RegisterPage/index.jsx";
@@ -25,6 +24,7 @@ import MenuPage from "./pages/MenuPage/MenuPage.jsx";
 import ProductPage from "./pages/ProductPage/ProductPage.jsx";
 import StaffPage from "./pages/StaffPage/StaffPage.jsx";
 import AddProduct from "./pages/ProductPage/AddProduct"; // Import AddProduct
+import UserDetails from "./pages/CustomerPage/UserDetails.jsx";
 
 function App() {
   return (
@@ -46,8 +46,8 @@ function App() {
               element={<ProtectedRoute element={<StaffPage />} requiredRole={"Admin"} />}
             />
             <Route
-              path="/customer-profile"
-              element={<ProtectedRoute element={<CustomerDetails />} requiredRole={"Admin"} />}
+              path="/customer-details"
+              element={<ProtectedRoute element={<UserDetails />} requiredRole={"Admin"} />}
             />
             <Route
               path="/orders"

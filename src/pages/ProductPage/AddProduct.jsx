@@ -4,16 +4,10 @@ import './AddProductPage.scss';
 
 const AddProductPage = () => {
     const navigate = useNavigate();
-
-    // State để lưu trữ thông tin sản phẩm và kiểm tra lỗi
     const [productName, setProductName] = useState('');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
-
-    // State để theo dõi lỗi trong form
     const [errors, setErrors] = useState({});
-
-    // Xử lý khi người dùng submit form
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -32,16 +26,14 @@ const AddProductPage = () => {
         // Nếu không có lỗi, thêm sản phẩm mới (gửi request API, v.v.)
         console.log('Product added:', { productName, price, description });
 
-        // Reset form sau khi thêm sản phẩm thành công
         setProductName('');
         setPrice('');
         setDescription('');
-        setErrors({}); // Reset lỗi sau khi thành công
+        setErrors({}); 
     };
 
-    // Xử lý khi người dùng nhấn nút Cancel
     const handleCancel = () => {
-        navigate('/Menu');  // Điều hướng về trang ProductPage
+        navigate('/Menu');  
     };
 
     return (
