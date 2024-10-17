@@ -1,5 +1,5 @@
 .add-product-page {
-    margin-top: 30px; 
+    margin-top: 30px;
     padding: 20px;
     background-color: white;
     border-radius: 8px;
@@ -40,8 +40,19 @@
 
                 &::placeholder {
                     color: #aaa;
-                    font-size: 14px;
-                    text-align: left;
+                    font-size: 12px;  // Placeholder text nhỏ hơn
+                }
+            }
+
+            input[type="file"] {
+                padding: 4px;
+                border: none;
+                background-color: #f0f0f0;
+                cursor: pointer;
+                transition: background-color 0.3s;
+
+                &:hover {
+                    background-color: #e0e0e0;
                 }
             }
 
@@ -84,7 +95,7 @@
             }
         }
     }
-    
+
     // Add responsive design
     @media (max-width: 768px) {
         .add-product-form {

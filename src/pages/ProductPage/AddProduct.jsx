@@ -7,7 +7,9 @@ const AddProductPage = () => {
     const [productName, setProductName] = useState('');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
+    const [image, setImage] = useState(null);
     const [errors, setErrors] = useState({});
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -16,6 +18,7 @@ const AddProductPage = () => {
         if (!productName) validationErrors.productName = 'Product name is required';
         if (!price) validationErrors.price = 'Price is required';
         if (!description) validationErrors.description = 'Description is required';
+        if (!image) validationErrors.image = 'Product image is required';
 
         // Kiểm tra nếu có lỗi
         if (Object.keys(validationErrors).length > 0) {
@@ -23,17 +26,22 @@ const AddProductPage = () => {
             return;
         }
 
-        // Nếu không có lỗi, thêm sản phẩm mới (gửi request API, v.v.)
-        console.log('Product added:', { productName, price, description });
+        // Nếu không có lỗi, thêm sản phẩm mới
+        console.log('Product added:', { productName, price, description, image });
 
         setProductName('');
         setPrice('');
         setDescription('');
+        setImage(null);
         setErrors({}); 
     };
 
     const handleCancel = () => {
         navigate('/Menu');  
+    };
+
+    const handleImageChange = (e) => {
+        setImage(e.target.files[0]);
     };
 
     return (
@@ -71,6 +79,16 @@ const AddProductPage = () => {
                         onChange={(e) => setDescription(e.target.value)}
                     />
                     {errors.description && <p className="error">{errors.description}</p>}
+                </div>
+                <div className="form-group">
+                    <label htmlFor="image">Product Image</label>
+                    <input
+                        type="file"
+                        id="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                    />
+                    {errors.image && <p className="error">{errors.image}</p>}
                 </div>
                 <div className="form-actions">
                     <button type="submit" className="submit-button">Save</button>

@@ -20,11 +20,12 @@ import MainLayout from "./components/MainLayout/index.jsx";
 import ShopPage from "./pages/ShopPage/index.jsx"; // Sửa tên chính xác
 import ProfilePage from "./pages/ProfilePage/index.jsx";
 import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
-import MenuPage from "./pages/MenuPage/MenuPage.jsx";
+import CouponPage from  "./pages/CouponPage/CouponList.jsx";
 import ProductPage from "./pages/ProductPage/ProductPage.jsx";
 import StaffPage from "./pages/StaffPage/StaffPage.jsx";
 import AddProduct from "./pages/ProductPage/AddProduct"; // Import AddProduct
 import UserDetails from "./pages/CustomerPage/UserDetails.jsx";
+import AddCoupon from "./pages/CouponPage/AddCoupon.jsx";
 
 function App() {
   return (
@@ -70,9 +71,14 @@ function App() {
               element={<ProtectedRoute element={<ShopPage />} requiredRole={"Shop"} />}
             />
             <Route
-              path="/menu-shop"
-              element={<ProtectedRoute element={<MenuPage />} requiredRole={"Shop"} />}
+              path="/Coupon-page"
+              element={<ProtectedRoute element={<CouponPage />} requiredRole={"Shop"} />}
             />
+            <Route
+              path="/add-Coupon"
+              element={<ProtectedRoute element={<AddCoupon />} requiredRole={"Shop"} />}
+            />
+
             <Route
               path="/profile"
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
@@ -88,7 +94,7 @@ function App() {
           </Route>
 
           {/* Staff Routes */}
-          <Route element={<MainLayout />}>
+          <Route element={<MainLayout />} path= "/">
             <Route
               path="/home-staff"
               element={<ProtectedRoute element={<HomeStaff />} requiredRole={"Staff"} />}
