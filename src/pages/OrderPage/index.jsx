@@ -98,7 +98,7 @@ const ManageOrdersPage = () => {
                 <StyledTableCell>{order.shopId}</StyledTableCell>
                 <StyledTableCell>${order.totalPrice.toFixed(2)}</StyledTableCell>
                 <StyledTableCell>
-                  <FormControl fullWidth>
+                  {/* <FormControl fullWidth>
                     <InputLabel>Status</InputLabel>
                     <Select
                       value={editingStatus[order.id] || order.status}
@@ -111,7 +111,7 @@ const ManageOrdersPage = () => {
                       <MenuItem value="COMPLETE">Complete</MenuItem>
                       <MenuItem value="CANCELLED">Cancelled</MenuItem>
                     </Select>
-                  </FormControl>
+                  </FormControl> */}
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   <Button

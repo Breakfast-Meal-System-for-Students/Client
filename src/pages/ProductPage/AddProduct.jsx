@@ -10,34 +10,71 @@ const AddProductPage = () => {
     const [image, setImage] = useState(null);
     const [errors, setErrors] = useState({});
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate trước khi lưu sản phẩm
+        // Validate form inputs
         const validationErrors = {};
         if (!productName) validationErrors.productName = 'Product name is required';
         if (!price) validationErrors.price = 'Price is required';
         if (!description) validationErrors.description = 'Description is required';
         if (!image) validationErrors.image = 'Product image is required';
 
-        // Kiểm tra nếu có lỗi
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
         }
 
-        // Nếu không có lỗi, thêm sản phẩm mới
-        console.log('Product added:', { productName, price, description, image });
+        // Get the shopId from localStorage
+        const shopId = localStorage.getItem('shopId');
+        if (!shopId) {
+            alert('No shop ID found. Please log in as a shop.');
+            return;
+        }
 
+        // Create FormData object to send the image and product details
+        const formData = new FormData();
+        formData.append('name', productName);
+        formData.append('description', description);
+        formData.append('price', price);
+        formData.append('shopId', shopId);
+        formData.append('image', image); // Ensure this matches the expected API key for the image
+
+        // Log the FormData contents for debugging
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+        }
+
+        try {
+            // Send a POST request to add the product
+            const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Product', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (response.ok && data.isSuccess) {
+                alert('Product added successfully');
+                navigate('/Menu');
+            } else {
+                alert('Failed to add product: ' + (data.message || 'Unknown error'));
+                console.error('Response error:', data);
+            }
+        } catch (error) {
+            console.error('Error adding product:', error);
+            alert('An error occurred while adding the product');
+        }
+
+        // Clear form inputs
         setProductName('');
         setPrice('');
         setDescription('');
         setImage(null);
-        setErrors({}); 
+        setErrors({});
     };
 
     const handleCancel = () => {
-        navigate('/Menu');  
+        navigate('/Menu');
     };
 
     const handleImageChange = (e) => {

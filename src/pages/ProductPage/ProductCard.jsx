@@ -6,9 +6,9 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
 
     return (
         <div className="product-card">
-            {/* Display product image */}
+            {/* Display product image or fallback if none exists */}
             <img 
-                src={product.images[0]?.url || 'default-image-url.jpg'} 
+                src={product.imageUrl || 'default-image-url.jpg'} 
                 alt={product.name} 
                 className="product-image" 
             />
@@ -17,7 +17,8 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
             {/* Product description */}
             <p>{product.description}</p>
             {/* Product price */}
-            <p>Price: ${product.price.toFixed(2)}</p>
+            <p>Price: ${product.price?.toFixed(2)}</p>
+            {/* Edit and Delete buttons */}
             <div className="card-actions">
                 <button onClick={onEdit} className="edit-button">Edit</button>
                 <button onClick={onDelete} className="delete-button">Delete</button>

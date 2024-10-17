@@ -24,7 +24,6 @@ function UserDetails() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState('asc');
 
-  // Fetch users from the API
   useEffect(() => {
     const token = localStorage.getItem('token'); // Get token from localStorage
 
@@ -47,7 +46,7 @@ function UserDetails() {
 
         // Check that response.data contains a valid structure
         if (response.data && Array.isArray(response.data.data)) {
-          setUsers(response.data.data); // Set users if the data array is found
+          setUsers(response.data.data.data); // Set users if the data array is found
         } else {
           console.error("API response does not contain a valid user array:", response.data);
           setUsers([]); // Fallback to an empty array if data is not as expected

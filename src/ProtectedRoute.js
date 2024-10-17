@@ -4,7 +4,7 @@ import { useAuth } from "./auth/AuthContext";
 
 const ProtectedRoute = ({ element, requiredRole }) => {
   const { user } = useAuth();
-  console.log(requiredRole);
+  // console.log(requiredRole);
   console.log(user);
   if (!user || !user.role.includes(user.role)) {
     return <Navigate to="/login" />;

@@ -3,41 +3,68 @@ import axios from 'axios';
 import ProductCard from './ProductCard';
 import './ProductStyle.scss';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../auth/AuthContext';
 
 const ProductPage = () => {
+    const { data, loading } = useAuth(); // Access the user context
     const [products, setProducts] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [pageIndex, setPageIndex] = useState(1);
-    const [pageSize] = useState(6); // Set the limit to 6 products per page
+    const [pageSize] = useState(6);
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
-
+    
     const fetchProducts = async () => {
+        const shopId = localStorage.getItem('shopId'); // Retrieve shopId from local storage
+        console.log('shopId from local storage:', shopId);
+        if (!shopId) {
+            console.error('No shopId found in local storage');
+            return;
+        }
+
+        const url = `https://bms-fs-api.azurewebsites.net/api/Product/all-product-by-shop-id?id=${shopId}&search=${searchTerm}&isDesc=true&pageIndex=${pageIndex}&pageSize=${pageSize}`;
+        
         try {
-            const response = await axios.get(`https://bms-fs-api.azurewebsites.net/api/Product?search=${searchTerm}&isDesc=true&pageIndex=${pageIndex}&pageSize=${pageSize}`);
-            console.log('API Response:', response.data);
-            setProducts(Array.isArray(response.data.data) ? response.data.data : []);
-            setTotalPages(response.data.totalPages);
+            const response = await axios.get(url);
+            const responseData = response.data.data;
+            
+            // Update state with the fetched products and pagination info
+            setProducts(responseData.data); // Product list
+            setTotalPages(responseData.lastPage); // Total number of pages
         } catch (error) {
             console.error('Error fetching products:', error);
-            setProducts([]);
         }
     };
 
     useEffect(() => {
-        fetchProducts();
-    }, [pageIndex, searchTerm]);
+        fetchProducts(); // Fetch products on component mount
+    }, [pageIndex, searchTerm]); // Re-fetch products when pageIndex or search term changes
 
     const handlePageChange = (newPage) => {
-        // Check if the newPage is within the valid range
         if (newPage >= 1 && newPage <= totalPages) {
-            setPageIndex(newPage);
+            setPageIndex(newPage); // Update the page index
         }
     };
 
     const handleAddProduct = () => {
-        navigate('/add-product');
+        navigate('/add-product'); // Navigate to add product page
     };
+
+    const handleDeleteProduct = async (productId) => {
+        const confirmDelete = window.confirm('Are you sure you want to delete this product?');
+        if (confirmDelete) {
+            try {
+                await axios.delete(`https://bms-fs-api.azurewebsites.net/api/Product/${productId}`);
+                fetchProducts(); // Re-fetch products after deletion
+            } catch (error) {
+                console.error('Error deleting product:', error);
+            }
+        }
+    };
+
+    if (loading) {
+        return <div>Loading...</div>; // Show a loading message while fetching user data
+    }
 
     return (
         <div className="product-page">
@@ -57,11 +84,18 @@ const ProductPage = () => {
             <div className="product-grid">
                 {products.map((product) => (
                     <ProductCard
-                        key={product.id}
-                        product={product}  
-                        onEdit={() => console.log('Edit product', product.id)}
-                        onDelete={() => console.log('Delete product', product.id)}
-                    />
+                    key={product.id}
+                    product={{
+                        id: product.id,
+                        name: product.name,
+                        description: product.description,
+                        price: product.price,
+                        imageUrl: product.images && product.images.length > 0 ? product.images[0].url : '', // Safely check for images
+                    }}
+                    onEdit={() => console.log('Edit product', product.id)}
+                    onDelete={() => handleDeleteProduct(product.id)} // Pass delete handler
+                />
+                
                 ))}
             </div>
             <div className="pagination">
