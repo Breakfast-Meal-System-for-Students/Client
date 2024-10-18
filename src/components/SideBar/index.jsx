@@ -52,7 +52,7 @@ const Sidebar = () => {
     sidebarItems = [
       { text: "Coupon", icon: <ConfirmationNumberIcon />, path: "/Coupon-page" },
       { text: "Breakfast-Menu", icon: <RestaurantMenuIcon />, path: "/Menu" },
-      { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/Feedback" },
+      { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/feedback-shop" },
       { text: "Package", icon: <Inventory2OutlinedIcon />, path: "/orders" },
       { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/orders" },
       { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/orders" },

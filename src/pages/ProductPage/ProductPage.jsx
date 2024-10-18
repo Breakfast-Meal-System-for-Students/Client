@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductCard from './ProductCard';
-import './ProductStyle.scss';
+import './ProductPage.scss';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 
@@ -14,9 +14,9 @@ const ProductPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
     
+    
     const fetchProducts = async () => {
         const shopId = localStorage.getItem('shopId'); // Retrieve shopId from local storage
-        console.log('shopId from local storage:', shopId);
         if (!shopId) {
             console.error('No shopId found in local storage');
             return;

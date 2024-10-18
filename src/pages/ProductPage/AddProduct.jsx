@@ -1,76 +1,87 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AddProductPage.scss';
 
 const AddProductPage = () => {
     const navigate = useNavigate();
-    const [productName, setProductName] = useState('');
+    const [name, setProductName] = useState('');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
-    const [image, setImage] = useState(null);
+    const [images, setImages] = useState([]); // Store multiple images
     const [errors, setErrors] = useState({});
+    const [shopId, setShopId] = useState(null);
+    const [successMessage, setSuccessMessage] = useState('');
+
+    useEffect(() => {
+        const storedShopId = localStorage.getItem('shopId');
+        if (storedShopId) {
+            setShopId(storedShopId);
+            console.log('Shop ID:', storedShopId);
+        } else {
+            alert('No shop ID found. Please log in as a shop.');
+            navigate('/login');
+        }
+    }, [navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate form inputs
         const validationErrors = {};
-        if (!productName) validationErrors.productName = 'Product name is required';
-        if (!price) validationErrors.price = 'Price is required';
+        if (!name) validationErrors.name = 'Product name is required';
+        if (!price) {
+            validationErrors.price = 'Price is required';
+        } else if (price <= 0) {
+            validationErrors.price = 'Price must be greater than 0';
+        }
         if (!description) validationErrors.description = 'Description is required';
-        if (!image) validationErrors.image = 'Product image is required';
+        if (images.length === 0) validationErrors.image = 'At least one product image is required';
 
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
         }
 
-        // Get the shopId from localStorage
-        const shopId = localStorage.getItem('shopId');
         if (!shopId) {
             alert('No shop ID found. Please log in as a shop.');
             return;
         }
 
-        // Create FormData object to send the image and product details
+        // Create a new FormData object for the image uploads
         const formData = new FormData();
-        formData.append('name', productName);
-        formData.append('description', description);
-        formData.append('price', price);
-        formData.append('shopId', shopId);
-        formData.append('image', image); // Ensure this matches the expected API key for the image
-
-        // Log the FormData contents for debugging
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}:`, value);
-        }
+        images.forEach(image => formData.append('images', image)); // Append all images
 
         try {
-            // Send a POST request to add the product
-            const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Product', {
-                method: 'POST',
-                body: formData
-            });
+            console.log('Submitting product with details:', { name, price, description, shopId });
+
+            const response = await createProduct({ name, description, price, shopId }, formData);
 
             const data = await response.json();
+
             if (response.ok && data.isSuccess) {
-                alert('Product added successfully');
-                navigate('/Menu');
+                setSuccessMessage('Product added successfully!');
+                setTimeout(() => {
+                    navigate('/Menu');
+                }, 5000);
             } else {
-                alert('Failed to add product: ' + (data.message || 'Unknown error'));
-                console.error('Response error:', data);
+                const errorMessages = Object.entries(data.errors).map(([key, value]) =>
+                    `${key}: ${value.join(', ')}`
+                ).join('\n');
+                alert(`Failed to add product: ${data.title}\n${errorMessages}`);
             }
         } catch (error) {
             console.error('Error adding product:', error);
             alert('An error occurred while adding the product');
         }
+    };
 
-        // Clear form inputs
-        setProductName('');
-        setPrice('');
-        setDescription('');
-        setImage(null);
-        setErrors({});
+    const createProduct = (productDetails, formData) => {
+        const { name, description, price, shopId } = productDetails;
+        const url = `https://bms-fs-api.azurewebsites.net/api/Product?name=${encodeURIComponent(name)}&description=${encodeURIComponent(description)}&price=${encodeURIComponent(price)}&shopId=${encodeURIComponent(shopId)}`;
+
+        return fetch(url, {
+            method: 'POST',
+            body: formData,
+        });
     };
 
     const handleCancel = () => {
@@ -78,54 +89,69 @@ const AddProductPage = () => {
     };
 
     const handleImageChange = (e) => {
-        setImage(e.target.files[0]);
+        const files = Array.from(e.target.files);
+        setImages(prevImages => [...prevImages, ...files]); // Append new images
+    };
+
+    const handleRemoveImage = (index) => {
+        setImages(images.filter((_, i) => i !== index)); // Remove selected image
     };
 
     return (
         <div className="add-product-page">
-            <h1>Add New Product</h1>
+            <h1 className="form-header">Add New Product</h1>
+            {successMessage && <p className="success-message">{successMessage}</p>}
             <form className="add-product-form" onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor="productName">Product Name</label>
+                    <label htmlFor="productName">Product Name *</label>
                     <input
                         type="text"
                         id="productName"
-                        placeholder="Name"
-                        value={productName}
+                        placeholder="Enter product name"
+                        value={name}
                         onChange={(e) => setProductName(e.target.value)}
                     />
-                    {errors.productName && <p className="error">{errors.productName}</p>}
+                    {errors.name && <div className="error-tooltip">{errors.name}</div>}
                 </div>
                 <div className="form-group">
-                    <label htmlFor="price">Price</label>
+                    <label htmlFor="price">Price *</label>
                     <input
                         type="number"
                         id="price"
-                        placeholder="Price"
+                        placeholder="Enter price"
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
                     />
-                    {errors.price && <p className="error">{errors.price}</p>}
+                    {errors.price && <div className="error-tooltip">{errors.price}</div>}
                 </div>
                 <div className="form-group">
-                    <label htmlFor="description">Description</label>
+                    <label htmlFor="description">Description *</label>
                     <textarea
                         id="description"
-                        placeholder="Brief description"
+                        placeholder="Enter description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                     />
-                    {errors.description && <p className="error">{errors.description}</p>}
+                    {errors.description && <div className="error-tooltip">{errors.description}</div>}
                 </div>
                 <div className="form-group">
-                    <label htmlFor="image">Product Image</label>
+                    <label htmlFor="images">Product Images *</label>
                     <input
                         type="file"
-                        id="image"
+                        id="images"
                         accept="image/*"
+                        multiple // Allow multiple file selection
                         onChange={handleImageChange}
                     />
-                    {errors.image && <p className="error">{errors.image}</p>}
+                    {errors.image && <div className="error-tooltip">{errors.image}</div>}
+                    <div className="image-preview">
+                        {images.map((image, index) => (
+                            <div key={index} className="image-item">
+                                <span>{image.name}</span>
+                                <button type="button" onClick={() => handleRemoveImage(index)}>Remove</button>
+                            </div>
+                        ))}
+                    </div>
                 </div>
                 <div className="form-actions">
                     <button type="submit" className="submit-button">Save</button>

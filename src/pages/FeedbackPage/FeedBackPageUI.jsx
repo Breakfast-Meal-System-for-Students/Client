@@ -2,7 +2,17 @@ import React from 'react';
 import { Container, Typography, Box, Paper, CircularProgress, Alert, Avatar, Button, Rating, IconButton } from '@mui/material';
 import ReplyIcon from '@mui/icons-material/Reply';
 
-const FeedbackPageUI = ({ feedbackData, loading, error, filter, handleFilterChange, averageRating }) => {
+const FeedbackPageUI = ({
+  feedbackData,
+  loading,
+  error,
+  filter,
+  handleFilterChange,
+  averageRating,
+  pageIndex,
+  totalPages,
+  onPageChange
+}) => {
   return (
     <Container>
       {/* Average Rating Section */}
@@ -16,13 +26,24 @@ const FeedbackPageUI = ({ feedbackData, loading, error, filter, handleFilterChan
       {/* Filter Bar */}
       <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 3, mb: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-          <Button variant={filter === 'All' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('All')}>All</Button>
-          <Button variant={filter === '5' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('5')}>5 Stars</Button>
-          <Button variant={filter === '4' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('4')}>4 Stars</Button>
-          <Button variant={filter === '3' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('3')}>3 Stars</Button>
-          <Button variant={filter === '2' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('2')}>2 Stars</Button>
-          <Button variant={filter === '1' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('1')}>1 Star</Button>
-          <Button variant={filter === 'withImage' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('withImage')}>With Images/Videos</Button>
+          <Button variant={filter === 'All' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('All')}>
+            All
+          </Button>
+          <Button variant={filter === '5' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('5')}>
+            5 Stars
+          </Button>
+          <Button variant={filter === '4' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('4')}>
+            4 Stars
+          </Button>
+          <Button variant={filter === '3' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('3')}>
+            3 Stars
+          </Button>
+          <Button variant={filter === '2' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('2')}>
+            2 Stars
+          </Button>
+          <Button variant={filter === '1' ? 'contained' : 'outlined'} onClick={() => handleFilterChange('1')}>
+            1 Star
+          </Button>
         </Box>
       </Paper>
 
@@ -84,6 +105,27 @@ const FeedbackPageUI = ({ feedbackData, loading, error, filter, handleFilterChan
                 </IconButton>
               </Paper>
             ))}
+
+            {/* Pagination */}
+            <Box display="flex" justifyContent="center" mt={3}>
+              <Button
+                variant="contained"
+                disabled={pageIndex === 1}
+                onClick={() => onPageChange(pageIndex - 1)}
+              >
+                Previous
+              </Button>
+              <Typography variant="body1" sx={{ mx: 2 }}>
+                Page {pageIndex} of {totalPages}
+              </Typography>
+              <Button
+                variant="contained"
+                disabled={pageIndex === totalPages}
+                onClick={() => onPageChange(pageIndex + 1)}
+              >
+                Next
+              </Button>
+            </Box>
           </Box>
         ) : (
           <Typography>No feedback available.</Typography>

@@ -20,12 +20,13 @@ import MainLayout from "./components/MainLayout/index.jsx";
 import ShopPage from "./pages/ShopPage/index.jsx"; // Sửa tên chính xác
 import ProfilePage from "./pages/ProfilePage/index.jsx";
 import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
-import CouponPage from  "./pages/CouponPage/CouponList.jsx";
+import CouponPage from  "./pages/CouponPage/CouponPage.jsx";
 import ProductPage from "./pages/ProductPage/ProductPage.jsx";
 import StaffPage from "./pages/StaffPage/StaffPage.jsx";
 import AddProduct from "./pages/ProductPage/AddProduct"; // Import AddProduct
 import UserDetails from "./pages/CustomerPage/UserDetails.jsx";
 import AddCoupon from "./pages/CouponPage/AddCoupon.jsx";
+import FeedBackShop from './pages/FeedbackPage/FeedbackShop.jsx';
 
 function App() {
   return (
@@ -69,6 +70,10 @@ function App() {
             <Route
               path="/shop"
               element={<ProtectedRoute element={<ShopPage />} requiredRole={"Shop"} />}
+            />
+            <Route
+              path="/feedback-shop"
+              element={<ProtectedRoute element={<FeedBackShop />} requiredRole={"Shop"} />}
             />
             <Route
               path="/Coupon-page"
