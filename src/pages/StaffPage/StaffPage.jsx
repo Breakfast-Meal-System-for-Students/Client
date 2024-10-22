@@ -37,7 +37,7 @@ const StaffPage = () => {
         },
       });
       console.log("Response data:", response.data); // Log the response data
-      setStaff(response.data.data); 
+      setStaff(response.data.data.data); 
       setTotalCount(response.data.totalCount); 
     } catch (error) {
       console.error('Error fetching staff:', error);

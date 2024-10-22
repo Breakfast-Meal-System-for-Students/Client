@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import FeedbackPageUI from './FeedBackPageUI';
+import FeedBackPageUI from './FeedBackPageUI';
+import { useAuth } from '../../auth/AuthContext';
 
 const FeedbackPage = () => {
   const [feedbackData, setFeedbackData] = useState([]);
@@ -8,6 +9,9 @@ const FeedbackPage = () => {
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('All');
   const [averageRating, setAverageRating] = useState(0);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const { user } = useAuth(); // Assuming you have a hook to get user information
 
   // Function to calculate average rating
   const calculateAverageRating = (data) => {
@@ -16,11 +20,11 @@ const FeedbackPage = () => {
     return (totalRating / data.length).toFixed(1);
   };
 
-  // Function to fetch feedback based on the selected filter
-  const fetchFeedback = async (filter) => {
+  // Function to fetch feedback based on the selected filter and page index
+  const fetchFeedback = async (filter, page) => {
     setLoading(true);
     try {
-      let url = 'https://bms-fs-api.azurewebsites.net/api/Feedback?search=q&isDesc=true&pageIndex=1&pageSize=10'; // Adjusted URL
+      let url = `https://bms-fs-api.azurewebsites.net/api/Feedback?search=%20&isDesc=true&pageIndex=${page}&pageSize=6`;
 
       // Adjust the query params based on the selected filter
       if (filter === '5') {
@@ -30,15 +34,16 @@ const FeedbackPage = () => {
       } else if (filter === '3') {
         url += '&minRate=3&maxRate=4'; // 3-star feedback
       } else if (filter === '2') {
-        url += '&minRate=2&maxRate=3'; // 2-star feedback (between 2 and 3)
+        url += '&minRate=2&maxRate=3'; // 2-star feedback
       } else if (filter === '1') {
-        url += '&minRate=1&maxRate=2'; // 1-star feedback (between 1 and 2)
+        url += '&minRate=1&maxRate=2'; // 1-star feedback
       }
 
       const response = await axios.get(url);
       const feedback = response.data.data.data || [];
       setFeedbackData(feedback);
       setAverageRating(calculateAverageRating(feedback));
+      setTotalPages(response.data.data.lastPage); // Get the total pages
       setLoading(false);
     } catch (err) {
       setError(err);
@@ -46,24 +51,40 @@ const FeedbackPage = () => {
     }
   };
 
-  // Fetch feedback data when the component mounts or the filter changes
+  // Fetch feedback data when the component mounts or when the filter or page index changes
   useEffect(() => {
-    fetchFeedback(filter);
-  }, [filter]);
+    if (user && user.role === 'Admin') { // Check if the user is Admin
+      fetchFeedback(filter, pageIndex);
+    }
+  }, [filter, pageIndex, user]);
 
   // Handle filter change
   const handleFilterChange = (filterType) => {
     setFilter(filterType);
+    setPageIndex(1); // Reset to the first page when filter changes
   };
 
+  // Handle page change
+  const onPageChange = (newPageIndex) => {
+    setPageIndex(newPageIndex);
+  };
+
+  // Access control
+  if (!user || user.role !== 'Admin') {
+    return <div>Access Denied: You do not have permission to view this page.</div>;
+  }
+
   return (
-    <FeedbackPageUI 
+    <FeedBackPageUI 
       feedbackData={feedbackData}
       loading={loading}
       error={error}
       filter={filter}
       handleFilterChange={handleFilterChange}
       averageRating={averageRating}
+      pageIndex={pageIndex}
+      totalPages={totalPages}
+      onPageChange={onPageChange} // Pass the onPageChange function
     />
   );
 };

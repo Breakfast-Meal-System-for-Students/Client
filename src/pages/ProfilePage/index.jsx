@@ -19,6 +19,7 @@ export default function ProfilePage() {
     createDate: '',
     lastUpdateDate: '',
     role: '', // Change from array to string to reflect single role
+    shopId: '',
   });
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -54,7 +55,10 @@ export default function ProfilePage() {
             createDate: data.data.createDate,
             lastUpdateDate: data.data.lastUpdateDate,
             role: data.data.role,
+            shopId: data.data.shopId,
           });
+          localStorage.setItem ("shopId",data.data.shopId );
+          console.log (data.data.shopId);
         } else {
           console.error('Failed to fetch profile data');
         }

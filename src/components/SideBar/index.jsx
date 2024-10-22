@@ -32,7 +32,7 @@ const Sidebar = () => {
   let sidebarItems = [
     { text: 'Dashboard', icon: <HomeIcon />, path: "/" },
     { text: 'Staff', icon: <AnalyticsIcon />, path: "/manage-staff" },
-    { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/Feedback" },
+    { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/feedback-admin" },
     { text: 'Customer', icon: <PersonIcon />, path: "/customer-details" },
     { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/orders" },
     { text: 'Profile', icon: <PortraitIcon />, path: "/profile" },
@@ -50,11 +50,12 @@ const Sidebar = () => {
     ];
   } else if (user && user.role && user.role.includes("Shop")) {
     sidebarItems = [
-      { text: "Voucher", icon: <ConfirmationNumberIcon />, path: "/orders" },
+      { text: "Coupon", icon: <ConfirmationNumberIcon />, path: "/Coupon-page" },
       { text: "Breakfast-Menu", icon: <RestaurantMenuIcon />, path: "/Menu" },
-      { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/Feedback" },
+      { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/feedback-shop" },
       { text: "Package", icon: <Inventory2OutlinedIcon />, path: "/orders" },
       { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/orders" },
+      { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/orders" },
       { text: "Profile", icon: <PortraitIcon />, path: "/profile" },
     ];
   }
