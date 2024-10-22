@@ -60,7 +60,7 @@ function App() {
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Admin"} />}
             />
             <Route
-              path="/feedback"
+              path="/feedback-admin"
               element={<ProtectedRoute element={<FeedbackPage />} requiredRole={"Admin"} />}
             />
           </Route>
