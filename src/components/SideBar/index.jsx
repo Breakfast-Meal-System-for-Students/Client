@@ -32,7 +32,7 @@ const Sidebar = () => {
   let sidebarItems = [
     { text: 'Dashboard', icon: <HomeIcon />, path: "/" },
     { text: 'Staff', icon: <AnalyticsIcon />, path: "/manage-staff" },
-    { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/Feedback" },
+    { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/feedback-admin" },
     { text: 'Customer', icon: <PersonIcon />, path: "/customer-details" },
     { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/orders" },
     { text: 'Profile', icon: <PortraitIcon />, path: "/profile" },
