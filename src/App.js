@@ -15,13 +15,13 @@ import LoginPage from "./pages/LoginPage/index.jsx";
 import RegisterPage from "./pages/RegisterPage/index.jsx";
 import ProtectedRoute from "./ProtectedRoute.js";
 import MainLayout from "./components/MainLayout/index.jsx";
-import ShopPage from "./pages/ShopPage/index.jsx"; // Sửa tên chính xác
+import ShopPage from "./pages/ShopPage/index.jsx"; 
 import ProfilePage from "./pages/ProfilePage/index.jsx";
 import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
 import CouponPage from "./pages/CouponPage/CouponPage.jsx";
 import ProductPage from "./pages/ProductPage/ProductPage.jsx";
 import StaffPage from "./pages/StaffPage/StaffPage.jsx";
-import AddProduct from "./pages/ProductPage/AddProduct.jsx"; // Import AddProduct
+import AddProduct from "./pages/ProductPage/AddProduct.jsx";
 import UserDetails from "./pages/CustomerPage/UserDetails.jsx";
 import AddCoupon from "./pages/CouponPage/AddCoupon.jsx";
 import FeedBackShop from './pages/FeedbackPage/FeedbackShop.jsx';
@@ -68,7 +68,7 @@ function App() {
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Admin"} />}
             />
             <Route
-              path="/feedback-admin"
+              path="/admin/feedback-admin"
               element={<ProtectedRoute element={<FeedbackPage />} requiredRole={"Admin"} />}
             />
           </Route>
