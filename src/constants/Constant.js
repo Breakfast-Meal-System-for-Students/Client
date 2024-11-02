@@ -15,7 +15,6 @@ export const HTTP_HEADER_JSON = {
 export const ResponseData = async (res) => {
     try{
         const body = await res.json();
-        console.log(body.isSuccess);
         if (res.ok && body.isSuccess) {
             return {
                 ok: true,
