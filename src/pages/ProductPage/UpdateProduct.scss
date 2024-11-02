@@ -35,9 +35,9 @@
     font-weight: bold; /* Làm cho label đậm */
 }
 
-input[type="text"],
-input[type="number"],
-textarea {
+.input-text-update,
+.input-numbter-update,
+.input-textarea-update {
     width: 90%; /* Đặt chiều rộng ngắn hơn 100% */
     max-width: 350px; /* Chiều rộng tối đa */
     padding: 8px;
@@ -45,7 +45,7 @@ textarea {
     border-radius: 4px;
 }
 
-textarea {
+.input-textarea-update {
     height: 100px; /* Chiều cao cho textarea */
 }
 

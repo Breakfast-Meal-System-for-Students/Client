@@ -125,6 +125,7 @@ export default function Login() {
                 variant="outlined"
                 placeholder="Email"
                 name="email"
+                type= {'email'}
                 required
                 fullWidth
                 onChange={handleChange}

@@ -81,6 +81,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                     <div className="form-group">
                         <label className="label">Product Name</label>
                         <input
+                            className='input-text-update'
                             type="text"
                             name="name"
                             value={updatedProduct.name}
@@ -91,6 +92,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                     <div className="form-group">
                         <label className="label">Description</label>
                         <textarea
+                            className='input-textarea-update'
                             name="description"
                             value={updatedProduct.description}
                             onChange={handleChange}
@@ -100,6 +102,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                     <div className="form-group">
                         <label className="label">Price</label>
                         <input
+                            className='input-number-update'
                             type="number"
                             name="price"
                             value={updatedProduct.price}
@@ -112,6 +115,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                         {updatedProduct.images.map((img, index) => (
                             <div key={index} className="image-input">
                                 <input
+                                    className='input-text-update'
                                     type="text"
                                     value={img}
                                     onChange={(e) => handleImageChange(index, e.target.value)}

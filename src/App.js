@@ -28,6 +28,8 @@ import FeedBackShop from './pages/FeedbackPage/FeedbackShop.jsx';
 import OrderShop from './pages/OrderPage/OrderShop.jsx';
 import PackageAdmin from './pages/PackagePage/PackageAdmin.jsx';
 import { AuthProvider } from "./auth/AuthProvider.js";
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
