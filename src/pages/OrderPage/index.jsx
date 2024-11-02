@@ -1,11 +1,7 @@
 // index.jsx
 import React, { useEffect, useState } from 'react';
-import {
-  Button,Select,MenuItem,FormControl,InputLabel,Typography,Toolbar,TableBody,
-} from '@mui/material';
-import {
-  StyledPaper,StyledTableContainer,StyledTable,StyledTableHead,StyledTableRow,StyledTableCell,
-} from './ManageOrders.style';
+import { Button,Select,MenuItem,FormControl,InputLabel,Typography,Toolbar,TableBody,} from '@mui/material';
+import {StyledPaper,StyledTableContainer,StyledTable,StyledTableHead,StyledTableRow,StyledTableCell,} from './ManageOrders.style';
 
 const ManageOrdersPage = () => {
   const [orders, setOrders] = useState([]);

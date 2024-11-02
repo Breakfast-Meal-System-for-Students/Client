@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { TextField, Button, Box, Typography, Avatar, IconButton, InputAdornment } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -7,7 +7,9 @@ import LockIcon from '@mui/icons-material/Lock';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff'; // Import icon Visibility
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../auth/AuthContext';
+import { jwtDecode } from 'jwt-decode';
+import AuthContext from '../../auth/AuthContext';
+import { ApiLoginByAccount } from '../../services/AuthServices';
 
 const theme = createTheme({
   palette: {
@@ -21,39 +23,45 @@ const theme = createTheme({
 });
 
 export default function Login() {
+  const { setUser } = useContext(AuthContext)
+
   const [data, setData] = useState({
     email: '',
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false); // Thêm state để theo dõi trạng thái hiển thị mật khẩu
   const [error, setError] = useState('');
-  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmitLogin = async (e) => {
     e.preventDefault();
     if (!data.email || !data.password) {
-      setError('Please enter both email and password');
+      alert('Please enter both email and password');
       return;
     }
-
-    try {
-      const roles = await login(data.email, data.password);
-      console.log(roles);
-      if (roles.includes('Admin')) {
-        navigate('/');
-      } else if (roles.includes('Staff')) {
-        navigate('/home-staff');
-      } else if (roles.includes('Shop')) {
-        navigate('/shop');
-      } else {
-        setError('Unauthorized role');
-      }
-    } catch (error) {
-      setError('Login failed. Invalid email or password.');
+    const result = await ApiLoginByAccount(data);
+    if (result.ok) {
+      alert("Login successful! Welcome back!");
+      localStorage.setItem('token', result.body.data.token); // Lưu token vào localStorage
+      const decoded = jwtDecode(result.body.data.token);
+      setUser(decoded);
+      navigateAfterLogin(decoded);
+    } else {
+      alert(result.message);
     }
   };
 
+  const navigateAfterLogin = (decoded) => {
+    if (decoded.role.includes('Admin')) {
+      navigate('/admin');
+    } else if (decoded.role.includes('Staff')) {
+      navigate('/home-staff');
+    } else if (decoded.role.includes('Shop')) {
+      navigate('/shop');
+    } else {
+      alert('Unauthorized role');
+    }
+  }
   const handleChange = (event) => {
     setData({
       ...data,
@@ -100,7 +108,7 @@ export default function Login() {
             </Avatar>
           </Box>
 
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
+          <Box component="form" onSubmit={handleSubmitLogin} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
             <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2 }}>
               Member Login
             </Typography>

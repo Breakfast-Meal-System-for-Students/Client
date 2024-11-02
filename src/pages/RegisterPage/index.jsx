@@ -5,6 +5,8 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { StyledSelect } from './RegisterPage.style';
+import { ApiRegisterAccount } from '../../services/AuthServices';
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme({
   palette: {
@@ -17,15 +19,17 @@ const theme = createTheme({
   },
 });
 
+const emptyUserData = {
+  email: "",
+  firstName: "",
+  lastName: "",
+  password: ""
+};
 export default function Register() {
-  const [data, setData] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    password: ""
-  });
+  const [data, setData] = useState(emptyUserData);
   const [selectedRole, setSelectedRole] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // State cho hiển thị/ẩn mật khẩu
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleSelectChange = (event) => {
     setSelectedRole(event.target.value);
@@ -38,34 +42,39 @@ export default function Register() {
     });
   };
 
-  const handleSubmit = () => {
-    fetch(`https://bms-fs-api.azurewebsites.net/api/Auth/register?role=${selectedRole}`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => {
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-        setData({
-          email: "",
-          firstName: "",
-          lastName: "",
-          password: ""
-        });
-        console.log('Success:', data);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+  const handleSubmitRegister = async () => {
+    if (!isValidateForm()) {
+      return;
+    }
+    const result = await ApiRegisterAccount(data, selectedRole);
+    if (result.ok) {
+      setData(emptyUserData);
+      alert("Your account is successfully registered.");
+      navigate('/login');
+    } else {
+      alert(result.message);
+    }
   };
 
+  const isValidateForm = () => {
+    if (data.email === "" || data.email === "undefined") {
+      alert("Please provide a valid email address.");
+      return false;
+    }
+    if (data.firstName === "") {
+      alert("Please provide a valid firstName.");
+      return false;
+    }
+    if (data.lastName === "") {
+      alert("Please provide a valid lastName.");
+      return false;
+    }
+    if (data.password === "") {
+      alert("Please provide a valid password.");
+      return false;
+    }
+    return true;
+  }
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);  
   };
@@ -193,7 +202,7 @@ export default function Register() {
                 background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)', 
                 boxShadow: '0px 6px 12px rgba(0,0,0,0.1)', 
               }}
-              onClick={handleSubmit}
+              onClick={handleSubmitRegister}
             >
               Sign Up
             </Button>

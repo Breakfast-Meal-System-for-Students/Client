@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import './CouponPage.scss';
-import { useAuth } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import AuthContext from '../../auth/AuthContext';
 
 const CouponPage = () => {
-  const { token } = useAuth();
+  const { user: { token } } = useContext(AuthContext);
   const [coupons, setCoupons] = useState([]);
   const [shopId, setShopId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);

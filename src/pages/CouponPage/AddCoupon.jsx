@@ -1,67 +1,165 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useAuth } from '../../auth/AuthContext'; // Assuming you're using this AuthContext to handle auth
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './AddCoupon.scss';
 
-const AddCoupon = () => {
-  const { token } = useAuth(); // Get token from AuthContext
-  const [newCoupon, setNewCoupon] = useState({
-    name: '',
-    startDate: '',
-    endDate: '',
-    percentDiscount: '',
-    maxDiscount: '',
-    minPrice: '',
-    minDiscount: ''
-  });
-  const navigate = useNavigate(); // Use useNavigate to navigate
+const AddCouponPage = () => {
+    const navigate = useNavigate();
+    const [name, setCouponName] = useState('');
+    const [discount, setDiscount] = useState('');
+    const [description, setDescription] = useState('');
+    const [images, setImages] = useState([]); // Store multiple images
+    const [errors, setErrors] = useState({});
+    const [shopId, setShopId] = useState(null);
+    const [successMessage, setSuccessMessage] = useState('');
 
-  const handleInputChange = (e) => {
-    setNewCoupon({
-      ...newCoupon,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const addCoupon = async () => {
-    try {
-      const response = await axios.post('https://bms-fs-api.azurewebsites.net/api/Coupon', newCoupon, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Pass the token from AuthContext
+    useEffect(() => {
+        const storedShopId = localStorage.getItem('shopId');
+        if (storedShopId) {
+            setShopId(storedShopId);
+            console.log('Shop ID:', storedShopId);
+        } else {
+            alert('No shop ID found. Please log in as a shop.');
+            navigate('/login');
         }
-      });
-      console.log( response.data);
-      navigate('/coupons'); // Navigate to coupon list after successful addition
-    } catch (error) {
-      console.error('Failed to add coupon', error);
-    }
-  };
+    }, [navigate]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    addCoupon();
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-  return (
-    <div className="add-coupon-container">
-      <h2 className="title">Add New Coupon</h2>
-      <form className="add-coupon-form" onSubmit={handleSubmit}>
-        <input type="text" name="name" placeholder="Coupon Name" onChange={handleInputChange} required />
-        <input type="datetime-local" name="startDate" onChange={handleInputChange} required />
-        <input type="datetime-local" name="endDate" onChange={handleInputChange} required />
-        <input type="number" name="percentDiscount" placeholder="Percent Discount" onChange={handleInputChange} required />
-        <input type="number" name="maxDiscount" placeholder="Max Discount" onChange={handleInputChange} required />
-        <input type="number" name="minPrice" placeholder="Min Price" onChange={handleInputChange} required />
-        <input type="number" name="minDiscount" placeholder="Min Discount" onChange={handleInputChange} required />
-        
-        <div className="button-group">
-          <button type="submit" className="submit-button">Add Coupon</button>
-          <button onClick={() => navigate('/Coupon-page')} className="cancel-button">Cancel</button>
+        const validationErrors = {};
+        if (!name) validationErrors.name = 'Coupon name is required';
+        if (!discount) {
+            validationErrors.discount = 'Discount is required';
+        } else if (discount <= 0) {
+            validationErrors.discount = 'Discount must be greater than 0';
+        }
+        if (!description) validationErrors.description = 'Description is required';
+        if (images.length === 0) validationErrors.image = 'At least one coupon image is required';
+
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        if (!shopId) {
+            alert('No shop ID found. Please log in as a shop.');
+            return;
+        }
+
+        // Create a new FormData object for the image uploads
+        const formData = new FormData();
+        images.forEach(image => formData.append('images', image)); // Append all images
+
+        try {
+            console.log('Submitting coupon with details:', { name, discount, description, shopId });
+
+            const response = await createCoupon({ name, description, discount, shopId }, formData);
+
+            const data = await response.json();
+
+            if (response.ok && data.isSuccess) {
+                setSuccessMessage('Coupon added successfully!');
+                setTimeout(() => {
+                    navigate('/Coupon-page');
+                }, 3000);
+            } else {
+                const errorMessages = Object.entries(data.errors).map(([key, value]) =>
+                    `${key}: ${value.join(', ')}`
+                ).join('\n');
+                alert(`Failed to add coupon: ${data.title}\n${errorMessages}`);
+            }
+        } catch (error) {
+            console.error('Error adding coupon:', error);
+            alert('An error occurred while adding the coupon');
+        }
+    };
+
+    const createCoupon = (couponDetails, formData) => {
+        const { name, description, discount, shopId } = couponDetails;
+        const url = `https://bms-fs-api.azurewebsites.net/api/Coupon?name=${encodeURIComponent(name)}&description=${encodeURIComponent(description)}&discount=${encodeURIComponent(discount)}&shopId=${encodeURIComponent(shopId)}`;
+
+        return fetch(url, {
+            method: 'POST',
+            body: formData,
+        });
+    };
+
+    const handleCancel = () => {
+        navigate('/Coupon-page');
+    };
+
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        setImages(prevImages => [...prevImages, ...files]); // Append new images
+    };
+
+    const handleRemoveImage = (index) => {
+        setImages(images.filter((_, i) => i !== index)); // Remove selected image
+    };
+
+    return (
+        <div className="add-coupon-page">
+            <h1 className="form-header">Add New Coupon</h1>
+            {successMessage && <p className="success-message">{successMessage}</p>}
+            <form className="add-coupon-form" onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="couponName">Coupon Name *</label>
+                    <input
+                        type="text"
+                        id="couponName"
+                        placeholder="Enter coupon name"
+                        value={name}
+                        onChange={(e) => setCouponName(e.target.value)}
+                    />
+                    {errors.name && <div className="error-tooltip">{errors.name}</div>}
+                </div>
+                <div className="form-group">
+                    <label htmlFor="discount">Discount *</label>
+                    <input
+                        type="number"
+                        id="discount"
+                        placeholder="Enter discount"
+                        value={discount}
+                        onChange={(e) => setDiscount(e.target.value)}
+                    />
+                    {errors.discount && <div className="error-tooltip">{errors.discount}</div>}
+                </div>
+                <div className="form-group">
+                    <label htmlFor="description">Description *</label>
+                    <textarea
+                        id="description"
+                        placeholder="Enter description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                    {errors.description && <div className="error-tooltip">{errors.description}</div>}
+                </div>
+                <div className="form-group">
+                    <label htmlFor="images">Coupon Images *</label>
+                    <input
+                        type="file"
+                        id="images"
+                        accept="image/*"
+                        multiple // Allow multiple file selection
+                        onChange={handleImageChange}
+                    />
+                    {errors.image && <div className="error-tooltip">{errors.image}</div>}
+                    <div className="image-preview">
+                        {images.map((image, index) => (
+                            <div key={index} className="image-item">
+                                <span>{image.name}</span>
+                                <button type="button" onClick={() => handleRemoveImage(index)}>Remove</button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="form-actions">
+                    <button type="submit" className="submit-button">Save</button>
+                    <button type="button" className="cancel-button" onClick={handleCancel}>Cancel</button>
+                </div>
+            </form>
         </div>
-      </form>
-    </div>
-  );
+    );
 };
 
-export default AddCoupon;
+export default AddCouponPage;

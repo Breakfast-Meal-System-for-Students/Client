@@ -44,9 +44,9 @@ function UserDetails() {
           }
         );
 
-        // Check that response.data contains a valid structure
-        if (response.data && Array.isArray(response.data.data)) {
-          setUsers(response.data.data.data); // Set users if the data array is found
+        // Access the nested data structure
+        if (response.data && response.data.data && Array.isArray(response.data.data.data)) {
+          setUsers(response.data.data.data); // Set the correct users array
         } else {
           console.error("API response does not contain a valid user array:", response.data);
           setUsers([]); // Fallback to an empty array if data is not as expected
@@ -85,7 +85,7 @@ function UserDetails() {
   return (
     <TableContainer>
       <h2 style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-      Customer Details
+        Customer Details
         <TextField
           placeholder="Search Customer..."
           variant="outlined"
@@ -124,14 +124,13 @@ function UserDetails() {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone || 'N/A'}</TableCell> {/* Handle null phone */}
                 <TableCell>
-                  <img src={user.avatar} alt="avatar" width="40" height="40" style={{ borderRadius: '50%' }} />
+                  {user.avatar ? (
+                    <img src={user.avatar} alt="avatar" width="40" height="40" style={{ borderRadius: '50%' }} />
+                  ) : 'N/A'}
                 </TableCell>
                 <TableCell>
                   <ActionButton>
                     <VisibilityIcon color="primary" />
-                  </ActionButton>
-                  <ActionButton>
-                    <EditIcon color="secondary" />
                   </ActionButton>
                   <ActionButton>
                     <DeleteIcon color="error" />

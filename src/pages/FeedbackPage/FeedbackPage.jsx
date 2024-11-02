@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import FeedBackPageUI from './FeedBackPageUI';
-import { useAuth } from '../../auth/AuthContext';
+import AuthContext from '../../auth/AuthContext';
 
 const FeedbackPage = () => {
   const [feedbackData, setFeedbackData] = useState([]);
@@ -11,7 +11,7 @@ const FeedbackPage = () => {
   const [averageRating, setAverageRating] = useState(0);
   const [pageIndex, setPageIndex] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const { user } = useAuth(); // Assuming you have a hook to get user information
+  const { user: { token, role } } = useContext(AuthContext);
 
   // Function to calculate average rating
   const calculateAverageRating = (data) => {
@@ -53,10 +53,10 @@ const FeedbackPage = () => {
 
   // Fetch feedback data when the component mounts or when the filter or page index changes
   useEffect(() => {
-    if (user && user.role === 'Admin') { // Check if the user is Admin
+    if (role === 'Admin') { // Check if the user is Admin
       fetchFeedback(filter, pageIndex);
     }
-  }, [filter, pageIndex, user]);
+  }, [filter, pageIndex]);
 
   // Handle filter change
   const handleFilterChange = (filterType) => {
@@ -70,7 +70,7 @@ const FeedbackPage = () => {
   };
 
   // Access control
-  if (!user || user.role !== 'Admin') {
+  if (role !== 'Admin') {
     return <div>Access Denied: You do not have permission to view this page.</div>;
   }
 

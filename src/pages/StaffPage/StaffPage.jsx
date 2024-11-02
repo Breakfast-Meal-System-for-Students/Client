@@ -4,7 +4,6 @@ import { TextField, TableContainer, Paper, Table, TableHead, TableRow, TableCell
 import SearchIcon from '@mui/icons-material/Search';
 import './StaffPage.scss'; 
 import axios from 'axios';
-import { useAuth } from '../../auth/AuthContext';
 
 const StaffPage = () => {
   const [staff, setStaff] = useState([]);
@@ -21,17 +20,16 @@ const StaffPage = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [staffToDelete, setStaffToDelete] = useState(null);
 
-  const { user } = useAuth();
-
+  // Fetch staff data based on search term and pagination
   const fetchStaff = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       alert("No authentication token found. Please log in.");
       return;
     }
-  
+
     try {
-      const response = await axios.get(`https://bms-fs-api.azurewebsites.net/api/Staff/GetListStaff?search=a&isDesc=true&pageIndex=${pageIndex}&pageSize=${pageSize}`, {
+      const response = await axios.get(`https://bms-fs-api.azurewebsites.net/api/Staff/GetListStaff?status=active&search=${searchTerm}&isDesc=true&pageIndex=${pageIndex}&pageSize=${pageSize}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -45,8 +43,13 @@ const StaffPage = () => {
     }
   };
 
+  // Debouncing the search term to delay API calls while user is typing
   useEffect(() => {
-    fetchStaff();
+    const delayDebounceFn = setTimeout(() => {
+      fetchStaff();
+    }, 500);  // Adjust the debounce time as needed
+
+    return () => clearTimeout(delayDebounceFn);  // Cleanup the timeout
   }, [searchTerm, pageIndex]);
 
   const handleAddStaff = async () => {
