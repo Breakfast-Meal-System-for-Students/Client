@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import './ProductPage.scss';
 import { useNavigate } from 'react-router-dom';
+import { Grid } from '@mui/material';
 
 const API = 'https://bms-fs-api.azurewebsites.net/api/Product'; // Base API URL
 
@@ -59,7 +60,7 @@ const ProductPage = () => {
     };
 
     const handleAddProduct = () => {
-        navigate('/add-product'); // Navigate to add product page
+        navigate('/shop/add-product'); // Navigate to add product page
     };
 
     const handleDeleteProduct = async (productId) => {
@@ -94,22 +95,24 @@ const ProductPage = () => {
                     <span className="add-icon">➕</span> Add Product
                 </button>
             </div>
-            <div className="product-grid">
+            <Grid container spacing={2}>
                 {products.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        product={{
-                            id: product.id,
-                            name: product.name,
-                            description: product.description,
-                            price: product.price,
-                            imageUrl: product.images?.[0]?.url || '', // Safely check for images
-                        }}
-                        onEdit={() => console.log('Edit product', product.id)}
-                        onDelete={() => handleDeleteProduct(product.id)} // Pass delete handler
-                    />
+                      <Grid item xs={6} sm={6} md={6} lg={4} xl={2} >
+                      <ProductCard
+                          key={product.id}
+                          product={{
+                              id: product.id,
+                              name: product.name,
+                              description: product.description,
+                              price: product.price,
+                              imageUrl: product.images?.[0]?.url || '', // Safely check for images
+                          }}
+                          onEdit={() => console.log('Edit product', product.id)}
+                          onDelete={() => handleDeleteProduct(product.id)} // Pass delete handler
+                      />
+                  </Grid>
                 ))}
-            </div>
+            </Grid>
             <div className="pagination">
                 <button
                     onClick={() => handlePageChange(pageIndex - 1)}

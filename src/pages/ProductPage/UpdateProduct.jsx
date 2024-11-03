@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './UpdateProduct.scss';
+import {
+    Dialog, DialogTitle, DialogContent, DialogActions,
+    TextField, Button, IconButton, Box, Typography, Grid,
+    Tooltip, Avatar
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { ApiUpdateProduct } from '../../services/ProductServices';
 
 const UpdateProduct = ({ product, onClose, onSave }) => {
     const [updatedProduct, setUpdatedProduct] = useState({
@@ -9,7 +17,8 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         price: product.price || 0,
         images: product.images || [],
     });
-
+    const [errors, setErrors] = useState({});
+    const [imageFiles, setImageFiles] = useState([]);
     const handleChange = (e) => {
         const { name, value } = e.target;
         setUpdatedProduct({
@@ -24,49 +33,21 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         setUpdatedProduct({ ...updatedProduct, images: newImages });
     };
 
+    const handleRemoveImage = (index) => {
+        const newFiles = [...imageFiles];
+        newFiles.splice(index, 1);
+        setImageFiles(newFiles);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Kiểm tra xem có trường nào được thay đổi hay không
-        const isUnchanged = (
-            updatedProduct.name === product.name &&
-            updatedProduct.description === product.description &&
-            updatedProduct.price === product.price &&
-            JSON.stringify(updatedProduct.images) === JSON.stringify(product.images)
-        );
-
-        if (isUnchanged) {
-            alert('No changes made. Please update at least one field.'); // Thông báo cho người dùng
-            return;
-        }
-
-        try {
-            const formData = new FormData();
-            formData.append('name', updatedProduct.name);
-            formData.append('description', updatedProduct.description);
-            formData.append('price', updatedProduct.price);
-
-            updatedProduct.images.forEach((img, index) => {
-                formData.append(`images[${index}]`, img);
-            });
-
-            const response = await axios.put(
-                `https://bms-fs-api.azurewebsites.net/api/Product/${product.id}`,
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }
-            );
-
-            console.log('Product updated successfully:', response.data);
-            alert('Cập nhật món thành công!'); // Thông báo thành công
+        const result = await ApiUpdateProduct(updatedProduct, product.id);
+        if (result.ok) {
+            alert('Dish updated successfully.');
             onSave(product.id, updatedProduct);
             onClose();
-        } catch (error) {
-            console.error('Error updating product:', error.response ? error.response.data : error.message);
-            alert('Có lỗi xảy ra trong quá trình cập nhật món. Vui lòng thử lại.'); // Thông báo lỗi
+        } else {
+            alert(result.message);
         }
     };
 

@@ -3,6 +3,7 @@ import './ProductCard.scss';
 import UpdateIcon from '@mui/icons-material/Update';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import UpdateProduct from './UpdateProduct';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
 
 const ProductCard = ({ product, onDelete }) => {
     const [isPopupOpen, setPopupOpen] = useState(false);
@@ -36,18 +37,21 @@ const ProductCard = ({ product, onDelete }) => {
     };
 
     return (
-        <div className="product-card">
-            <img 
+        <div className="product-card" style={{height:450}}>
+            <img style={{width:'100%',height:170,objectFit:'cover'}}
                 src={product.imageUrl || 'default-image-url.jpg'} 
                 alt={product.name} 
                 className="product-image" 
             />
-            <h3>{product.name}</h3>
-            <p>Price: ${product.price?.toFixed(2)}</p>
-            <p>{product.description}</p>
+            <div style={{height:150}}>
+                <h3>{product.name}</h3>
+                <p>Price: ${product.price?.toFixed(2)}</p>
+                <p>{product.description}</p>
+            </div>
+            
             <div className="card-actions">
                 <button onClick={handleEdit} className="edit-button">
-                    <UpdateIcon/>
+                    <BorderColorIcon/>
                 </button>
                 <button onClick={onDelete} className="delete-button">
                     <DeleteOutlineIcon/>

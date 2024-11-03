@@ -60,8 +60,8 @@ const AddProductPage = () => {
             if (response.ok && data.isSuccess) {
                 setSuccessMessage('Product added successfully!');
                 setTimeout(() => {
-                    navigate('/Menu');
-                }, 5000);
+                    navigate('/shop/menu');
+                }, 2000);
             } else {
                 const errorMessages = Object.entries(data.errors).map(([key, value]) =>
                     `${key}: ${value.join(', ')}`

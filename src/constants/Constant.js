@@ -9,6 +9,9 @@ export const HTTP_SERVER = "https://bms-fs-api.azurewebsites.net";
 export const HTTP_HEADER_JSON = {
     'Content-Type': 'application/json'
 }
+export const HTTP_MULTIPART_FORM_DATA = {
+    'accept': '*/*',
+}
 /*
  ** RESPONSE CONFIG
  */
@@ -42,3 +45,7 @@ export const ResponseData = async (res) => {
  */
 export const API_REGISTER_ACCOUNT = HTTP_SERVER + "/api/Auth/register";
 export const API_LOGIN_ACCOUNT = HTTP_SERVER + "/api/Auth/login";
+/*
+ ** API PRODUCT
+ */
+ export const AIP_UPDATE_PRODUCT = HTTP_SERVER + "/api/Product/";
