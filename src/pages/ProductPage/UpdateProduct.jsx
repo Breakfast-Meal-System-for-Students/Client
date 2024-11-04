@@ -15,7 +15,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         name: product.name || '',
         description: product.description || '',
         price: product.price || 0,
-        images: product.images || [],
+        images: [],
     });
     const [errors, setErrors] = useState({});
     const [imageFiles, setImageFiles] = useState([]);
@@ -27,16 +27,23 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         });
     };
 
-    const handleImageChange = (index, newUrl) => {
-        const newImages = [...updatedProduct.images];
-        newImages[index] = newUrl;
-        setUpdatedProduct({ ...updatedProduct, images: newImages });
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files); // Lấy tất cả tệp hình ảnh
+        const newImages = files.map(file => URL.createObjectURL(file)); // Tạo URL cho từng tệp
+        setImageFiles(prev => [...prev, ...files]); // Cập nhật mảng file
+        setUpdatedProduct(prev => ({
+            ...prev,
+            images: [...prev.images, ...newImages], // Cập nhật hình ảnh với URL mới
+        }));
     };
 
     const handleRemoveImage = (index) => {
         const newFiles = [...imageFiles];
-        newFiles.splice(index, 1);
+        newFiles.splice(index, 1); // Xóa file tại chỉ số index
+        const newImages = [...updatedProduct.images];
+        newImages.splice(index, 1); // Xóa URL hình ảnh tương ứng
         setImageFiles(newFiles);
+        setUpdatedProduct(prev => ({ ...prev, images: newImages }));
     };
 
     const handleSubmit = async (e) => {
@@ -44,7 +51,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         const result = await ApiUpdateProduct(updatedProduct, product.id);
         if (result.ok) {
             alert('Dish updated successfully.');
-            onSave(product.id, updatedProduct);
+            onSave();
             onClose();
         } else {
             alert(result.message);
@@ -52,69 +59,118 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
     };
 
     return (
-        <div className="popup-overlay">
-            <div className="popup-content">
-                <div className="popup-header">
-                    <h2>Edit Product</h2>
-                    <button className="close-button" onClick={onClose}>X</button>
-                </div>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label className="label">Product Name</label>
-                        <input
-                            className='input-text-update'
-                            type="text"
+        <Dialog open={true} onClose={onClose} fullWidth maxWidth="sm">
+            <DialogTitle>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Typography variant="h6">Edit Product</Typography>
+                    <IconButton onClick={onClose}>
+                        <CloseIcon />
+                    </IconButton>
+                </Box>
+            </DialogTitle>
+            <form onSubmit={handleSubmit}>
+                <DialogContent dividers>
+                    <Box display="flex" flexDirection="column" gap={2}>
+                        <TextField
+                            label="Product Name"
                             name="name"
                             value={updatedProduct.name}
                             onChange={handleChange}
+                            fullWidth
                             required
                         />
-                    </div>
-                    <div className="form-group">
-                        <label className="label">Description</label>
-                        <textarea
-                            className='input-textarea-update'
+                    <TextField
+                            label="Description"
                             name="description"
                             value={updatedProduct.description}
                             onChange={handleChange}
+                            fullWidth
+                            multiline
+                            rows={3}
                             required
                         />
-                    </div>
-                    <div className="form-group">
-                        <label className="label">Price</label>
-                        <input
-                            className='input-number-update'
-                            type="number"
+                    <TextField
+                            label="Price"
                             name="price"
+                            type="number"
                             value={updatedProduct.price}
                             onChange={handleChange}
+                            fullWidth
                             required
                         />
-                    </div>
-                    <div className="form-group">
-                        <label className="label">Images</label>
-                        {updatedProduct.images.map((img, index) => (
-                            <div key={index} className="image-input">
+                     <Box>
+                            <Typography variant="subtitle1" gutterBottom>
+                                Product Images *
+                            </Typography>
+                            <Button
+                                variant="contained"
+                                component="label"
+                            >
+                                Upload Images
                                 <input
-                                    className='input-text-update'
-                                    type="text"
-                                    value={img}
-                                    onChange={(e) => handleImageChange(index, e.target.value)}
+                                    name="images"
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    hidden
+                                    onChange={handleImageChange}
                                 />
-                                <button type="button" onClick={() => handleImageChange(index, '')}>
-                                    Remove
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="form-actions">
-                        <button type="submit" className="save-button">Save</button>
-                        <button type="button" className="cancel-button" onClick={onClose}>Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                                </Button>
+                            {errors.image && (
+                                <Tooltip title={errors.image} arrow>
+                                    <Typography color="error" variant="caption">
+                                        {errors.image}
+                                    </Typography>
+                                </Tooltip>
+                            )}
+                            <Grid container spacing={2} marginTop={1}>
+                                {imageFiles.map((file, index) => (
+                                    <Grid item key={index}>
+                                        <Box display="flex" alignItems="center" flexDirection="column">
+                                            <Avatar
+                                                src={URL.createObjectURL(file)}
+                                                alt={`image-${index}`}
+                                                sx={{ width: 64, height: 64, marginBottom: 1 }}
+                                            />
+                                            <IconButton
+                                                color="error"
+                                                onClick={() => handleRemoveImage(index)}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Box>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        </Box>
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button type="submit" variant="contained" color="primary">
+                        Save
+                    </Button>
+                    <Button onClick={onClose} variant="outlined" color="secondary">
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </form>
+        </Dialog>
     );
 };
 
 export default UpdateProduct;
+/*
+     const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedProduct((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleImageChange = (index, value) => {
+    const newImages = [...updatedProduct.images];
+    newImages[index] = value;
+    setUpdatedProduct((prev) => ({ ...prev, images: newImages }));
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(updatedProduct);
+  };
+*/

@@ -3,6 +3,7 @@ import ProductCard from './ProductCard';
 import './ProductPage.scss';
 import { useNavigate } from 'react-router-dom';
 import { Grid } from '@mui/material';
+import { ApiGetProductsByShopId } from '../../services/ProductServices';
 
 const API = 'https://bms-fs-api.azurewebsites.net/api/Product'; // Base API URL
 
@@ -28,24 +29,17 @@ const ProductPage = () => {
     const navigate = useNavigate();
 
     const fetchProducts = async () => {
-        const shopId = localStorage.getItem('shopId'); // Retrieve shopId from local storage
+        const shopId = localStorage.getItem('shopId');
         if (!shopId) {
             console.error('No shopId found in local storage');
             return;
         }
-
-        try {
-            const responseData = await getProducts(shopId, searchTerm, pageIndex, pageSize);
-            console.log(responseData.data); 
-            const productData = responseData?.data?.data; // Adjust based on the structure of the response
-            if (productData) {
-                setProducts(productData); // Set products if available
-                setTotalPages(responseData?.data?.lastPage || 0); // Set total pages if available
-            } else {
-                console.error('Unexpected data structure', responseData);
-            }
-        } catch (error) {
-            console.error('Error fetching products:', error);
+        const result = await ApiGetProductsByShopId(shopId, searchTerm, true, pageIndex, pageSize);
+        if (result.ok) {
+            setProducts(result.body.data.data);
+            setTotalPages(result.body.data.lastPage || 0); 
+        } else {
+            alert(result.message);
         }
     };
 
@@ -97,7 +91,7 @@ const ProductPage = () => {
             </div>
             <Grid container spacing={2}>
                 {products.map((product) => (
-                      <Grid item xs={6} sm={6} md={6} lg={4} xl={2} >
+                      <Grid item xs={6} sm={6} md={6} lg={4} xl={2} key={product.id}>
                       <ProductCard
                           key={product.id}
                           product={{
@@ -107,7 +101,7 @@ const ProductPage = () => {
                               price: product.price,
                               imageUrl: product.images?.[0]?.url || '', // Safely check for images
                           }}
-                          onEdit={() => console.log('Edit product', product.id)}
+                          onEdit={fetchProducts}
                           onDelete={() => handleDeleteProduct(product.id)} // Pass delete handler
                       />
                   </Grid>

@@ -1,41 +1,17 @@
 import React, { useState } from 'react';
 import './ProductCard.scss';
-import UpdateIcon from '@mui/icons-material/Update';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import UpdateProduct from './UpdateProduct';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 
-const ProductCard = ({ product, onDelete }) => {
+const ProductCard = ({ product, onDelete, onEdit}) => {
     const [isPopupOpen, setPopupOpen] = useState(false);
 
     const handleEdit = () => {
         setPopupOpen(true);
     };
 
-    const handleSave = async (id, updatedProduct) => {
-        try {
-            const response = await fetch(`https://bms-fs-api.azurewebsites.net/api/Product/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedProduct),
-            });
-
-            if (response.ok) {
-                alert('Product updated successfully!');
-                // Có thể cần cập nhật lại danh sách sản phẩm ở đây
-            } else {
-                alert('Failed to update product.');
-            }
-        } catch (error) {
-            console.error('Error updating product:', error);
-            alert('Error updating product.');
-        } finally {
-            setPopupOpen(false);
-        }
-    };
-
+   
     return (
         <div className="product-card" style={{height:450}}>
             <img style={{width:'100%',height:170,objectFit:'cover'}}
@@ -61,7 +37,7 @@ const ProductCard = ({ product, onDelete }) => {
                 <UpdateProduct 
                     product={product} 
                     onClose={() => setPopupOpen(false)} 
-                    onSave={handleSave} 
+                    onSave={onEdit} 
                 />
             }
         </div>

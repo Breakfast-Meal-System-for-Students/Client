@@ -49,3 +49,4 @@ export const API_LOGIN_ACCOUNT = HTTP_SERVER + "/api/Auth/login";
  ** API PRODUCT
  */
  export const AIP_UPDATE_PRODUCT = HTTP_SERVER + "/api/Product/";
+ export const API_GET_PRODUCTS_BY_SHOP_ID = HTTP_SERVER + "/api/Product/all-product-by-shop-id";
