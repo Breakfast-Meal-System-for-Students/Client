@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AddProductPage.scss';
+import { ApiCreateProduct } from '../../services/ProductServices';
 
 const AddProductPage = () => {
     const navigate = useNavigate();
@@ -46,42 +47,15 @@ const AddProductPage = () => {
             return;
         }
 
-        // Create a new FormData object for the image uploads
-        const formData = new FormData();
-        images.forEach(image => formData.append('images', image)); // Append all images
-
-        try {
-            console.log('Submitting product with details:', { name, price, description, shopId });
-
-            const response = await createProduct({ name, description, price, shopId }, formData);
-
-            const data = await response.json();
-
-            if (response.ok && data.isSuccess) {
-                setSuccessMessage('Product added successfully!');
-                setTimeout(() => {
-                    navigate('/shop/menu');
-                }, 2000);
-            } else {
-                const errorMessages = Object.entries(data.errors).map(([key, value]) =>
-                    `${key}: ${value.join(', ')}`
-                ).join('\n');
-                alert(`Failed to add product: ${data.title}\n${errorMessages}`);
-            }
-        } catch (error) {
-            console.error('Error adding product:', error);
-            alert('An error occurred while adding the product');
+        const result = await ApiCreateProduct(name, description, price, shopId, images);
+        if (result.ok) {
+            setSuccessMessage('Create product successfully!');
+            setTimeout(() => {
+                navigate('/shop/menu');
+            }, 2000);
+        } else {
+            alert(result.message);
         }
-    };
-
-    const createProduct = (productDetails, formData) => {
-        const { name, description, price, shopId } = productDetails;
-        const url = `https://bms-fs-api.azurewebsites.net/api/Product?name=${encodeURIComponent(name)}&description=${encodeURIComponent(description)}&price=${encodeURIComponent(price)}&shopId=${encodeURIComponent(shopId)}`;
-
-        return fetch(url, {
-            method: 'POST',
-            body: formData,
-        });
     };
 
     const handleCancel = () => {

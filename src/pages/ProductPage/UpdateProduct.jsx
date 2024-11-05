@@ -29,8 +29,8 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files); // Lấy tất cả tệp hình ảnh
-        const newImages = files.map(file => URL.createObjectURL(file)); // Tạo URL cho từng tệp
         setImageFiles(prev => [...prev, ...files]); // Cập nhật mảng file
+        const newImages = files.map(file => URL.createObjectURL(file)); // Tạo URL cho từng tệp
         setUpdatedProduct(prev => ({
             ...prev,
             images: [...prev.images, ...newImages], // Cập nhật hình ảnh với URL mới
@@ -40,15 +40,17 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
     const handleRemoveImage = (index) => {
         const newFiles = [...imageFiles];
         newFiles.splice(index, 1); // Xóa file tại chỉ số index
+
         const newImages = [...updatedProduct.images];
         newImages.splice(index, 1); // Xóa URL hình ảnh tương ứng
+
         setImageFiles(newFiles);
         setUpdatedProduct(prev => ({ ...prev, images: newImages }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await ApiUpdateProduct(updatedProduct, product.id);
+        const result = await ApiUpdateProduct(updatedProduct, product.id, imageFiles);
         if (result.ok) {
             alert('Dish updated successfully.');
             onSave();
@@ -159,6 +161,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
 };
 
 export default UpdateProduct;
+
 /*
      const handleChange = (e) => {
     const { name, value } = e.target;
