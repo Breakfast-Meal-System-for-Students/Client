@@ -179,13 +179,23 @@ export default function Login() {
               LOGIN
             </Button>
 
-            <Typography variant="body2" align="center" sx={{ marginBottom: 2 }}>
-              <RouterLink to="/forgot-password" style={{ textDecoration: 'none', color: '#3498db' }}>
-                Forgot Username / Password?
-              </RouterLink>
-            </Typography>
+            <Box 
+              sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}
+            >
+              <Typography variant="body2">
+                <RouterLink to="/forgot-password" style={{ textDecoration: 'none', color: '#3498db' }}>
+                  Forgot Password
+                </RouterLink>
+              </Typography>
+              
+              <Typography variant="body2">
+                <RouterLink to="/join-shop" style={{ textDecoration: 'none', color: '#3498db' }}>
+                  Join as a Shop Owner
+                </RouterLink>
+              </Typography>
+            </Box>
 
-            <Typography variant="body2" align="center">
+            <Typography variant="body2" align="center" sx={{ marginBottom: 2 }}>
               <RouterLink to="/register" style={{ textDecoration: 'none', color: '#3498db' }}>
                 Create your Account →
               </RouterLink>

@@ -30,6 +30,7 @@ import PackageAdmin from './pages/PackagePage/PackageAdmin.jsx';
 import { AuthProvider } from "./auth/AuthProvider.js";
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ShopRegister from "./pages/ShopRegister/index.jsx";
 import ForgotPassword from "./pages/ForgotPassword/index.jsx";
 
 function App() {
@@ -42,7 +43,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          
+          <Route path="/join-shop" element={<ShopRegister />} />
           {/* Admin Routes */}
           <Route element={<MainLayout />} path="/admin">
             <Route

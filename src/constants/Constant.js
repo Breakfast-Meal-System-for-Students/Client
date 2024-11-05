@@ -52,6 +52,14 @@ export const ResponseData = async (res) => {
  export const ENABLE_DEBUG_DIGIT_CODE = true;
  export const DIGIT_CODE_DEFAULT = "123456";
 
+ /*
+ ** USER ROLE
+ */
+ export const SHOP_ADMIN = 1;
+ export const SHOP_ROLE = 2;
+ export const SHOP_STAFF = 3;
+
+
 /*
  ** API AUTH
  */
@@ -66,3 +74,8 @@ export const API_CHANGE_PASSWORD = HTTP_SERVER + "/api/Auth/change-password";
  export const AIP_UPDATE_PRODUCT = HTTP_SERVER + "/api/Product/";
  export const AIP_CREATE_PRODUCT = HTTP_SERVER + "/api/Product";
  export const API_GET_PRODUCTS_BY_SHOP_ID = HTTP_SERVER + "/api/Product/all-product-by-shop-id";
+
+ /*
+ ** API SHOP
+ */
+ export const AIP_CREATE_SHOP = HTTP_SERVER + "/api/ShopApplication";
