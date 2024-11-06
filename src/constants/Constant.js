@@ -65,6 +65,13 @@ export const SHOP_ADMIN = 1;
 export const SHOP_ROLE = 2;
 export const SHOP_STAFF = 3;
 
+/*
+ ** USER ACCOUNT STATUS
+ */
+ export const USER_STATUS_PENDING = 1;
+ export const USER_STATUS_ACCEPTED = 2;
+ export const USER_STATUS_DENIED = 3;
+ export const USER_STATUS_CLOSED = 4;
 
 /*
  ** API AUTH
@@ -79,6 +86,11 @@ export const API_CHANGE_PASSWORD = HTTP_SERVER + "/api/Auth/change-password";
  */
  export const API_GET_MY_PROFILE = HTTP_SERVER + "/api/Account/my-profile";
 
+ /*
+ ** API COUPON
+ */
+ export const API_CREATE_COUPON = HTTP_SERVER + "/api/Coupon";
+ 
 /*
  ** API PRODUCT
  */

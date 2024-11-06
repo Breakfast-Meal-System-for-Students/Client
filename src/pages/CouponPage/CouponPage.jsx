@@ -4,7 +4,6 @@ import './CouponPage.scss';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import AuthContext from '../../auth/AuthContext';
-
 const CouponPage = () => {
   const { user: { token } } = useContext(AuthContext);
   const [coupons, setCoupons] = useState([]);
@@ -13,7 +12,6 @@ const CouponPage = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-
   // Fetch shopId from local storage
   useEffect(() => {
     const storedShopId = localStorage.getItem('shopId');
@@ -21,7 +19,6 @@ const CouponPage = () => {
       setShopId(storedShopId);
     }
   }, []);
-
   // Fetch coupons for the shop
   const fetchCoupons = async () => {
     if (shopId) {
@@ -41,7 +38,6 @@ const CouponPage = () => {
             // },
           }
         );
-
         console.log('API Response:', response.data.data);
         setCoupons(response.data.data.data);
         setTotalPages(Math.ceil(response.data.total / 6));
@@ -50,22 +46,18 @@ const CouponPage = () => {
       }
     }
   };
-
   useEffect(() => {
     fetchCoupons();
   }, [shopId, currentPage, searchTerm]);
-
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
   };
-
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1); // Reset to first page on search
   };
-
   const handleDeleteCoupon = async (couponId) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this coupon?');
     if (confirmDelete) {
@@ -81,11 +73,9 @@ const CouponPage = () => {
       }
     }
   };
-
   return (
     <div className="coupon-container">
       <h1>Shop Coupons</h1>
-
       <div className="coupon-box">
         <div className="search-and-add">
           <input
@@ -99,7 +89,6 @@ const CouponPage = () => {
             Add Coupon
           </button>
         </div>
-
         <table className="coupon-table">
           <thead>
             <tr>
@@ -143,7 +132,6 @@ const CouponPage = () => {
             )}
           </tbody>
         </table>
-
         {/* Pagination */}
         <div className="pagination">
           <button
@@ -168,5 +156,4 @@ const CouponPage = () => {
     </div>
   );
 };
-
 export default CouponPage;
