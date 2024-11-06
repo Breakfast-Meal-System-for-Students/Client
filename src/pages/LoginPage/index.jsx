@@ -10,6 +10,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import AuthContext from '../../auth/AuthContext';
 import { ApiLoginByAccount } from '../../services/AuthServices';
+import { ApiGetProfile } from '../../services/AccountServices';
 
 const theme = createTheme({
   palette: {
@@ -45,23 +46,33 @@ export default function Login() {
       localStorage.setItem('token', result.body.data.token); // Lưu token vào localStorage
       const decoded = jwtDecode(result.body.data.token);
       setUser(decoded);
-      navigateAfterLogin(decoded);
+      navigateAfterLogin(decoded, result.body.data.token);
     } else {
       alert(result.message);
     }
   };
 
-  const navigateAfterLogin = (decoded) => {
+  const navigateAfterLogin = (decoded, token) => {
     if (decoded.role.includes('Admin')) {
       navigate('/admin');
     } else if (decoded.role.includes('Staff')) {
       navigate('/home-staff');
     } else if (decoded.role.includes('Shop')) {
+      setShopLocalInfo(token);
       navigate('/shop');
     } else {
       alert('Unauthorized role');
     }
   }
+
+  const setShopLocalInfo = async (token) => {
+    const result = await ApiGetProfile(token);
+    if (result.ok) {
+      localStorage.setItem ("shopId", result.body.data.shopId);
+      localStorage.setItem("shopName", result.body.data.shopName);
+    }
+  }
+  
   const handleChange = (event) => {
     setData({
       ...data,
