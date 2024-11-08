@@ -93,7 +93,7 @@ export default function Login() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)',
+          background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
           width: '100%',
           padding: '0',
           margin: '0',
@@ -114,14 +114,14 @@ export default function Login() {
           }}
         >
           <Box>
-            <Avatar sx={{ width: 200, height: 200, bgcolor: '#3498db', marginBottom: 2 }}>
+            <Avatar sx={{ width: 200, height: 200, bgcolor: '#088A08', marginBottom: 2 }}>
               <LockOutlinedIcon sx={{ fontSize: 100 }} />
             </Avatar>
           </Box>
 
           <Box component="form" onSubmit={handleSubmitLogin} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
-            <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2 }}>
-              Member Login
+            <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
+              Welcome Back !
             </Typography>
 
             {error && (
@@ -131,7 +131,7 @@ export default function Login() {
             )}
 
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
-              <EmailIcon sx={{ mr: 1, color: '#3498db' }} />
+              <EmailIcon sx={{ mr: 1, color: '#088A08' }} />
               <TextField
                 variant="outlined"
                 placeholder="Email"
@@ -147,7 +147,7 @@ export default function Login() {
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
-              <LockIcon sx={{ mr: 1, color: '#3498db' }} />
+              <LockIcon sx={{ mr: 1, color: '#088A08' }} />
               <TextField
                 variant="outlined"
                 placeholder="Password"
@@ -183,7 +183,7 @@ export default function Login() {
                 padding: '10px 0',
                 margin: '20px 0',
                 fontSize: '18px',
-                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)',
+                background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
                 boxShadow: '0px 6px 12px rgba(0,0,0,0.1)',
               }}
             >
@@ -194,20 +194,20 @@ export default function Login() {
               sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}
             >
               <Typography variant="body2">
-                <RouterLink to="/forgot-password" style={{ textDecoration: 'none', color: '#3498db' }}>
+                <RouterLink to="/forgot-password" style={{ textDecoration: 'none', color: '#088A08' }}>
                   Forgot Password
                 </RouterLink>
               </Typography>
               
               <Typography variant="body2">
-                <RouterLink to="/join-shop" style={{ textDecoration: 'none', color: '#3498db' }}>
+                <RouterLink to="/join-shop" style={{ textDecoration: 'none', color: '#088A08' }}>
                   Join as a Shop Owner
                 </RouterLink>
               </Typography>
             </Box>
 
             <Typography variant="body2" align="center" sx={{ marginBottom: 2 }}>
-              <RouterLink to="/register" style={{ textDecoration: 'none', color: '#3498db' }}>
+              <RouterLink to="/register" style={{ textDecoration: 'none', color: '#088A08' }}>
                 Create your Account →
               </RouterLink>
             </Typography>

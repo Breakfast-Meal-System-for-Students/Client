@@ -23,16 +23,16 @@ const theme = createTheme({
 export default function ForgotPassword() {
   const { setUser } = useContext(AuthContext)
   // 1.Enter email 2.Enter code 3.New password 
-  const [step, setStep] = useState(1); 
+  const [step, setStep] = useState(1);
   const [buttonText, setButtonText] = useState("SEND DITGIT CODE");
   const [oldEmail, setOldEmail] = useState('');
-  const [digitCode, setDigitCode] = useState(''); 
+  const [digitCode, setDigitCode] = useState('');
   const [newPassword, setNewPassword] = useState({
     password: '',
     passwordConfirm: '',
   });
-  const [showPassword, setShowPassword] = useState(false); 
-  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(DIGIT_CODE_EXPIRED);
@@ -75,7 +75,7 @@ export default function ForgotPassword() {
         startCountdown();
       }
     } else { // 3. Enter new password
-      if (newPassword.password !== newPassword.passwordConfirm){
+      if (newPassword.password !== newPassword.passwordConfirm) {
         alert("Password confirm is not match");
         return;
       }
@@ -120,7 +120,7 @@ export default function ForgotPassword() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)',
+          background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
           width: '100%',
           padding: '0',
           margin: '0',
@@ -141,17 +141,17 @@ export default function ForgotPassword() {
           }}
         >
           <Box>
-            <Avatar sx={{ width: 200, height: 200, bgcolor: '#3498db', marginBottom: 2 }}>
+            <Avatar sx={{ width: 200, height: 200, bgcolor: '#088A08', marginBottom: 2 }}>
               <LockOutlinedIcon sx={{ fontSize: 100 }} />
             </Avatar>
           </Box>
           <Box component="form" onSubmit={handleSubmitLogin} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
-            <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2 }}>
+            <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
               RECOVER YOUR ACCOUNT
             </Typography>
             {step === 1 && (
               <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }} className="mt-5">
-                <EmailIcon sx={{ mr: 1, color: '#3498db' }} />
+                <EmailIcon sx={{ mr: 1, color: '#088A08' }} />
                 <TextField
                   value={oldEmail}
                   variant="outlined"
@@ -168,7 +168,7 @@ export default function ForgotPassword() {
               </Box>
             ) || step === 2 && (
               <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }} className="mt-5">
-                <EmailIcon sx={{ mr: 1, color: '#3498db' }} />
+                <EmailIcon sx={{ mr: 1, color: '#088A08' }} />
                 <TextField
                   value={digitCode}
                   variant="outlined"
@@ -183,64 +183,64 @@ export default function ForgotPassword() {
                 />
               </Box>
             ) || (
-              <div>
-                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
-                  <LockIcon sx={{ mr: 1, color: '#3498db' }} />
-                  <TextField
-                    value={newPassword.password}
-                    variant="outlined"
-                    placeholder="Password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    required
-                    fullWidth
-                    onChange={handleChangePassword}
-                    InputProps={{
-                      style: { borderRadius: '30px' },
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
-                  <LockIcon sx={{ mr: 1, color: '#3498db' }} />
-                  <TextField
-                    value={newPassword.passwordConfirm}
-                    variant="outlined"
-                    placeholder="Enter password confirm"
-                    name="confirmPassword"
-                    type={showPasswordConfirm ? 'text' : 'password'}
-                    required
-                    fullWidth
-                    onChange={handleChangePasswordConfirm}
-                    InputProps={{
-                      style: { borderRadius: '30px' },
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPasswordConfirm}
-                            edge="end"
-                          >
-                            {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Box>
-              </div>
-            )}
-            
+                <div>
+                  <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
+                    <LockIcon sx={{ mr: 1, color: '#088A08' }} />
+                    <TextField
+                      value={newPassword.password}
+                      variant="outlined"
+                      placeholder="Password"
+                      name="password"
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      fullWidth
+                      onChange={handleChangePassword}
+                      InputProps={{
+                        style: { borderRadius: '30px' },
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              edge="end"
+                            >
+                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
+                    <LockIcon sx={{ mr: 1, color: '#088A08' }} />
+                    <TextField
+                      value={newPassword.passwordConfirm}
+                      variant="outlined"
+                      placeholder="Enter password confirm"
+                      name="confirmPassword"
+                      type={showPasswordConfirm ? 'text' : 'password'}
+                      required
+                      fullWidth
+                      onChange={handleChangePasswordConfirm}
+                      InputProps={{
+                        style: { borderRadius: '30px' },
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPasswordConfirm}
+                              edge="end"
+                            >
+                              {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Box>
+                </div>
+              )}
+
             <Button
               type="submit"
               fullWidth
@@ -251,18 +251,18 @@ export default function ForgotPassword() {
                 padding: '10px 0',
                 margin: '20px 0',
                 fontSize: '18px',
-                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)',
+                background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
                 boxShadow: '0px 6px 12px rgba(0,0,0,0.1)',
               }}
             >
-                {isCounting
-                  ? `${buttonText} (${countdown})`
-                  : step === 2
+              {isCounting
+                ? `${buttonText} (${countdown})`
+                : step === 2
                   ? 'Re-send (Expired)'
                   : buttonText}
             </Button>
             <Typography variant="body2" align="center" sx={{ marginBottom: 2 }}>
-              <RouterLink to="/login" style={{ textDecoration: 'none', color: '#3498db' }}>
+              <RouterLink to="/login" style={{ textDecoration: 'none', color: '#088A08' }}>
                 Back to Login Page
               </RouterLink>
             </Typography>

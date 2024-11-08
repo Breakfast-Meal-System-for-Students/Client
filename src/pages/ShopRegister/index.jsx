@@ -91,7 +91,7 @@ export default function ShopRegister() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)', 
+          background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)', 
           width: '100%',
           padding: '0',
           margin: '0',
@@ -110,10 +110,10 @@ export default function ShopRegister() {
             maxWidth: '500px',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: '#3498db' }}> 
+          <Avatar sx={{ m: 1, bgcolor: '#088A08' }}> 
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5"sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
             SHOP REGISTRATION
           </Typography>
           <Box sx={{ mt: 3, width: '100%' }}>
@@ -251,7 +251,7 @@ export default function ShopRegister() {
                 borderRadius: '30px', 
                 padding: '10px 0',
                 fontSize: '18px',
-                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)', 
+                background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)', 
                 boxShadow: '0px 6px 12px rgba(0,0,0,0.1)', 
               }}
               onClick={handleSubmitRegister}
@@ -259,7 +259,7 @@ export default function ShopRegister() {
               Sign Up Your Shop
             </Button>
             <Typography variant="body2" align="center">
-              <Link href="/login" variant="body2" underline="none" sx={{ color: '#3498db' }}>
+              <Link href="/login" variant="body2" underline="none" sx={{ color: '#088A08' }}>
                 Already have an account? Sign in →
               </Link>
             </Typography>
