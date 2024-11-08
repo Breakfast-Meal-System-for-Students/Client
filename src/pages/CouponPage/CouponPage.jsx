@@ -4,14 +4,24 @@ import './CouponPage.scss';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import AuthContext from '../../auth/AuthContext';
+import UpdateCoupon from './UpdateCoupon';
+
 const CouponPage = () => {
   const { user: { token } } = useContext(AuthContext);
   const [coupons, setCoupons] = useState([]);
   const [shopId, setShopId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [couponEdit, setCouponEdit] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isPopupOpen, setPopupOpen] = useState(false);
   const navigate = useNavigate();
+
+  const handleSetCouponEdit = (coupon) => {
+    setCouponEdit(coupon);
+    setPopupOpen(true);
+  }
+  
   // Fetch shopId from local storage
   useEffect(() => {
     const storedShopId = localStorage.getItem('shopId');
@@ -85,7 +95,7 @@ const CouponPage = () => {
             onChange={handleSearchChange}
             className="search-bar"
           />
-          <button onClick={() => navigate('/add-coupon')} className="add-coupon-button">
+          <button onClick={() => navigate('/shop/add-coupon')} className="add-coupon-button">
             Add Coupon
           </button>
         </div>
@@ -115,7 +125,7 @@ const CouponPage = () => {
                   <td>${coupon.minDiscount}</td>
                   <td className="coupon-actions">
                     <AiOutlineEdit
-                      onClick={() => navigate(`/edit-coupon/${coupon.id}`)}
+                      onClick={() => setPopupOpen(true)}
                       className="edit-icon"
                     />
                     <AiOutlineDelete
@@ -152,8 +162,13 @@ const CouponPage = () => {
             Next
           </button>
         </div>
+        {isPopupOpen && 
+            <UpdateCoupon/>
+        }
       </div>
     </div>
   );
 };
+
+
 export default CouponPage;

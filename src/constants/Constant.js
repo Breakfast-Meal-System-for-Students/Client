@@ -90,6 +90,7 @@ export const API_CHANGE_PASSWORD = HTTP_SERVER + "/api/Auth/change-password";
  ** API COUPON
  */
  export const API_CREATE_COUPON = HTTP_SERVER + "/api/Coupon";
+ export const API_UPDATE_COUPON = HTTP_SERVER + "/api/Coupon/";
  
 /*
  ** API PRODUCT
