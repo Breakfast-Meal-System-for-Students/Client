@@ -256,7 +256,7 @@ export default function ShopRegister() {
               }}
               onClick={handleSubmitRegister}
             >
-              Sign Up Your Shop
+              Sign Up Your Shop 
             </Button>
             <Typography variant="body2" align="center">
               <Link href="/login" variant="body2" underline="none" sx={{ color: '#088A08' }}>

@@ -1,6 +1,5 @@
 import { styled } from '@mui/material/styles';
 import { Box, Avatar, ListItem, Typography, List } from '@mui/material';
-
 // Styles for the main container
 export const ProfileContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -9,9 +8,8 @@ export const ProfileContainer = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   padding: theme.spacing(6),
   minHeight: '100vh',
-  background: 'linear-gradient(180deg, #3d996c, #00cc69)', 
+  background: 'linear-gradient(180deg, #3d996c, #00cc69)',
 }));
-
 // Styles for the profile card
 export const ProfileCard = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -26,7 +24,6 @@ export const ProfileCard = styled(Box)(({ theme }) => ({
   margin: '0 auto',
   textAlign: 'center', 
 }));
-
 // Styles for the Avatar
 export const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 120,
@@ -35,21 +32,18 @@ export const StyledAvatar = styled(Avatar)(({ theme }) => ({
   backgroundColor: '#3498db',
   fontSize: '40px', 
 }));
-
 // Styled Typography for Name
 export const NameTypography = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(1),
   fontWeight: 'bold',
   fontSize: '1.5rem',
 }));
-
 // Styled Typography for Role
 export const RoleTypography = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(3),
   color: '#7f8c8d',
   fontSize: '1rem',
 }));
-
 // Styles for the List Items
 export const StyledList = styled(List)(({ theme }) => ({
   width: '100%',
@@ -58,7 +52,6 @@ export const StyledList = styled(List)(({ theme }) => ({
   padding: theme.spacing(2),
   boxShadow: '0px 2px 12px rgba(0, 0, 0, 0.05)', 
 }));
-
 // Style for ListItem
 export const StyledListItem = styled(ListItem)(({ theme }) => ({
   justifyContent: 'space-between',

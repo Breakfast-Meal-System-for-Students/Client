@@ -32,6 +32,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ShopRegister from "./pages/ShopRegister/index.jsx";
 import ForgotPassword from "./pages/ForgotPassword/index.jsx";
+import ShopProfile from "./pages/ShopProfile/index.jsx";
 
 function App() {
   return (
@@ -101,6 +102,10 @@ function App() {
             <Route
               path="/shop/profile"
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
+            />
+            <Route
+              path="/shop/about-shop"
+              element={<ProtectedRoute element={<ShopProfile />} requiredRole={"Shop"} />}
             />
             <Route
               path="/shop/menu"

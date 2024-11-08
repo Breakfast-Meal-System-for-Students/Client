@@ -57,6 +57,7 @@ const Sidebar = () => {
       { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/location" },
       { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/shop/orders" },
       { text: "Profile", icon: <PortraitIcon />, path: "/shop/profile" },
+      { text: "About Shop", icon: <PortraitIcon />, path: "/shop/about-shop" },
     ];
   }
 

@@ -42,7 +42,6 @@ export default function Login() {
     }
     const result = await ApiLoginByAccount(data);
     if (result.ok) {
-      alert("Login successful! Welcome back!");
       localStorage.setItem('token', result.body.data.token); // Lưu token vào localStorage
       const decoded = jwtDecode(result.body.data.token);
       setUser(decoded);
@@ -121,7 +120,7 @@ export default function Login() {
 
           <Box component="form" onSubmit={handleSubmitLogin} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
             <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
-              Welcome Back !
+              WELCOME BACK!
             </Typography>
 
             {error && (
