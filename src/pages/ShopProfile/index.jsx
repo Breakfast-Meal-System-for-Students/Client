@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import {
   ProfileContainer,
   ProfileCard,
-  StyledAvatar,
-  StyledList,
-  StyledListItem,
-  NameTypography,
-  RoleTypography,
 } from './ProfilePage.style';
-import { Button, TextField, ListItemText, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-
-export default function ProfilePage() {
+import { Card, CardContent, Typography, CardMedia, Grid, Box } from '@mui/material';
+import StarIcon from '@mui/icons-material/Star';
+import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { ApiGetShopById } from '../../services/ShopServices';
+import { useNavigate } from 'react-router-dom';
+export default function ShopProfile() {
+  const navigate = useNavigate();
+  const [shop, setShop] = useState([]);
+  const [roundedRate, setRoundedRate] = useState(1);
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
@@ -22,58 +23,33 @@ export default function ProfilePage() {
     shopId: '',
     shopName: '',
   });
-
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [updatedData, setUpdatedData] = useState({
     firstName: '',
     lastName: '',
     phone: '',
   });
-
   const [selectedFile, setSelectedFile] = useState(null); // State for selected file
-
   const token = localStorage.getItem('token');
-
   // Fetch user profile data from API
   useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Account/my-profile', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, // Pass the token in Authorization header
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUserData({
-            firstName: data.data.firstName,
-            lastName: data.data.lastName,
-            avatar: data.data.avatar,
-            phone: data.data.phone,
-            createDate: data.data.createDate,
-            lastUpdateDate: data.data.lastUpdateDate,
-            role: data.data.role,
-            shopId: data.data.shopId,
-            shopName: data.data.shopName,
-          });
-          localStorage.setItem ("shopId",data.data.shopId );
-          console.log (data.data.shopId);
-          localStorage.setItem("shopName", data.data.shopName);
-          console.log (data.data.shopName);
-        } else {
-          console.error('Failed to fetch profile data');
-        }
-      } catch (error) {
-        console.error('Error fetching profile data:', error);
+    const fetchProfileShopData = async () => {
+      const shopId = localStorage.getItem('shopId');
+      if (!shopId) {
+        alert('ShopId is not found');
+        navigate('/login'); // Navigate to add product page
+        return;
+      }
+      const result = await ApiGetShopById(shopId);
+      if (result.ok) {
+        setShop(result.body.data);
+        setRoundedRate(Math.round(result.body.data.rate))
+      } else {
+        alert(result.message);
       }
     };
-
-    fetchProfileData();
+    fetchProfileShopData();
   }, [token]);
-
   // Open dialog for editing the profile
   const handleOpenEditDialog = () => {
     setUpdatedData({
@@ -83,30 +59,25 @@ export default function ProfilePage() {
     });
     setEditDialogOpen(true);
   };
-
   // Close the edit dialog
   const handleCloseEditDialog = () => {
     setEditDialogOpen(false);
     setSelectedFile(null); // Reset selected file when closing the dialog
   };
-
   // Save the updated data
   const handleSave = async () => {
     try {
       console.log('Token:', token);
       console.log('Updated Data:', updatedData); // Log updated data to debug the request payload
-
       // Create a FormData object
       const formData = new FormData();
       formData.append('firstName', updatedData.firstName);
       formData.append('lastName', updatedData.lastName);
       formData.append('phone', updatedData.phone);
-
       // Append selected file if it exists
       if (selectedFile) {
         formData.append('avatar', selectedFile); // Append selected file
       }
-
       const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Account', {
         method: 'PUT',
         headers: {
@@ -114,7 +85,6 @@ export default function ProfilePage() {
         },
         body: formData,
       });
-
       if (response.ok) {
         const updatedProfile = await response.json();
         if (updatedProfile && updatedProfile.data) {
@@ -143,35 +113,59 @@ export default function ProfilePage() {
       }
     }
   };
-
   return (
     <ProfileContainer>
       <ProfileCard>
-        <StyledAvatar alt={`${userData.firstName} ${userData.lastName}`} src={userData.avatar || '/default-avatar.png'}>
-          {userData.firstName[0]?.toUpperCase() + userData.lastName[0]?.toUpperCase()}
-        </StyledAvatar>
-
-        <NameTypography variant="h5">{`${userData.firstName} ${userData.lastName}`}</NameTypography>
-        <RoleTypography variant="subtitle1" color="textSecondary">
-          Role: {userData.role} {/* Displaying single role */}
-        </RoleTypography>
-
-        <StyledList>
-          <StyledListItem>
-            <ListItemText primary="Phone" secondary={userData.phone || 'Not Provided'} />
-          </StyledListItem>
-          <StyledListItem>
-            <ListItemText primary="Account Created" secondary={new Date(userData.createDate).toLocaleDateString()} />
-          </StyledListItem>
-          <StyledListItem>
-            <ListItemText primary="Last Updated" secondary={new Date(userData.lastUpdateDate).toLocaleDateString()} />
-          </StyledListItem>
-        </StyledList>
-
-        <Button variant="contained" color="primary" onClick={handleOpenEditDialog} style={{ marginTop: '20px' }}>
+        <Card className="shadow-sm p-3 mb-5 bg-white rounded">
+          <Grid container spacing={2}>
+            {/* Hình ảnh shop */}
+            <Grid item xs={12} sm={4}>
+              <CardContent>
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={'https://media.istockphoto.com/id/1425139113/photo/purchasing-goods-with-smartphone-at-grocery-store.jpg?s=612x612&w=0&k=20&c=xMbZgp4BZAWCH_j7UkM9YiYTXcpS4zqg3MW4_jRmriM='} // Đường dẫn hình ảnh mặc định nếu shop.Image là null
+                  alt={shop.name}
+                />
+              </CardContent>
+            </Grid>
+            {/* Thông tin chi tiết */}
+            <Grid item xs={12} sm={8}>
+              <CardContent sx={{ textAlign: 'left' }}>
+                <Typography variant="h5" component="div" className="mb-2">
+                  {shop.name}
+                </Typography>
+                {/* Hiển thị các ngôi sao đánh giá */}
+                <Box className="mb-2">
+                  {[...Array(roundedRate)].map((_, index) => (
+                    <StarIcon key={index} style={{ color: '#FFD700' }} />
+                  ))}
+                </Box>
+                <Typography variant="body2" color="textSecondary" className="mb-2">
+                  {shop.description || "No description available"}
+                </Typography>
+                <Box className="mb-2">
+                  <strong>Email:</strong> {shop.email}
+                </Box>
+                <Box className="mb-2">
+                  <strong>Phone:</strong> {shop.phoneNumber || "Not provided"}
+                </Box>
+                <Box className="mb-2">
+                  <strong>Address:</strong> {shop.address}
+                </Box>
+              </CardContent>
+            </Grid>
+          </Grid>
+        </Card>
+        <Button variant="contained" color="primary" onClick={handleOpenEditDialog} sx={{
+          borderRadius: '15px',
+          margin: '20px 0',
+          fontSize: '16px',
+          background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
+          boxShadow: '0px 6px 12px rgba(0,0,0,0.1)',
+        }}>
           Update Profile
         </Button>
-
         {/* Dialog for editing profile */}
         <Dialog open={editDialogOpen} onClose={handleCloseEditDialog}>
           <DialogTitle>Edit Profile</DialogTitle>

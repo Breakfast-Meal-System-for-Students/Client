@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Drawer, List, ListItem, ListItemIcon, ListItemText, Divider,
   Toolbar, Typography, Box
@@ -19,23 +19,24 @@ import {
   FaHome, FaFileAlt, FaListAlt, FaComments, FaCog,
 } from "react-icons/fa"; // Import react-icons
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../auth/AuthContext";
 import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
+import AuthContext from "../../auth/AuthContext";
 
 const drawerWidth = 240;
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useContext(AuthContext)
 
   // Default sidebar items
   let sidebarItems = [
-    { text: 'Dashboard', icon: <HomeIcon />, path: "/" },
-    { text: 'Staff', icon: <AnalyticsIcon />, path: "/manage-staff" },
-    { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/feedback-admin" },
-    { text: 'Customer', icon: <PersonIcon />, path: "/customer-details" },
-    { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/orders" },
-    { text: 'Profile', icon: <PortraitIcon />, path: "/profile" },
+    { text: 'Dashboard', icon: <HomeIcon />, path: "/admin" },
+    { text: 'Staff', icon: <AnalyticsIcon />, path: "/admin/manage-staff" },
+    { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/admin/feedback-admin" },
+    { text: 'Customer', icon: <PersonIcon />, path: "/admin/customer-details" },
+    { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/admin/orders" },
+    { text: "Package", icon: <Inventory2OutlinedIcon />, path: "/admin/Package" },
+    { text: 'Profile', icon: <PortraitIcon />, path: "/admin/profile" },
   ];
 
   // Ensure user and user.role are defined before using them
@@ -50,13 +51,13 @@ const Sidebar = () => {
     ];
   } else if (user && user.role && user.role.includes("Shop")) {
     sidebarItems = [
-      { text: "Coupon", icon: <ConfirmationNumberIcon />, path: "/Coupon-page" },
-      { text: "Breakfast-Menu", icon: <RestaurantMenuIcon />, path: "/Menu" },
-      { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/feedback-shop" },
-      { text: "Package", icon: <Inventory2OutlinedIcon />, path: "/orders" },
-      { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/orders" },
-      { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/orders" },
-      { text: "Profile", icon: <PortraitIcon />, path: "/profile" },
+      { text: "Coupon", icon: <ConfirmationNumberIcon />, path: "/shop/coupon-page" },
+      { text: "Breakfast-Menu", icon: <RestaurantMenuIcon />, path: "/shop/menu" },
+      { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/shop/feedback-shop" },
+      { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/location" },
+      { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/shop/orders" },
+      { text: "Profile", icon: <PortraitIcon />, path: "/shop/profile" },
+      { text: "About Shop", icon: <PortraitIcon />, path: "/shop/about-shop" },
     ];
   }
 

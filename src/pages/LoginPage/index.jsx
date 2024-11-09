@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { TextField, Button, Box, Typography, Avatar, IconButton, InputAdornment } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -7,7 +7,10 @@ import LockIcon from '@mui/icons-material/Lock';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff'; // Import icon Visibility
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../auth/AuthContext';
+import { jwtDecode } from 'jwt-decode';
+import AuthContext from '../../auth/AuthContext';
+import { ApiLoginByAccount } from '../../services/AuthServices';
+import { ApiGetProfile } from '../../services/AccountServices';
 
 const theme = createTheme({
   palette: {
@@ -21,39 +24,54 @@ const theme = createTheme({
 });
 
 export default function Login() {
+  const { setUser } = useContext(AuthContext)
+
   const [data, setData] = useState({
     email: '',
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false); // Thêm state để theo dõi trạng thái hiển thị mật khẩu
   const [error, setError] = useState('');
-  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmitLogin = async (e) => {
     e.preventDefault();
     if (!data.email || !data.password) {
-      setError('Please enter both email and password');
+      alert('Please enter both email and password');
       return;
     }
-
-    try {
-      const roles = await login(data.email, data.password);
-      console.log(roles);
-      if (roles.includes('Admin')) {
-        navigate('/');
-      } else if (roles.includes('Staff')) {
-        navigate('/home-staff');
-      } else if (roles.includes('Shop')) {
-        navigate('/shop');
-      } else {
-        setError('Unauthorized role');
-      }
-    } catch (error) {
-      setError('Login failed. Invalid email or password.');
+    const result = await ApiLoginByAccount(data);
+    if (result.ok) {
+      localStorage.setItem('token', result.body.data.token); // Lưu token vào localStorage
+      const decoded = jwtDecode(result.body.data.token);
+      setUser(decoded);
+      navigateAfterLogin(decoded, result.body.data.token);
+    } else {
+      alert(result.message);
     }
   };
 
+  const navigateAfterLogin = (decoded, token) => {
+    if (decoded.role.includes('Admin')) {
+      navigate('/admin');
+    } else if (decoded.role.includes('Staff')) {
+      navigate('/home-staff');
+    } else if (decoded.role.includes('Shop')) {
+      setShopLocalInfo(token);
+      navigate('/shop');
+    } else {
+      alert('Unauthorized role');
+    }
+  }
+
+  const setShopLocalInfo = async (token) => {
+    const result = await ApiGetProfile(token);
+    if (result.ok) {
+      localStorage.setItem ("shopId", result.body.data.shopId);
+      localStorage.setItem("shopName", result.body.data.shopName);
+    }
+  }
+  
   const handleChange = (event) => {
     setData({
       ...data,
@@ -74,7 +92,7 @@ export default function Login() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #74ebd5, #ACB6E5)',
+          background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
           width: '100%',
           padding: '0',
           margin: '0',
@@ -95,14 +113,14 @@ export default function Login() {
           }}
         >
           <Box>
-            <Avatar sx={{ width: 200, height: 200, bgcolor: '#3498db', marginBottom: 2 }}>
+            <Avatar sx={{ width: 200, height: 200, bgcolor: '#088A08', marginBottom: 2 }}>
               <LockOutlinedIcon sx={{ fontSize: 100 }} />
             </Avatar>
           </Box>
 
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
-            <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2 }}>
-              Member Login
+          <Box component="form" onSubmit={handleSubmitLogin} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
+            <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
+              WELCOME BACK!
             </Typography>
 
             {error && (
@@ -112,11 +130,12 @@ export default function Login() {
             )}
 
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
-              <EmailIcon sx={{ mr: 1, color: '#3498db' }} />
+              <EmailIcon sx={{ mr: 1, color: '#088A08' }} />
               <TextField
                 variant="outlined"
                 placeholder="Email"
                 name="email"
+                type= {'email'}
                 required
                 fullWidth
                 onChange={handleChange}
@@ -127,7 +146,7 @@ export default function Login() {
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
-              <LockIcon sx={{ mr: 1, color: '#3498db' }} />
+              <LockIcon sx={{ mr: 1, color: '#088A08' }} />
               <TextField
                 variant="outlined"
                 placeholder="Password"
@@ -163,21 +182,31 @@ export default function Login() {
                 padding: '10px 0',
                 margin: '20px 0',
                 fontSize: '18px',
-                background: 'linear-gradient(45deg, #74ebd5, #ACB6E5)',
+                background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
                 boxShadow: '0px 6px 12px rgba(0,0,0,0.1)',
               }}
             >
               LOGIN
             </Button>
 
-            <Typography variant="body2" align="center" sx={{ marginBottom: 2 }}>
-              <RouterLink to="/forgot-password" style={{ textDecoration: 'none', color: '#3498db' }}>
-                Forgot Username / Password?
-              </RouterLink>
-            </Typography>
+            <Box 
+              sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}
+            >
+              <Typography variant="body2">
+                <RouterLink to="/forgot-password" style={{ textDecoration: 'none', color: '#088A08' }}>
+                  Forgot Password
+                </RouterLink>
+              </Typography>
+              
+              <Typography variant="body2">
+                <RouterLink to="/join-shop" style={{ textDecoration: 'none', color: '#088A08' }}>
+                  Join as a Shop Owner
+                </RouterLink>
+              </Typography>
+            </Box>
 
-            <Typography variant="body2" align="center">
-              <RouterLink to="/register" style={{ textDecoration: 'none', color: '#3498db' }}>
+            <Typography variant="body2" align="center" sx={{ marginBottom: 2 }}>
+              <RouterLink to="/register" style={{ textDecoration: 'none', color: '#088A08' }}>
                 Create your Account →
               </RouterLink>
             </Typography>

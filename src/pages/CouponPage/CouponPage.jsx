@@ -1,19 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import './CouponPage.scss';
-import { useAuth } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import AuthContext from '../../auth/AuthContext';
+import UpdateCoupon from './UpdateCoupon';
 
 const CouponPage = () => {
-  const { token } = useAuth();
+  const { user: { token } } = useContext(AuthContext);
   const [coupons, setCoupons] = useState([]);
   const [shopId, setShopId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [couponEdit, setCouponEdit] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isPopupOpen, setPopupOpen] = useState(false);
   const navigate = useNavigate();
 
+  const handleSetCouponEdit = (coupon) => {
+    setCouponEdit(coupon);
+    setPopupOpen(true);
+  }
+  
   // Fetch shopId from local storage
   useEffect(() => {
     const storedShopId = localStorage.getItem('shopId');
@@ -21,7 +29,6 @@ const CouponPage = () => {
       setShopId(storedShopId);
     }
   }, []);
-
   // Fetch coupons for the shop
   const fetchCoupons = async () => {
     if (shopId) {
@@ -41,7 +48,6 @@ const CouponPage = () => {
             // },
           }
         );
-
         console.log('API Response:', response.data.data);
         setCoupons(response.data.data.data);
         setTotalPages(Math.ceil(response.data.total / 6));
@@ -50,22 +56,18 @@ const CouponPage = () => {
       }
     }
   };
-
   useEffect(() => {
     fetchCoupons();
   }, [shopId, currentPage, searchTerm]);
-
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
   };
-
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1); // Reset to first page on search
   };
-
   const handleDeleteCoupon = async (couponId) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this coupon?');
     if (confirmDelete) {
@@ -81,11 +83,9 @@ const CouponPage = () => {
       }
     }
   };
-
   return (
     <div className="coupon-container">
       <h1>Shop Coupons</h1>
-
       <div className="coupon-box">
         <div className="search-and-add">
           <input
@@ -95,11 +95,10 @@ const CouponPage = () => {
             onChange={handleSearchChange}
             className="search-bar"
           />
-          <button onClick={() => navigate('/add-coupon')} className="add-coupon-button">
+          <button onClick={() => navigate('/shop/add-coupon')} className="add-coupon-button">
             Add Coupon
           </button>
         </div>
-
         <table className="coupon-table">
           <thead>
             <tr>
@@ -126,7 +125,7 @@ const CouponPage = () => {
                   <td>${coupon.minDiscount}</td>
                   <td className="coupon-actions">
                     <AiOutlineEdit
-                      onClick={() => navigate(`/edit-coupon/${coupon.id}`)}
+                      onClick={() => setPopupOpen(true)}
                       className="edit-icon"
                     />
                     <AiOutlineDelete
@@ -143,7 +142,6 @@ const CouponPage = () => {
             )}
           </tbody>
         </table>
-
         {/* Pagination */}
         <div className="pagination">
           <button
@@ -164,9 +162,13 @@ const CouponPage = () => {
             Next
           </button>
         </div>
+        {isPopupOpen && 
+            <UpdateCoupon/>
+        }
       </div>
     </div>
   );
 };
+
 
 export default CouponPage;

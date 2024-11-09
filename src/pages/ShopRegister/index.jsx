@@ -7,7 +7,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { StyledSelect } from './RegisterPage.style';
 import { ApiRegisterAccount } from '../../services/AuthServices';
 import { useNavigate } from 'react-router-dom';
-
+import { SHOP_ROLE } from '../../constants/Constant';
+import { ApiCreateShop } from '../../services/ShopServices';
 const theme = createTheme({
   palette: {
     primary: {
@@ -18,58 +19,62 @@ const theme = createTheme({
     },
   },
 });
-
 const emptyUserData = {
   email: "",
   firstName: "",
   lastName: "",
+  name: "",
+  address: "",
+  phone: "",
+  description: "",
   password: ""
 };
-export default function Register() {
+export default function ShopRegister() {
   const [data, setData] = useState(emptyUserData);
   const [selectedRole, setSelectedRole] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
   const handleSelectChange = (event) => {
     setSelectedRole(event.target.value);
   };
-
   const handleChange = (event) => {
     setData({
       ...data,
       [event.target.name]: event.target.value
     });
   };
-
   const handleSubmitRegister = async () => {
     if (!isValidateForm()) {
       return;
     }
-    const result = await ApiRegisterAccount(data, selectedRole);
-    if (result.ok) {
-      setData(emptyUserData);
-      alert("Your account is successfully registered.");
-      navigate('/login');
+    const resultCreateAccount = await ApiRegisterAccount(data, SHOP_ROLE);
+    if (resultCreateAccount.ok) {
+      const resultCreateShop = await ApiCreateShop(data.email, data.name, data.phone, data.address, data.password, data.description);
+      if (resultCreateShop.ok) {
+        setData(emptyUserData);
+        alert("Your shop is successfully registered.");
+        navigate('/login');
+      }else {
+        alert(resultCreateShop.message);
+      }
     } else {
-      alert(result.message);
+      alert(resultCreateAccount.message);
     }
   };
-
   const isValidateForm = () => {
     if (data.email === "" || data.email === "undefined") {
       alert("Please provide a valid email address.");
       return false;
     }
-    if (data.firstName === "") {
-      alert("Please provide a valid firstName.");
+    if (data.phone === "") {
+      alert("Please provide a valid phone.");
       return false;
     }
-    if (data.lastName === "") {
-      alert("Please provide a valid lastName.");
+    if (data.address === "") {
+      alert("Please provide a valid address.");
       return false;
     }
-    if (data.password === "") {
+    if (data.password === "" || data.password.length < 6) {
       alert("Please provide a valid password.");
       return false;
     }
@@ -78,7 +83,6 @@ export default function Register() {
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);  
   };
-
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -109,12 +113,12 @@ export default function Register() {
           <Avatar sx={{ m: 1, bgcolor: '#088A08' }}> 
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
-            Sign Up
+          <Typography component="h1" variant="h5"sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
+            SHOP REGISTRATION
           </Typography>
           <Box sx={{ mt: 3, width: '100%' }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
                   name="firstName"
@@ -143,12 +147,53 @@ export default function Register() {
                   }}
                 />
               </Grid>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  name="name"
+                  required
+                  fullWidth
+                  id="name"
+                  label="Shop Name"
+                  autoFocus
+                  onChange={handleChange}
+                  InputProps={{
+                    style: { borderRadius: '30px' },
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="phone"
+                  label="Phone Number"
+                  name="phone"
+                  onChange={handleChange}
+                  InputProps={{
+                    style: { borderRadius: '30px' }, 
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  name="address"
+                  required
+                  fullWidth
+                  id="address"
+                  label="Address"
+                  autoFocus
+                  onChange={handleChange}
+                  InputProps={{
+                    style: { borderRadius: '30px' },
+                  }}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Shop Email"
                   name="email"
                   autoComplete="email"
                   onChange={handleChange}
@@ -179,14 +224,21 @@ export default function Register() {
                   }}
                 />
               </Grid>
-              <StyledSelect item xs={12}>
-                <select id="roles" value={selectedRole} onChange={handleSelectChange} className="select-dropdown">
-                  <option value="">--Please choose an option--</option>
-                  <option value="1">Admin</option>
-                  <option value="2">Shop</option>
-                  <option value="3">Staff</option>
-                </select>
-              </StyledSelect>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  multiline
+                  rows={5}
+                  name="description"
+                  fullWidth
+                  id="description"
+                  label="Description"
+                  autoFocus
+                  onChange={handleChange}
+                  InputProps={{
+                    style: { borderRadius: '30px' },
+                  }}
+                />
+              </Grid>
             </Grid>
             <Button
               type="submit"
@@ -204,9 +256,8 @@ export default function Register() {
               }}
               onClick={handleSubmitRegister}
             >
-              Sign Up
+              Sign Up Your Shop 
             </Button>
-
             <Typography variant="body2" align="center">
               <Link href="/login" variant="body2" underline="none" sx={{ color: '#088A08' }}>
                 Already have an account? Sign in →
