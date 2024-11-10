@@ -33,7 +33,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ShopRegister from "./pages/ShopRegister/index.jsx";
 import ForgotPassword from "./pages/ForgotPassword/index.jsx";
 import ShopProfile from "./pages/ShopProfile/index.jsx";
-
+import ShopLocation from "./pages/ShopLocation/ShopLocation"; // Import ShopLocation
 function App() {
   return (
     <AuthProvider>
@@ -116,6 +116,10 @@ function App() {
               path="/shop/add-product"
               element={<ProtectedRoute element={<AddProduct />} requiredRole={"Shop"} />} // Add route for AddProduct
             />
+             <Route path="/shop/shop-location" 
+             element={<ProtectedRoute element={<ShopLocation />} requiredRole={"Shop"} />} // Add route for AddProduct
+             />
+
           </Route>
 
           {/* Staff Routes */}
