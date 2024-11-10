@@ -102,6 +102,7 @@ function App() {
             <Route
               path="/shop/profile"
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
+              
             />
             <Route
               path="/shop/about-shop"
