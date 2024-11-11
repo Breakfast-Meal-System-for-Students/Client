@@ -147,7 +147,7 @@ export default function ForgotPassword() {
           </Box>
           <Box component="form" onSubmit={handleSubmitLogin} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
             <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
-              RECOVER YOUR ACCOUNT
+              RECOVER YOUR PASSWORD
             </Typography>
             {step === 1 && (
               <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }} className="mt-5">
