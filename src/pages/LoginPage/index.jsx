@@ -68,7 +68,7 @@ export default function Login() {
     const result = await ApiGetProfile(token);
     if (result.ok) {
       localStorage.setItem ("shopId", result.body.data.shopId);
-      localStorage.setItem("shopName", result.body.data.shopName);
+      localStorage.setItem ("shopName", result.body.data.shopName);
     }
   }
   
@@ -113,9 +113,10 @@ export default function Login() {
           }}
         >
           <Box>
-            <Avatar sx={{ width: 200, height: 200, bgcolor: '#088A08', marginBottom: 2 }}>
-              <LockOutlinedIcon sx={{ fontSize: 100 }} />
-            </Avatar>
+          <Avatar
+              src="/LOGO.png"
+              sx={{ width: 300, height: 300, bgcolor: '#088A08', marginBottom: 2 }}
+            />
           </Box>
 
           <Box component="form" onSubmit={handleSubmitLogin} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>

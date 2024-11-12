@@ -21,7 +21,7 @@ const ProductCard = ({ product, onDelete, onEdit}) => {
             />
             <div style={{height:150}}>
                 <h3>{product.name}</h3>
-                <p>Price: $ {product.price?.toFixed(2)}</p>
+                <p>Price: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</p>
                 <p>{product.description}</p>
             </div>
             
