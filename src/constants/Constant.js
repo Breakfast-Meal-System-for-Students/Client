@@ -79,9 +79,9 @@ export const SHOP_STAFF = 3;
 export const API_REGISTER_ACCOUNT = HTTP_SERVER + "/api/Auth/register";
 export const API_LOGIN_ACCOUNT = HTTP_SERVER + "/api/Auth/login";
 export const API_SEND_DIGIT_CODE = HTTP_SERVER + "/api/Auth/sendOTP";
-export const API_CONFIRM_DIGIT_CODE = HTTP_SERVER + "/api/Auth/confirm-digit-code";
+export const API_CONFIRM_DIGIT_CODE = HTTP_SERVER + "/api/Auth/checkOTP";
 export const API_CHANGE_PASSWORD = HTTP_SERVER + "/api/Auth/change-password";
-export const API_RESET_PASSWORD = HTTP_SERVER + "/api/Auth//api/Account/ResetPassword";
+export const API_RESET_PASSWORD = HTTP_SERVER + "/api/Account/ResetPassword";
 
 /*
  ** API ACCOUNT

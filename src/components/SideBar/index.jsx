@@ -51,11 +51,11 @@ const Sidebar = () => {
     ];
   } else if (user && user.role && user.role.includes("Shop")) {
     sidebarItems = [
+      { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/shop/orders" },
       { text: "Coupon", icon: <ConfirmationNumberIcon />, path: "/shop/coupon-page" },
       { text: "Breakfast-Menu", icon: <RestaurantMenuIcon />, path: "/shop/menu" },
       { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/shop/feedback-shop" },
       { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/shop-location" },
-      { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/shop/orders" },
       { text: "Profile", icon: <PortraitIcon />, path: "/shop/profile" },
       { text: "About Shop", icon: <PortraitIcon />, path: "/shop/about-shop" },
     ];

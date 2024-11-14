@@ -9,7 +9,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff'; // Import icon Vi
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import AuthContext from '../../auth/AuthContext';
 import { DIGIT_CODE_EXPIRED } from '../../constants/Constant';
-import { ApiChangePassword, ApiConfirmDigitCode } from '../../services/AuthServices';
+import { ApiChangePassword, ApiConfirmDigitCode, ApiResetPassword, ApiSendOTP } from '../../services/AuthServices';
 const theme = createTheme({
   palette: {
     primary: {
@@ -54,12 +54,17 @@ export default function ForgotPassword() {
   const nextStep = () => {
     setStep(step + 1);
   }
-  const handleSubmitLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (step === 1) { // 1. Enter email
       startCountdown();
-      setButtonText("VERIFY");
-      nextStep();
+      const result = await ApiSendOTP(oldEmail);
+      if (result.ok) {
+        setButtonText("VERIFY");
+        nextStep();
+      } else {
+        alert(result.message);
+      }
     } else if (step === 2) { // 2. Enter Digit code
       if (isCounting) {
         const result = await ApiConfirmDigitCode(oldEmail, digitCode);
@@ -79,7 +84,7 @@ export default function ForgotPassword() {
         alert("Password confirm is not match");
         return;
       }
-      const result = await ApiChangePassword(oldEmail, newPassword.password);
+      const result = await ApiResetPassword(oldEmail, newPassword.password);
       if (result.ok) {
         alert("Recover password successfully!!!");
         navigate('/login');
@@ -141,11 +146,12 @@ export default function ForgotPassword() {
           }}
         >
           <Box>
-            <Avatar sx={{ width: 200, height: 200, bgcolor: '#088A08', marginBottom: 2 }}>
-              <LockOutlinedIcon sx={{ fontSize: 100 }} />
-            </Avatar>
+            <Avatar
+              src="/LOGO.png"
+              sx={{ width: 300, height: 300, bgcolor: '#088A08', marginBottom: 2 }}
+            />
           </Box>
-          <Box component="form" onSubmit={handleSubmitLogin} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
             <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
               RECOVER YOUR PASSWORD
             </Typography>
