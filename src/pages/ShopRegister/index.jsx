@@ -9,6 +9,7 @@ import { ApiRegisterAccount } from '../../services/AuthServices';
 import { useNavigate } from 'react-router-dom';
 import { SHOP_ROLE } from '../../constants/Constant';
 import { ApiCreateShop } from '../../services/ShopServices';
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -31,9 +32,7 @@ const emptyUserData = {
 export default function ShopRegister() {
   const [data, setData] = useState(emptyUserData);
   const navigate = useNavigate();
-  const handleSelectChange = (event) => {
-    setSelectedRole(event.target.value);
-  };
+
   const handleChange = (event) => {
     setData({
       ...data,
@@ -45,7 +44,6 @@ export default function ShopRegister() {
     if (!isValidateForm()) {
       return;
     } 
-    
     const result = await ApiCreateShop(data.email, data.name, data.phone, data.address, data.description);
     if (result.ok) {
       setData(emptyUserData);
@@ -72,9 +70,6 @@ export default function ShopRegister() {
     return true;
   }
   
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);  
-  };
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -110,35 +105,6 @@ export default function ShopRegister() {
           </Typography>
           <Box sx={{ mt: 3, width: '100%' }}>
             <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                  onChange={handleChange}
-                  InputProps={{
-                    style: { borderRadius: '30px' },
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                  onChange={handleChange}
-                  InputProps={{
-                    style: { borderRadius: '30px' }, 
-                  }}
-                />
-              </Grid>
               <Grid item xs={12} sm={12}>
                 <TextField
                   name="name"
