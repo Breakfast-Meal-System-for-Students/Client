@@ -55,7 +55,7 @@ export const ResponseData = async (res) => {
  */
 export const DIGIT_CODE_EXPIRED = 60;
 export const ENABLE_DEBUG_CHANGE_PASSWORD = true;
-export const ENABLE_DEBUG_DIGIT_CODE = true;
+export const ENABLE_DEBUG_DIGIT_CODE = false;
 export const DIGIT_CODE_DEFAULT = "123456";
 
 /*
@@ -78,8 +78,10 @@ export const SHOP_STAFF = 3;
  */
 export const API_REGISTER_ACCOUNT = HTTP_SERVER + "/api/Auth/register";
 export const API_LOGIN_ACCOUNT = HTTP_SERVER + "/api/Auth/login";
-export const API_CONFIRM_DIGIT_CODE = HTTP_SERVER + "/api/Auth/confirm-digit-code";
+export const API_SEND_DIGIT_CODE = HTTP_SERVER + "/api/Auth/sendOTP";
+export const API_CONFIRM_DIGIT_CODE = HTTP_SERVER + "/api/Auth/checkOTP";
 export const API_CHANGE_PASSWORD = HTTP_SERVER + "/api/Auth/change-password";
+export const API_RESET_PASSWORD = HTTP_SERVER + "/api/Account/ResetPassword";
 
 /*
  ** API ACCOUNT
@@ -96,6 +98,7 @@ export const API_CHANGE_PASSWORD = HTTP_SERVER + "/api/Auth/change-password";
  ** API PRODUCT
  */
 export const AIP_UPDATE_PRODUCT = HTTP_SERVER + "/api/Product/";
+export const AIP_GET_PRODUCT_BY_ID = HTTP_SERVER + "/api/Product/";
 export const AIP_CREATE_PRODUCT = HTTP_SERVER + "/api/Product";
 export const API_GET_PRODUCTS_BY_SHOP_ID = HTTP_SERVER + "/api/Product/all-product-by-shop-id";
 
@@ -103,4 +106,5 @@ export const API_GET_PRODUCTS_BY_SHOP_ID = HTTP_SERVER + "/api/Product/all-produ
 ** API SHOP
 */
 export const AIP_CREATE_SHOP = HTTP_SERVER + "/api/ShopApplication";
+export const AIP_UPDATE_SHOP = HTTP_SERVER + "/api/Shop/";
 export const API_GET_SHOP_BY_ID = HTTP_SERVER + "/api/Shop/";

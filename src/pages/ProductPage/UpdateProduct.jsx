@@ -8,9 +8,12 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { ApiUpdateProduct } from '../../services/ProductServices';
+import {ApiGetProductByID,  ApiUpdateProduct } from '../../services/ProductServices';
 
 const UpdateProduct = ({ product, onClose, onSave }) => {
+    console.log(product);
+    const [showImages, setShowImages] = useState(false);
+    const [images, setImages] = useState([]);
     const [updatedProduct, setUpdatedProduct] = useState({
         name: product.name || '',
         description: product.description || '',
@@ -60,6 +63,20 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         }
     };
 
+    const handleShowImages = async () => {
+        if (showImages) {
+            setShowImages(false);
+        } else {
+            const result = await ApiGetProductByID(product.id);
+            if (result.ok) {
+                setImages(result.body.data.images);
+                setShowImages(true);
+            } else {
+                alert(result.message);
+            }
+        }
+    }
+
     return (
         <Dialog open={true} onClose={onClose} fullWidth maxWidth="sm">
             <DialogTitle>
@@ -100,6 +117,38 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                             fullWidth
                             required
                         />
+                        <Box>
+                            <Typography variant="subtitle1" gutterBottom>
+                                Current Images *
+                            </Typography>
+                            {showImages && (
+                                <Grid container spacing={2} marginTop={1}>
+                                    {images.map((file, index) => (
+                                        <Grid item key={index}>
+                                            <Box
+                                                component="img"
+                                                src={file.url}
+                                                alt={`image-${index}`}
+                                                sx={{
+                                                    width: 64,
+                                                    height: 64,
+                                                    borderRadius: '10px',
+                                                    marginBottom: 1,
+                                                    objectFit: 'cover',
+                                                }}
+                                            />
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            )}
+                            <Button
+                                variant="contained"
+                                component="label"
+                                onClick={() => handleShowImages(!showImages)}
+                            >
+                                {showImages && "Hide" || "Show"}
+                            </Button>
+                        </Box>
                      <Box>
                             <Typography variant="subtitle1" gutterBottom>
                                 Product Images *
@@ -129,10 +178,17 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                                 {imageFiles.map((file, index) => (
                                     <Grid item key={index}>
                                         <Box display="flex" alignItems="center" flexDirection="column">
-                                            <Avatar
+                                            <Box
+                                                component="img"
                                                 src={URL.createObjectURL(file)}
                                                 alt={`image-${index}`}
-                                                sx={{ width: 64, height: 64, marginBottom: 1 }}
+                                                sx={{
+                                                    width: 64,
+                                                    height: 64,
+                                                    borderRadius: '10px',
+                                                    marginBottom: 1,
+                                                    objectFit: 'cover',
+                                                }}
                                             />
                                             <IconButton
                                                 color="error"

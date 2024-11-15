@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import './ProductPage.scss';
 import { useNavigate } from 'react-router-dom';
-import { Grid } from '@mui/material';
+import { Alert, Grid } from '@mui/material';
 import { ApiGetProductsByShopId } from '../../services/ProductServices';
 
 const API = 'https://bms-fs-api.azurewebsites.net/api/Product'; // Base API URL
@@ -107,21 +107,27 @@ const ProductPage = () => {
                   </Grid>
                 ))}
             </Grid>
-            <div className="pagination">
-                <button
-                    onClick={() => handlePageChange(pageIndex - 1)}
-                    disabled={pageIndex <= 1}
-                >
-                    Previous
-                </button>
-                <span>Page {pageIndex} of {totalPages}</span>
-                <button
-                    onClick={() => handlePageChange(pageIndex + 1)}
-                    disabled={pageIndex >= totalPages}
-                >
-                    Next
-                </button>
-            </div>
+            {products && products.length > 0 && (
+                <div className="pagination">
+                    <button
+                        onClick={() => handlePageChange(pageIndex - 1)}
+                        disabled={pageIndex <= 1}
+                    >
+                        Previous
+                    </button>
+                    <span>Page {pageIndex} of {totalPages}</span>
+                    <button
+                        onClick={() => handlePageChange(pageIndex + 1)}
+                        disabled={pageIndex >= totalPages}
+                    >
+                        Next
+                    </button>
+                </div>
+            ) || (
+                <div className="text-center mt-4" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#555' }}>
+                    No Products Found
+                </div>
+            )}
         </div>
     );
 };
