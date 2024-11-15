@@ -19,20 +19,17 @@ const theme = createTheme({
     },
   },
 });
+
 const emptyUserData = {
   email: "",
-  firstName: "",
-  lastName: "",
   name: "",
   address: "",
   phone: "",
   description: "",
-  password: ""
 };
+
 export default function ShopRegister() {
   const [data, setData] = useState(emptyUserData);
-  const [selectedRole, setSelectedRole] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const handleSelectChange = (event) => {
     setSelectedRole(event.target.value);
@@ -43,24 +40,22 @@ export default function ShopRegister() {
       [event.target.name]: event.target.value
     });
   };
+
   const handleSubmitRegister = async () => {
     if (!isValidateForm()) {
       return;
-    }
-    const resultCreateAccount = await ApiRegisterAccount(data, SHOP_ROLE);
-    if (resultCreateAccount.ok) {
-      const resultCreateShop = await ApiCreateShop(data.email, data.name, data.phone, data.address, data.password, data.description);
-      if (resultCreateShop.ok) {
-        setData(emptyUserData);
-        alert("Your shop is successfully registered.");
-        navigate('/login');
-      }else {
-        alert(resultCreateShop.message);
-      }
-    } else {
-      alert(resultCreateAccount.message);
+    } 
+    
+    const result = await ApiCreateShop(data.email, data.name, data.phone, data.address, data.description);
+    if (result.ok) {
+      setData(emptyUserData);
+      alert("Shop registration successful, the password has been sent to your email.");
+      navigate('/login');
+    }else {
+      alert(result.message);
     }
   };
+
   const isValidateForm = () => {
     if (data.email === "" || data.email === "undefined") {
       alert("Please provide a valid email address.");
@@ -74,12 +69,9 @@ export default function ShopRegister() {
       alert("Please provide a valid address.");
       return false;
     }
-    if (data.password === "" || data.password.length < 6) {
-      alert("Please provide a valid password.");
-      return false;
-    }
     return true;
   }
+  
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);  
   };
@@ -199,28 +191,6 @@ export default function ShopRegister() {
                   onChange={handleChange}
                   InputProps={{
                     style: { borderRadius: '30px' }, 
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  autoComplete="new-password"
-                  onChange={handleChange}
-                  InputProps={{
-                    style: { borderRadius: '30px' }, 
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={handleClickShowPassword}>
-                          {showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
                   }}
                 />
               </Grid>
