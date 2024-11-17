@@ -160,6 +160,11 @@ function App() {
               path="/detail-application/:id"
               element={<ProtectedRoute element={<DetailApplication />} requiredRole={"Staff"} />}
             />
+             <Route
+              path="/profile"
+              element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Staff"} />}
+              
+            />
           </Route>
         </Routes>
       </Router>
