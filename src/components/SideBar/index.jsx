@@ -21,6 +21,8 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
 import AuthContext from "../../auth/AuthContext";
+import BalanceIcon from '@mui/icons-material/Balance';
+import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 
 const drawerWidth = 240;
 
@@ -53,11 +55,12 @@ const Sidebar = () => {
     sidebarItems = [
       { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/shop/orders" },
       { text: "Coupon", icon: <ConfirmationNumberIcon />, path: "/shop/coupon-page" },
+      { text: "Shop Package", icon: <BalanceIcon />, path: "/shop/package" },
       { text: "Breakfast-Menu", icon: <RestaurantMenuIcon />, path: "/shop/menu" },
       { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/shop/feedback-shop" },
       { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/shop-location" },
       { text: "Profile", icon: <PortraitIcon />, path: "/shop/profile" },
-      { text: "About Shop", icon: <PortraitIcon />, path: "/shop/about-shop" },
+      { text: "About Shop", icon: <ContactPhoneIcon />, path: "/shop/about-shop" },
     ];
   }
 
