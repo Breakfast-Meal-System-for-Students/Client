@@ -34,6 +34,8 @@ import ShopRegister from "./pages/ShopRegister/index.jsx";
 import ForgotPassword from "./pages/ForgotPassword/index.jsx";
 import ShopProfile from "./pages/ShopProfile/index.jsx";
 import ShopLocation from "./pages/ShopLocation/ShopLocation"; // Import ShopLocation
+import ShopPackagePage from "./pages/ShopPackagePage/ShopPackagePage.jsx";
+
 function App() {
   return (
     <AuthProvider>
@@ -82,6 +84,10 @@ function App() {
             <Route
               path="/shop"
               element={<ProtectedRoute element={<ShopPage />} requiredRole={"Shop"} />}
+            />
+            <Route
+              path="/shop/package"
+              element={<ProtectedRoute element={<ShopPackagePage />} requiredRole={"Shop"} />}
             />
             <Route
               path="/shop/feedback-shop"

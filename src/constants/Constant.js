@@ -108,3 +108,8 @@ export const API_GET_PRODUCTS_BY_SHOP_ID = HTTP_SERVER + "/api/Product/all-produ
 export const AIP_CREATE_SHOP = HTTP_SERVER + "/api/ShopApplication";
 export const AIP_UPDATE_SHOP = HTTP_SERVER + "/api/Shop/";
 export const API_GET_SHOP_BY_ID = HTTP_SERVER + "/api/Shop/";
+
+/*
+** API PACKAGE
+*/
+export const API_GET_PACKAGES = HTTP_SERVER + "/api/Package/";
