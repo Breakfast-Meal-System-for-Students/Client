@@ -113,3 +113,5 @@ export const API_GET_SHOP_BY_ID = HTTP_SERVER + "/api/Shop/";
 ** API PACKAGE
 */
 export const API_GET_PACKAGES = HTTP_SERVER + "/api/Package/";
+export const API_GET_PACKAGE_BY_ID = HTTP_SERVER + "/api/Package/";
+export const API_BUY_PACKAGE = HTTP_SERVER + "/api/Package/BuyPackageByShop";

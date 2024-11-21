@@ -59,7 +59,7 @@ const Sidebar = () => {
       { text: "Breakfast-Menu", icon: <RestaurantMenuIcon />, path: "/shop/menu" },
       { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/shop/feedback-shop" },
       { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/shop-location" },
-      { text: "Profile", icon: <PortraitIcon />, path: "/shop/profile" },
+      //{ text: "Profile", icon: <PortraitIcon />, path: "/shop/profile" },
       { text: "About Shop", icon: <ContactPhoneIcon />, path: "/shop/about-shop" },
     ];
   }
