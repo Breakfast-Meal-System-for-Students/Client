@@ -321,6 +321,11 @@ function App() {
                 />
               }
             />
+             <Route
+              path="/profile"
+              element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Staff"} />}
+              
+            />
           </Route>
         </Routes>
       </Router>

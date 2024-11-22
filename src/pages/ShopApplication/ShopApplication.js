@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useNavigate } from "react-router-dom";
+import { Snackbar, Alert } from '@mui/material';
 
 const ShopApplication = () => {
   const [shops, setShops] = useState([]);
@@ -11,13 +12,16 @@ const ShopApplication = () => {
   const [shopsPerPage] = useState(5);
   const [totalShops, setTotalShops] = useState(0);
   const navigate = useNavigate();
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [debounceTimeout, setDebounceTimeout] = useState(null); // State for debounce timeout
 
   useEffect(() => {
     const fetchShops = async () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `https://bms-fs-api.azurewebsites.net/api/ShopApplication?pageIndex=${currentPage}&pageSize=${shopsPerPage}&search=${encodeURIComponent(
+          `https://bms-fs-api.azurewebsites.net/api/ShopApplication?status=1&pageIndex=${currentPage}&pageSize=${shopsPerPage}&search=${encodeURIComponent(
             searchTerm
           )}`
         );
@@ -42,35 +46,61 @@ const ShopApplication = () => {
 
   const updateShopStatus = async (id, status) => {
     try {
-      const data = {
-        status: status,
-      };
+      const formData = new FormData();
+      formData.append('id', id);
+      formData.append('status', status);
 
       const response = await axios.put(
-        `https://bms-fs-api.azurewebsites.net/api/ShopApplication/${id}`,
-        data
+        'https://bms-fs-api.azurewebsites.net/api/ShopApplication',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+
       );
 
-      setShops((prevShops) =>
-        prevShops.map((shop) =>
-          shop.id === id ? { ...shop, status: status } : shop
-        )
-      );
+      if (response.data.isSuccess) {
+        setShops((prevShops) =>
+          prevShops.map((shop) =>
+            shop.id === id ? { ...shop, status: status } : shop
+          )
+        );
+        setSnackbarMessage('Shop status updated successfully!');
+        setSnackbarOpen(true);
+        
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        console.error("Error updating shop status:", response.data.messages);
+      }
     } catch (error) {
       console.error("Error updating shop status:", error);
     }
   };
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    // Clear the previous timeout if it exists
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+
+    // Set a new timeout to fetch shops after 300ms
+    const newTimeout = setTimeout(() => {
+      setCurrentPage(1); // Reset to first page on new search
+      setSearchTerm(value); // Update the search term
+    }, 300); // Adjust the delay as needed
+
+    setDebounceTimeout(newTimeout); // Store the timeout ID
+
   };
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="shop-list-container">
@@ -89,66 +119,49 @@ const ShopApplication = () => {
         </button>
       </div>
 
-      <table className="shop-table">
-        <thead>
-          <tr>
-            <th>Shop Name</th>
-            <th>Description</th>
-            <th>Rate</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {shops.map((shop) => (
-            <tr key={shop.id}>
-              <td>
-                <div className="shop-info">
-                  <img
-                    src={shop.image || "https://via.placeholder.com/50"}
-                    alt={shop.name}
-                    className="shop-pic"
-                  />
-                  <span>{shop.name}</span>
-                </div>
-              </td>
-              <td>{shop.description}</td>
-              <td>{shop.rate} / 5</td>
-              <td>
-                <button
-                  className="details-btn"
-                  onClick={() => viewShopDetails(shop.id)}
-                >
-                  View Details
-                </button>
-                {shop.status !== "Accepted" && (
-                  <button
-                    className="accept-btn"
-                    onClick={() => {
-                      updateShopStatus(shop.id, "Accepted");
-                    }}
-                  >
-                    Accept
-                  </button>
-                )}
-                {shop.status === "Accepted" ? (
-                  <button className="deny-btn disabled" disabled>
-                    Deny
-                  </button>
-                ) : (
-                  <button
-                    className="deny-btn"
-                    onClick={() => {
-                      updateShopStatus(shop.id, "Denied");
-                    }}
-                  >
-                    Deny
-                  </button>
-                )}
-              </td>
+      {loading ? (
+        <div>Loading...</div>
+      ) : shops.length === 0 ? (
+        <div>No shop applications found.</div>
+      ) : (
+        <table className="shop-table">
+          <thead>
+            <tr>
+              <th>Shop Name</th>
+              <th>Description</th>
+              <th>Rate</th>
+              <th>Actions</th>
+
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {shops.map((shop) => (
+              <tr key={shop.id}>
+                <td>
+                  <div className="shop-info">
+                    <img
+                      src={shop.image || "https://via.placeholder.com/50"}
+                      alt={shop.name}
+                      className="shop-pic"
+                    />
+                    <span>{shop.name}</span>
+                  </div>
+                </td>
+                <td>{shop.description}</td>
+                <td>{shop.rate} / 5</td>
+                <td>
+                  <button
+                    className="details-btn"
+                    onClick={() => viewShopDetails(shop.id)}
+                  >
+                    Xem Chi Tiết
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       <div className="pagination">
         {Array.from(
@@ -284,6 +297,16 @@ const ShopApplication = () => {
           background-color: #f1f1f1;
         }
       `}</style>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

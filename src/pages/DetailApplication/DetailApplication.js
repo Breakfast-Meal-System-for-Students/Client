@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { Snackbar, Alert } from '@mui/material';
 
 const DetailApplication = () => {
   const { id } = useParams();
   const [shop, setShop] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const fetchShop = async () => {
@@ -23,6 +26,37 @@ const DetailApplication = () => {
 
     fetchShop();
   }, [id]);
+
+  const updateShopStatus = async (status) => {
+    try {
+      const formData = new FormData();
+      formData.append('id', id);
+      formData.append('status', status);
+
+      const response = await axios.put(
+        'https://bms-fs-api.azurewebsites.net/api/ShopApplication',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      if (response.data.isSuccess) {
+        setSnackbarMessage('Shop status updated successfully!');
+        setSnackbarOpen(true);
+        
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        console.error("Error updating shop status:", response.data.messages);
+      }
+    } catch (error) {
+      console.error("Error updating shop status:", error);
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -54,8 +88,21 @@ const DetailApplication = () => {
           <p>
             <strong>Trạng thái:</strong> {shop.status}
           </p>
+          <button onClick={() => updateShopStatus('ACCEPTED')} className="accept-btn">Accept</button>
+          <button onClick={() => updateShopStatus('DENIED')} className="deny-btn">Deny</button>
         </div>
       </div>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+
       <style>{`
         .shop-detail-container {
           max-width: 800px;
@@ -103,6 +150,30 @@ const DetailApplication = () => {
           color: #333;
         }
 
+             .details-btn, .accept-btn, .deny-btn {
+          padding: 8px 16px;
+          border-radius: 4px;
+          cursor: pointer;
+          margin-right: 5px;
+        }
+
+        .details-btn {
+          background-color: #007bff;
+          color: white;
+          border: none;
+        }
+
+        .accept-btn {
+          background-color: #00cc69;
+          color: white;
+          border: none;
+        }
+
+        .deny-btn {
+          background-color: red;
+          color: white;
+          border: none;
+        }
         @media (max-width: 768px) {
           .shop-info {
             flex-direction: column;
