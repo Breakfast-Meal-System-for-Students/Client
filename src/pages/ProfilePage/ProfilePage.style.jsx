@@ -9,7 +9,7 @@ export const ProfileContainer = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   padding: theme.spacing(6),
   minHeight: '100vh',
-  background: 'linear-gradient(180deg, #3d996c, #00cc69)', 
+  background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)', 
 }));
 
 // Styles for the profile card

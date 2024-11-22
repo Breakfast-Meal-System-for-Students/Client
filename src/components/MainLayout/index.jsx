@@ -11,7 +11,7 @@ function MainLayout({children}) {
   return (
     <div style={{ display: 'flex' }}>
       {!hideSidebar && <Sidebar />}
-      <div style={{ padding: "20px", width: "100%" }}>
+      <div style={{ paddingInline: "20px", width: "100%" }}>
       <Outlet />
       </div>
     </div>

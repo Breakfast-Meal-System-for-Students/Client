@@ -9,8 +9,8 @@ const ShopApplication = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [shopsPerPage] = useState(5); // Number of shops per page
-  const [totalShops, setTotalShops] = useState(0); // Total shops for pagination
+  const [shopsPerPage] = useState(5);
+  const [totalShops, setTotalShops] = useState(0);
   const navigate = useNavigate();
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -58,6 +58,7 @@ const ShopApplication = () => {
             'Content-Type': 'multipart/form-data',
           },
         }
+
       );
 
       if (response.data.isSuccess) {
@@ -96,6 +97,7 @@ const ShopApplication = () => {
     }, 300); // Adjust the delay as needed
 
     setDebounceTimeout(newTimeout); // Store the timeout ID
+
   };
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -129,6 +131,7 @@ const ShopApplication = () => {
               <th>Description</th>
               <th>Rate</th>
               <th>Actions</th>
+
             </tr>
           </thead>
           <tbody>
@@ -178,32 +181,6 @@ const ShopApplication = () => {
       </div>
 
       <style>{`
-        .pagination {
-          display: flex;
-          justify-content: center;
-          margin: 20px 0;
-        }
-
-        .pagination-button {
-          padding: 10px 15px;
-          margin: 0 5px;
-          border: 1px solid #ddd;
-          background-color: #fff;
-          cursor: pointer;
-          font-size: 14px;
-          border-radius: 5px;
-        }
-
-        .pagination-button.active {
-          background-color: #00cc69;
-          color: white;
-          border-color: #00cc69;
-        }
-
-        .pagination-button:hover {
-          background-color: #f1f1f1;
-        }
-
         .shop-list-container {
           padding: 20px;
           max-width: 1200px;
@@ -289,8 +266,35 @@ const ShopApplication = () => {
           border: none;
         }
 
-        .shop-details {
-          margin-top: 20px;
+        .deny-btn.disabled {
+          background-color: gray;
+          cursor: not-allowed;
+        }
+
+        .pagination {
+          display: flex;
+          justify-content: center;
+          margin: 20px 0;
+        }
+
+        .pagination-button {
+          padding: 10px 15px;
+          margin: 0 5px;
+          border: 1px solid #ddd;
+          background-color: #fff;
+          cursor: pointer;
+          font-size: 14px;
+          border-radius: 5px;
+        }
+
+        .pagination-button.active {
+          background-color: #00cc69;
+          color: white;
+          border-color: #00cc69;
+        }
+
+        .pagination-button:hover {
+          background-color: #f1f1f1;
         }
       `}</style>
 

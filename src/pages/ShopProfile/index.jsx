@@ -118,6 +118,9 @@ export default function ShopProfile() {
                   {shop.description || "No description available"}
                 </Typography>
                 <Box className="mb-2">
+                  <strong>Code:</strong> {shop.id}
+                </Box>
+                <Box className="mb-2">
                   <strong>Email:</strong> {shop.email}
                 </Box>
                 <Box className="mb-2">
