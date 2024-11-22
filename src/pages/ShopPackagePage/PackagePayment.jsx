@@ -19,7 +19,8 @@ const PackagePayment = () => {
     }, []);
 
     const fetchPackageById = async (packageId) => {
-        const result = await ApiGetPackageById(packageId);
+        const token = localStorage.getItem('token');
+        const result = await ApiGetPackageById(packageId, token);
         if (result.ok) {
             setPrice(result.body.data.price);
         } else {
@@ -28,8 +29,9 @@ const PackagePayment = () => {
     }
 
     const handleSubmitPayment = async () => {
+        const token = localStorage.getItem('token');
         const shopId = localStorage.getItem('shopId');
-        const result = await ApiBuyPackage(shopId, packageId);
+        const result = await ApiBuyPackage(shopId, packageId, token);
         if (result.ok) {
             alert("Your package purchase was successful.");
             navigate(`/shop/package`);
