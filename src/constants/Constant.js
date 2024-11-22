@@ -22,12 +22,18 @@ export const HTTP_HEADER_TOKEN = (token) => {
 };
 
 /*
+ ** GOOGLE API KEY
+ */
+ export const API_KEY = "AlzaSyGpCG5SrSCk-n1TWzoyTLa1Wt891BhXWBO";
+ export const URL_MAP_AUTOCOMPLETE = "https://maps.gomaps.pro/maps/api/place/autocomplete/json";
+
+/*
  ** RESPONSE CONFIG
  */
-export const ResponseData = async (res) => {
+export const ResponseData = async (res, onlyOk = false) => {
     try {
         const body = await res.json();
-        if (res.ok && body.isSuccess) {
+        if ((res.ok && body.isSuccess) || (res.ok && onlyOk)) {
             return {
                 ok: true,
                 message: "Data transaction success",
