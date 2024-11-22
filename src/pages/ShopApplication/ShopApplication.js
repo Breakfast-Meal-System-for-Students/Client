@@ -8,8 +8,8 @@ const ShopApplication = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [shopsPerPage] = useState(5); // Number of shops per page
-  const [totalShops, setTotalShops] = useState(0); // Total shops for pagination
+  const [shopsPerPage] = useState(5);
+  const [totalShops, setTotalShops] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,10 +42,15 @@ const ShopApplication = () => {
 
   const updateShopStatus = async (id, status) => {
     try {
-      await axios.put(
+      const data = {
+        status: status,
+      };
+
+      const response = await axios.put(
         `https://bms-fs-api.azurewebsites.net/api/ShopApplication/${id}`,
-        { status }
+        data
       );
+
       setShops((prevShops) =>
         prevShops.map((shop) =>
           shop.id === id ? { ...shop, status: status } : shop
@@ -58,7 +63,7 @@ const ShopApplication = () => {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   };
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -113,20 +118,32 @@ const ShopApplication = () => {
                   className="details-btn"
                   onClick={() => viewShopDetails(shop.id)}
                 >
-                  Xem Chi Tiết
+                  View Details
                 </button>
-                <button
-                  className="accept-btn"
-                  onClick={() => updateShopStatus(shop.id, 2)}
-                >
-                  Accept
-                </button>
-                <button
-                  className="deny-btn"
-                  onClick={() => updateShopStatus(shop.id, 3)}
-                >
-                  Deny
-                </button>
+                {shop.status !== "Accepted" && (
+                  <button
+                    className="accept-btn"
+                    onClick={() => {
+                      updateShopStatus(shop.id, "Accepted");
+                    }}
+                  >
+                    Accept
+                  </button>
+                )}
+                {shop.status === "Accepted" ? (
+                  <button className="deny-btn disabled" disabled>
+                    Deny
+                  </button>
+                ) : (
+                  <button
+                    className="deny-btn"
+                    onClick={() => {
+                      updateShopStatus(shop.id, "Denied");
+                    }}
+                  >
+                    Deny
+                  </button>
+                )}
               </td>
             </tr>
           ))}
@@ -151,32 +168,6 @@ const ShopApplication = () => {
       </div>
 
       <style>{`
-        .pagination {
-          display: flex;
-          justify-content: center;
-          margin: 20px 0;
-        }
-
-        .pagination-button {
-          padding: 10px 15px;
-          margin: 0 5px;
-          border: 1px solid #ddd;
-          background-color: #fff;
-          cursor: pointer;
-          font-size: 14px;
-          border-radius: 5px;
-        }
-
-        .pagination-button.active {
-          background-color: #00cc69;
-          color: white;
-          border-color: #00cc69;
-        }
-
-        .pagination-button:hover {
-          background-color: #f1f1f1;
-        }
-
         .shop-list-container {
           padding: 20px;
           max-width: 1200px;
@@ -262,8 +253,35 @@ const ShopApplication = () => {
           border: none;
         }
 
-        .shop-details {
-          margin-top: 20px;
+        .deny-btn.disabled {
+          background-color: gray;
+          cursor: not-allowed;
+        }
+
+        .pagination {
+          display: flex;
+          justify-content: center;
+          margin: 20px 0;
+        }
+
+        .pagination-button {
+          padding: 10px 15px;
+          margin: 0 5px;
+          border: 1px solid #ddd;
+          background-color: #fff;
+          cursor: pointer;
+          font-size: 14px;
+          border-radius: 5px;
+        }
+
+        .pagination-button.active {
+          background-color: #00cc69;
+          color: white;
+          border-color: #00cc69;
+        }
+
+        .pagination-button:hover {
+          background-color: #f1f1f1;
         }
       `}</style>
     </div>
