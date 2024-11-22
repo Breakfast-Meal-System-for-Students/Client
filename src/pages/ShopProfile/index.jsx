@@ -6,113 +6,86 @@ import {
 import { Card, CardContent, Typography, CardMedia, Grid, Box } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { ApiGetShopById } from '../../services/ShopServices';
+import { ApiGetShopById, ApiUpdateShop } from '../../services/ShopServices';
 import { useNavigate } from 'react-router-dom';
+
 export default function ShopProfile() {
   const navigate = useNavigate();
   const [shop, setShop] = useState([]);
+  const [shopUpdate, setShopUpdate] = useState([]);
   const [roundedRate, setRoundedRate] = useState(1);
-  const [userData, setUserData] = useState({
-    firstName: '',
-    lastName: '',
-    avatar: null,
-    phone: '',
-    createDate: '',
-    lastUpdateDate: '',
-    role: '', // Change from array to string to reflect single role
-    shopId: '',
-    shopName: '',
-  });
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [updatedData, setUpdatedData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-  });
-  const [selectedFile, setSelectedFile] = useState(null); // State for selected file
   const token = localStorage.getItem('token');
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setShopUpdate({
+      ...shopUpdate,
+      [name]: value,
+    });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageURL = URL.createObjectURL(file);
+      setShopUpdate({
+        ...shopUpdate,
+        image: imageURL,
+      });
+    }
+  };
+
+  const fetchProfileShopData = async () => {
+    const shopId = localStorage.getItem('shopId');
+    if (!shopId) {
+      alert('ShopId is not found');
+      navigate('/login'); // Navigate to add product page
+      return;
+    }
+    const result = await ApiGetShopById(shopId);
+    if (result.ok) {
+      setShop(result.body.data);
+      setShopUpdate(result.body.data);
+      setRoundedRate(Math.round(result.body.data.rate))
+    } else {
+      alert(result.message);
+    }
+  };
+
   // Fetch user profile data from API
   useEffect(() => {
-    const fetchProfileShopData = async () => {
-      const shopId = localStorage.getItem('shopId');
-      if (!shopId) {
-        alert('ShopId is not found');
-        navigate('/login'); // Navigate to add product page
-        return;
-      }
-      const result = await ApiGetShopById(shopId);
-      if (result.ok) {
-        setShop(result.body.data);
-        setRoundedRate(Math.round(result.body.data.rate))
-      } else {
-        alert(result.message);
-      }
-    };
     fetchProfileShopData();
   }, [token]);
+
   // Open dialog for editing the profile
   const handleOpenEditDialog = () => {
-    setUpdatedData({
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      phone: userData.phone,
-    });
     setEditDialogOpen(true);
   };
+
   // Close the edit dialog
   const handleCloseEditDialog = () => {
     setEditDialogOpen(false);
-    setSelectedFile(null); // Reset selected file when closing the dialog
   };
+
   // Save the updated data
   const handleSave = async () => {
-    try {
-      console.log('Token:', token);
-      console.log('Updated Data:', updatedData); // Log updated data to debug the request payload
-      // Create a FormData object
-      const formData = new FormData();
-      formData.append('firstName', updatedData.firstName);
-      formData.append('lastName', updatedData.lastName);
-      formData.append('phone', updatedData.phone);
-      // Append selected file if it exists
-      if (selectedFile) {
-        formData.append('avatar', selectedFile); // Append selected file
-      }
-      const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Account', {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      });
-      if (response.ok) {
-        const updatedProfile = await response.json();
-        if (updatedProfile && updatedProfile.data) {
-          setUserData(updatedProfile.data); // Update the state with the returned updated data
-          setEditDialogOpen(false);
-          setSelectedFile(null); // Reset selected file after successful update
-        }
-      } else {
-        let errorMessage = 'Failed to update profile';
-        try {
-          const errorResponse = await response.json();
-          errorMessage = errorResponse.message || errorMessage; // Log specific error message
-          console.error('Error response:', errorResponse); // Log the entire error response for debugging
-        } catch (e) {
-          console.error('Error parsing error response:', e);
-        }
-        console.error(errorMessage);
-        alert(`Error: ${errorMessage}`);
-      }
-    } catch (error) {
-      if (error instanceof TypeError) {
-        alert('Network error: Please check your internet connection.');
-      } else {
-        console.error('Network or other error:', error);
-        alert(`Error: ${error.message}`);
-      }
+    const result = await ApiUpdateShop(
+      shopUpdate.id, 
+      shopUpdate.image, 
+      shopUpdate.name, 
+      shopUpdate.phone, 
+      shopUpdate.address,
+      shopUpdate.description,
+    );
+    if (result.ok) {
+      alert("Update shop information successfully!");
+      fetchProfileShopData();
+    } else {
+      alert(result.message);
     }
   };
+  
   return (
     <ProfileContainer>
       <ProfileCard>
@@ -145,6 +118,9 @@ export default function ShopProfile() {
                   {shop.description || "No description available"}
                 </Typography>
                 <Box className="mb-2">
+                  <strong>Code:</strong> {shop.id}
+                </Box>
+                <Box className="mb-2">
                   <strong>Email:</strong> {shop.email}
                 </Box>
                 <Box className="mb-2">
@@ -168,40 +144,69 @@ export default function ShopProfile() {
         </Button>
         {/* Dialog for editing profile */}
         <Dialog open={editDialogOpen} onClose={handleCloseEditDialog}>
-          <DialogTitle>Edit Profile</DialogTitle>
+          <DialogTitle>UPDATE PROFILE</DialogTitle>
           <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="First Name"
-              fullWidth
-              value={updatedData.firstName}
-              onChange={(e) => setUpdatedData({ ...updatedData, firstName: e.target.value })}
-            />
-            <TextField
-              margin="dense"
-              label="Last Name"
-              fullWidth
-              value={updatedData.lastName}
-              onChange={(e) => setUpdatedData({ ...updatedData, lastName: e.target.value })}
-            />
-            <TextField
-              margin="dense"
-              label="Phone"
-              fullWidth
-              value={updatedData.phone}
-              onChange={(e) => setUpdatedData({ ...updatedData, phone: e.target.value })}
-            />
-            <input
-              type="file"
-              onChange={(e) => setSelectedFile(e.target.files[0])}
-            />
+          <Grid item xs={12} sm={8}>
+              <CardContent>
+                {/* Tên Shop */}
+                <TextField
+                  fullWidth
+                  label="Name"
+                  name="name"
+                  value={shop.name}
+                  onChange={handleChange}
+                  variant="outlined"
+                  className="mb-3"
+                />
+                {/* Số điện thoại */}
+                <TextField
+                  fullWidth
+                  label="Phone Number"
+                  name="phoneNumber"
+                  value={shop.phoneNumber}
+                  onChange={handleChange}
+                  variant="outlined"
+                  className="mb-3"
+                />
+                {/* Địa chỉ */}
+                <TextField
+                  fullWidth
+                  label="Address"
+                  name="address"
+                  value={shop.address}
+                  onChange={handleChange}
+                  variant="outlined"
+                  className="mb-3"
+                />
+                {/* Mô tả */}
+                <TextField
+                  fullWidth
+                  label="Description"
+                  name="description"
+                  value={shop.description}
+                  onChange={handleChange}
+                  variant="outlined"
+                  multiline
+                  rows={4}
+                  className="mb-3"
+                />
+                {/* Upload ảnh từ máy tính */}
+                <Box className="mb-3">
+                  <Typography>Upload Image:</Typography>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </Box>
+              </CardContent>
+            </Grid>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseEditDialog} color="secondary">
               Cancel
             </Button>
-            <Button onClick={handleSave} color="primary">
+            <Button onClick={handleSave} color="success">
               Save
             </Button>
           </DialogActions>

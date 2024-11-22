@@ -75,8 +75,10 @@ export default function Login() {
   const setShopLocalInfo = async (token) => {
     const result = await ApiGetProfile(token);
     if (result.ok) {
-      localStorage.setItem("shopId", result.body.data.shopId);
-      localStorage.setItem("shopName", result.body.data.shopName);
+
+      localStorage.setItem ("shopId", result.body.data.shopId);
+      localStorage.setItem ("shopName", result.body.data.shopName);
+
     }
   };
 
@@ -121,6 +123,7 @@ export default function Login() {
           }}
         >
           <Box>
+
             <Avatar
               sx={{
                 width: 200,
@@ -131,6 +134,7 @@ export default function Login() {
             >
               <LockOutlinedIcon sx={{ fontSize: 100 }} />
             </Avatar>
+
           </Box>
 
           <Box

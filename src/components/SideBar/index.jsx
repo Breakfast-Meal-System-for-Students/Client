@@ -32,6 +32,8 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
 import AuthContext from "../../auth/AuthContext";
+import BalanceIcon from '@mui/icons-material/Balance';
+import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 
 const drawerWidth = 240;
 
@@ -88,6 +90,7 @@ const Sidebar = () => {
     ];
   } else if (user && user.role && user.role.includes("Shop")) {
     sidebarItems = [
+
       {
         text: "Coupon",
         icon: <ConfirmationNumberIcon />,
@@ -111,6 +114,7 @@ const Sidebar = () => {
       { text: "Orders", icon: <StoreOutlinedIcon />, path: "/shop/orders" },
       { text: "Profile", icon: <PortraitIcon />, path: "/shop/profile" },
       { text: "About Shop", icon: <PortraitIcon />, path: "/shop/about-shop" },
+
     ];
   }
 
@@ -146,7 +150,7 @@ const Sidebar = () => {
         "& .MuiDrawer-paper": {
           width: drawerWidth,
           boxSizing: "border-box",
-          background: "linear-gradient(180deg, #3d996c, #00cc69)",
+          background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
           color: "#fff",
         },
       }}

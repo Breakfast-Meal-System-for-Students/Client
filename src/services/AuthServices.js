@@ -18,28 +18,23 @@ export const ApiLoginByAccount = async (data) => {
     return Constant.ResponseData(response);
 }
 export const ApiConfirmDigitCode = async (email, digitCode) => {
-    if (Constant.ENABLE_DEBUG_DIGIT_CODE) {
-        if (digitCode === Constant.DIGIT_CODE_DEFAULT) {
-            return {
-                ok: true,
-                message: "Data transaction success",
-            };
-        } else {
-            return {
-                ok: false,
-                message: "Digit code is invalid or expired",
-            };
-        }
-    } else {
-        const formData = new FormData();
-        formData.append("email", email);
-        formData.append("digitCode", digitCode);
-        const response = await fetch(Constant.API_CONFIRM_DIGIT_CODE, {
-            method: "POST",
-            body: formData,
-        });
-        return Constant.ResponseData(response);
-    }
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("oTP", digitCode);
+    const response = await fetch(Constant.API_CONFIRM_DIGIT_CODE, {
+        method: "POST",
+        body: formData,
+    });
+    return Constant.ResponseData(response);
+}
+export const ApiSendOTP = async (email) => {
+    const formData = new FormData();
+    formData.append("email", email);
+    const response = await fetch(Constant.API_SEND_DIGIT_CODE, {
+        method: "POST",
+        body: formData,
+    });
+    return Constant.ResponseData(response);
 }
 export const ApiChangePassword = async (email, newPassword) => {
     if (Constant.ENABLE_DEBUG_CHANGE_PASSWORD) {
@@ -57,4 +52,15 @@ export const ApiChangePassword = async (email, newPassword) => {
         });
         return Constant.ResponseData(response);
     }
+}
+export const ApiResetPassword = async (email, newPassword) => {
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("newPassword", newPassword);
+    formData.append("confirmPassword", newPassword);
+    const response = await fetch(Constant.API_RESET_PASSWORD, {
+        method: "PUT",
+        body: formData,
+    });
+    return Constant.ResponseData(response);
 }

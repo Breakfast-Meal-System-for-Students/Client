@@ -1,4 +1,8 @@
-import { AIP_UPDATE_PRODUCT, AIP_CREATE_PRODUCT, API_GET_PRODUCTS_BY_SHOP_ID, ResponseData } from "../constants/Constant"
+import { AIP_UPDATE_PRODUCT, AIP_GET_PRODUCT_BY_ID, AIP_CREATE_PRODUCT, API_GET_PRODUCTS_BY_SHOP_ID, ResponseData } from "../constants/Constant"
+export const ApiGetProductByID = async (productId) => {
+    const response = await fetch(`${AIP_GET_PRODUCT_BY_ID + productId}`);
+    return ResponseData(response);
+}
 
 export const ApiUpdateProduct = async (updatedProduct, productId, imageFiles) => {
     const formData = new FormData();
