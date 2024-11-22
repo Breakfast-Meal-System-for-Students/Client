@@ -21,6 +21,12 @@ export const HTTP_HEADER_TOKEN = (token) => {
     }
 };
 
+export const HEADER_TOKEN = (token) => {
+    return {
+        'Authorization': `Bearer ${token}`,
+    }
+};
+
 /*
  ** GOOGLE API KEY
  */

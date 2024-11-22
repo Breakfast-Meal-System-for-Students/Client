@@ -38,12 +38,13 @@ export default function ShopProfile() {
 
   const fetchProfileShopData = async () => {
     const shopId = localStorage.getItem('shopId');
+    const token = localStorage.getItem('token');
     if (!shopId) {
       alert('ShopId is not found');
       navigate('/login'); // Navigate to add product page
       return;
     }
-    const result = await ApiGetShopById(shopId);
+    const result = await ApiGetShopById(shopId, token);
     if (result.ok) {
       setShop(result.body.data);
       setShopUpdate(result.body.data);
@@ -70,6 +71,7 @@ export default function ShopProfile() {
 
   // Save the updated data
   const handleSave = async () => {
+    const token = localStorage.getItem('token');
     const result = await ApiUpdateShop(
       shopUpdate.id, 
       shopUpdate.image, 
@@ -77,6 +79,7 @@ export default function ShopProfile() {
       shopUpdate.phone, 
       shopUpdate.address,
       shopUpdate.description,
+      token
     );
     if (result.ok) {
       alert("Update shop information successfully!");

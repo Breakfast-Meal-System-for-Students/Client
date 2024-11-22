@@ -26,7 +26,7 @@ const AddProductPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        const token = localStorage.getItem('token');
         const validationErrors = {};
         if (!name) validationErrors.name = 'Product name is required';
         if (!price) {
@@ -47,7 +47,7 @@ const AddProductPage = () => {
             return;
         }
 
-        const result = await ApiCreateProduct(name, description, price, shopId, images);
+        const result = await ApiCreateProduct(name, description, price, shopId, images, token);
         if (result.ok) {
             setSuccessMessage('Create product successfully!');
             setTimeout(() => {

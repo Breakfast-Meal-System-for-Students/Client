@@ -67,7 +67,8 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         if (showImages) {
             setShowImages(false);
         } else {
-            const result = await ApiGetProductByID(product.id);
+            const token = localStorage.getItem('token');
+            const result = await ApiGetProductByID(product.id, token);
             if (result.ok) {
                 setImages(result.body.data.images);
                 setShowImages(true);

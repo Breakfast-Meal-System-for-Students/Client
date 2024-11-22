@@ -38,7 +38,8 @@ const ShopPackagePage = () => {
   }, []);
   // Fetch coupons for the shop
   const fetchPackages = async () => {
-    const result = await ApiGetPackages(searchTerm, true, currentPage, 6);
+    const token = localStorage.getItem('token');
+    const result = await ApiGetPackages(searchTerm, true, currentPage, 6, token);
     if (result.ok) {
       setPackages(result.body.data.data);
       setTotalPages(Math.ceil(result.body.data.total / 6));
