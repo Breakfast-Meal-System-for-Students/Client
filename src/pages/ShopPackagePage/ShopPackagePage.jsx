@@ -1,47 +1,36 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import './CouponPage.scss';
+import React, { useState, useEffect } from 'react';
+import './ShopPackagePage.scss';
 import { useNavigate } from 'react-router-dom';
-import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
-import AuthContext from '../../auth/AuthContext';
-import UpdateCoupon from './UpdateCoupon';
 import { ApiGetPackages } from '../../services/PackageServices';
 import Avatar from '@mui/material/Avatar';
 import { GetImagePackage } from '../../utils/StringUtils';
+import Button from '@mui/material/Button';
+
 const ShopPackagePage = () => {
-  const { user: { token } } = useContext(AuthContext);
   const [packages, setPackages] = useState([]);
-  const [couponEdit, setCouponEdit] = useState([]);
-  const [shopId, setShopId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isPopupOpen, setPopupOpen] = useState(false);
   const navigate = useNavigate();
-  const handleSetCouponEdit = (coupon) => {
-    setCouponEdit(coupon);
-    setPopupOpen(true);
-  }
-  // Fetch shopId from local storage
-  useEffect(() => {
-    const storedShopId = localStorage.getItem('shopId');
-    if (storedShopId) {
-      setShopId(storedShopId);
-    }
-  }, []);
-  // Fetch coupons for the shop
-  const fetchPackages = async () => {
-    const result = await ApiGetPackages(searchTerm, true, currentPage, 6);
-    if (result.ok) {
-      setPackages(result.body.data.data);
-      setTotalPages(Math.ceil(result.body.data.total / 6));
-    } else {
-      alert(result.message);
-    }
+
+  const handleBuyNow = (id) => {
+    navigate(`/shop/package/payment?packageId=${id}`);
   };
+
   useEffect(() => {
+    // Fetch coupons for the shop
+    const fetchPackages = async () => {
+      const token = localStorage.getItem('token');
+      const result = await ApiGetPackages(searchTerm, true, currentPage, 6, token);
+      if (result.ok) {
+        setPackages(result.body.data.data);
+        setTotalPages(Math.ceil(result.body.data.total / 6));
+      } else {
+        alert(result.message);
+      }
+    };
     fetchPackages();
-  }, [shopId, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -51,21 +40,7 @@ const ShopPackagePage = () => {
     setSearchTerm(e.target.value);
     setCurrentPage(1); // Reset to first page on search
   };
-  const handleDeleteCoupon = async (couponId) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this coupon?');
-    if (confirmDelete) {
-      try {
-        await axios.delete(`https://bms-fs-api.azurewebsites.net/api/Coupon/${couponId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        fetchPackages(); // Refresh coupon list after deletion
-      } catch (error) {
-        console.error('Error deleting coupon:', error);
-      }
-    }
-  };
+
   return (
     <div className="coupon-container">
       <h1>SHOP PACKAGES</h1>
@@ -107,7 +82,14 @@ const ShopPackagePage = () => {
                   <td>{row.name}</td>
                   <td>{row.duration}</td>
                   <td>{row.price}</td>
-                  <td className='text-success'>Registered </td>
+                   <td>
+                    <Button variant="contained" color="primary" onClick={() => handleBuyNow(row.id)} sx={{
+                      borderRadius: '15px',
+                      fontSize: '16px',
+                      background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
+                      boxShadow: '0px 6px 12px rgba(0,0,0,0.1)',
+                    }}>Buy Now</Button>
+                  </td>
                   <td>{row.description}</td>
                 </tr>
               ))
@@ -138,13 +120,6 @@ const ShopPackagePage = () => {
             Next
           </button>
         </div>
-        {isPopupOpen && couponEdit &&
-            <UpdateCoupon
-              coupon={couponEdit}
-              onSave={fetchPackages}
-              onClose={() => setPopupOpen(false)} 
-            />
-        }
       </div>
     </div>
   );

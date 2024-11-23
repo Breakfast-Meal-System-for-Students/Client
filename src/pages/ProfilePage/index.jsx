@@ -8,7 +8,16 @@ import {
   NameTypography,
   RoleTypography,
 } from './ProfilePage.style';
-import { Button, TextField, ListItemText, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import {
+  Button,
+  TextField,
+  ListItemText,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Snackbar,
+} from '@mui/material';
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState({
@@ -18,7 +27,7 @@ export default function ProfilePage() {
     phone: '',
     createDate: '',
     lastUpdateDate: '',
-    role: '', // Change from array to string to reflect single role
+    role: '',
     shopId: '',
     shopName: '',
   });
@@ -30,21 +39,23 @@ export default function ProfilePage() {
     phone: '',
   });
 
-  const [selectedFile, setSelectedFile] = useState(null); // State for selected file
-
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const token = localStorage.getItem('token');
 
-  // Fetch user profile data from API
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Account/my-profile', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, // Pass the token in Authorization header
-          },
-        });
+        const response = await fetch(
+          'https://bms-fs-api.azurewebsites.net/api/Account/my-profile',
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
@@ -59,10 +70,6 @@ export default function ProfilePage() {
             shopId: data.data.shopId,
             shopName: data.data.shopName,
           });
-          localStorage.setItem ("shopId",data.data.shopId );
-          console.log (data.data.shopId);
-          localStorage.setItem("shopName", data.data.shopName);
-          console.log (data.data.shopName);
         } else {
           console.error('Failed to fetch profile data');
         }
@@ -74,7 +81,6 @@ export default function ProfilePage() {
     fetchProfileData();
   }, [token]);
 
-  // Open dialog for editing the profile
   const handleOpenEditDialog = () => {
     setUpdatedData({
       firstName: userData.firstName,
@@ -84,76 +90,90 @@ export default function ProfilePage() {
     setEditDialogOpen(true);
   };
 
-  // Close the edit dialog
   const handleCloseEditDialog = () => {
     setEditDialogOpen(false);
-    setSelectedFile(null); // Reset selected file when closing the dialog
+    setSelectedFile(null);
   };
 
-  // Save the updated data
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   const handleSave = async () => {
     try {
-      console.log('Token:', token);
-      console.log('Updated Data:', updatedData); // Log updated data to debug the request payload
-
-      // Create a FormData object
+      // FormData for profile update
       const formData = new FormData();
       formData.append('firstName', updatedData.firstName);
       formData.append('lastName', updatedData.lastName);
       formData.append('phone', updatedData.phone);
 
-      // Append selected file if it exists
-      if (selectedFile) {
-        formData.append('avatar', selectedFile); // Append selected file
+      // Update profile info
+      const profileResponse = await fetch(
+        'https://bms-fs-api.azurewebsites.net/api/Account',
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (!profileResponse.ok) {
+        const errorResponse = await profileResponse.json();
+        throw new Error(errorResponse.message || 'Failed to update profile');
       }
 
-      const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Account', {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      // Update avatar if a file is selected
+      if (selectedFile) {
+        const avatarFormData = new FormData();
+        avatarFormData.append('avatar', selectedFile);
 
-      if (response.ok) {
-        const updatedProfile = await response.json();
-        if (updatedProfile && updatedProfile.data) {
-          setUserData(updatedProfile.data); // Update the state with the returned updated data
-          setEditDialogOpen(false);
-          setSelectedFile(null); // Reset selected file after successful update
+        const avatarResponse = await fetch(
+          'https://bms-fs-api.azurewebsites.net/api/Account/update-avatar',
+          {
+            method: 'PUT',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: avatarFormData,
+          }
+        );
+
+        if (!avatarResponse.ok) {
+          const avatarErrorResponse = await avatarResponse.json();
+          throw new Error(
+            avatarErrorResponse.message || 'Failed to update avatar'
+          );
         }
-      } else {
-        let errorMessage = 'Failed to update profile';
-        try {
-          const errorResponse = await response.json();
-          errorMessage = errorResponse.message || errorMessage; // Log specific error message
-          console.error('Error response:', errorResponse); // Log the entire error response for debugging
-        } catch (e) {
-          console.error('Error parsing error response:', e);
-        }
-        console.error(errorMessage);
-        alert(`Error: ${errorMessage}`);
+      }
+
+      // Fetch updated user data
+      const updatedProfile = await profileResponse.json();
+      if (updatedProfile && updatedProfile.data.data) {
+        setUserData(updatedProfile.data.data  );
+        setSnackbarOpen(true);
+        handleCloseEditDialog();
       }
     } catch (error) {
-      if (error instanceof TypeError) {
-        alert('Network error: Please check your internet connection.');
-      } else {
-        console.error('Network or other error:', error);
-        alert(`Error: ${error.message}`);
-      }
+      alert(`Error: ${error.message}`);
     }
   };
 
   return (
     <ProfileContainer>
       <ProfileCard>
-        <StyledAvatar alt={`${userData.firstName} ${userData.lastName}`} src={userData.avatar || '/default-avatar.png'}>
-          {userData.firstName[0]?.toUpperCase() + userData.lastName[0]?.toUpperCase()}
+        <StyledAvatar
+          alt={`${userData.firstName} ${userData.lastName}`}
+          src={userData.avatar || '/default-avatar.png'}
+        >
+          {userData.firstName[0]?.toUpperCase() +
+            userData.lastName[0]?.toUpperCase()}
         </StyledAvatar>
 
         <NameTypography variant="h5">{`${userData.firstName} ${userData.lastName}`}</NameTypography>
         <RoleTypography variant="subtitle1" color="textSecondary">
-          Role: {userData.role} {/* Displaying single role */}
+          Role: {userData.role}
         </RoleTypography>
 
         <StyledList>
@@ -161,14 +181,25 @@ export default function ProfilePage() {
             <ListItemText primary="Phone" secondary={userData.phone || 'Not Provided'} />
           </StyledListItem>
           <StyledListItem>
-            <ListItemText primary="Account Created" secondary={new Date(userData.createDate).toLocaleDateString()} />
+            <ListItemText
+              primary="Account Created"
+              secondary={new Date(userData.createDate).toLocaleDateString()}
+            />
           </StyledListItem>
           <StyledListItem>
-            <ListItemText primary="Last Updated" secondary={new Date(userData.lastUpdateDate).toLocaleDateString()} />
+            <ListItemText
+              primary="Last Updated"
+              secondary={new Date(userData.lastUpdateDate).toLocaleDateString()}
+            />
           </StyledListItem>
         </StyledList>
 
-        <Button variant="contained" color="primary" onClick={handleOpenEditDialog} style={{ marginTop: '20px' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpenEditDialog}
+          style={{ marginTop: '20px' }}
+        >
           Update Profile
         </Button>
 
@@ -182,25 +213,33 @@ export default function ProfilePage() {
               label="First Name"
               fullWidth
               value={updatedData.firstName}
-              onChange={(e) => setUpdatedData({ ...updatedData, firstName: e.target.value })}
+              onChange={(e) =>
+                setUpdatedData({ ...updatedData, firstName: e.target.value })
+              }
             />
             <TextField
               margin="dense"
               label="Last Name"
               fullWidth
               value={updatedData.lastName}
-              onChange={(e) => setUpdatedData({ ...updatedData, lastName: e.target.value })}
+              onChange={(e) =>
+                setUpdatedData({ ...updatedData, lastName: e.target.value })
+              }
             />
             <TextField
               margin="dense"
               label="Phone"
               fullWidth
               value={updatedData.phone}
-              onChange={(e) => setUpdatedData({ ...updatedData, phone: e.target.value })}
+              onChange={(e) =>
+                setUpdatedData({ ...updatedData, phone: e.target.value })
+              }
             />
             <input
               type="file"
+              accept="image/*"
               onChange={(e) => setSelectedFile(e.target.files[0])}
+              style={{ marginTop: '10px' }}
             />
           </DialogContent>
           <DialogActions>
@@ -213,6 +252,13 @@ export default function ProfilePage() {
           </DialogActions>
         </Dialog>
       </ProfileCard>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={1000}
+        onClose={handleSnackbarClose}
+        message="Profile updated successfully!"
+      />
     </ProfileContainer>
   );
 }
