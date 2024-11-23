@@ -88,6 +88,7 @@ const ShopPackagePage = () => {
                   <td>{row.duration}</td>
                   <td>{row.price}</td>
                   <td>
+
                     <Button variant="contained" color="primary" onClick={() => handleBuyNow(row.id)} sx={{
                       borderRadius: '15px',
                       fontSize: '16px',

@@ -8,9 +8,10 @@ const Feedback = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [feedbacksPerPage] = useState(1); // Number of feedbacks per page
-  const [totalFeedbacks, setTotalFeedbacks] = useState(0); // Total feedbacks for pagination
+  const [feedbacksPerPage] = useState(5);
+  const [totalFeedbacks, setTotalFeedbacks] = useState(0);
   const navigate = useNavigate();
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
@@ -24,7 +25,7 @@ const Feedback = () => {
 
         if (response.data.isSuccess) {
           setFeedbacks(response.data.data.data);
-          setTotalFeedbacks(response.data.data.total); // Set total feedbacks
+          setTotalFeedbacks(response.data.data.total);
         }
       } catch (error) {
         console.error(error);
@@ -32,31 +33,36 @@ const Feedback = () => {
         setLoading(false);
       }
     };
+
     fetchFeedbacks();
-  }, [searchTerm, currentPage]); // Fetch feedbacks when searchTerm or currentPage changes
+  }, [searchTerm, currentPage]);
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page on new search
+    const value = e.target.value;
+    setCurrentPage(1);
+
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+
+    const newTimeout = setTimeout(() => {
+      setSearchTerm(value);
+    }, 300);
+
+    setDebounceTimeout(newTimeout);
   };
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleBlock = (id) => {
-    // Logic to block the feedback (e.g., make an API call)
     console.log(`Blocking feedback with id: ${id}`);
     // Add your API call here to block the feedback
   };
 
   const handleSendFeedback = () => {
-    // Logic to send feedback (e.g., open a modal or make an API call)
     console.log("Sending feedback...");
     // Add your API call here to send feedback
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="feedback-list-container">
@@ -75,66 +81,63 @@ const Feedback = () => {
         </button>
       </div>
 
-      <table className="feedback-table">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Shop</th>
-            <th>Feedback</th>
-            <th>Rate</th>
-            <th>Date</th>
-            <th>Actions</th>
-            <th>Send</th>
-          </tr>
-        </thead>
-        <tbody>
-          {feedbacks.map((feedback) => (
-            <tr key={feedback.id}>
-              <td>
-                <div className="user-info">
-                  <img
-                    src={feedback.userPic || "https://via.placeholder.com/50"}
-                    alt="User"
-                    className="user-pic"
-                  />
-                  <span>{feedback.userName}</span>
-                </div>
-              </td>
-              <td>
-                <div className="shop-info">
-                  <img
-                    src={feedback.shoppic || "https://via.placeholder.com/50"}
-                    alt="Shop"
-                    className="shop-pic"
-                  />
-                  <span>{feedback.shopName}</span>
-                </div>
-              </td>
-              <td>{feedback.description}</td>
-              <td>
-                <span className="rate-status">{feedback.rate} / 5</span>
-              </td>
-              <td>{new Date(feedback.createDate).toLocaleDateString()}</td>
-              <td>
-                <button
-                  className="block-btn"
-                  onClick={() => handleBlock(feedback.id)}
-                >
-                  <i className="fas fa-ban" title="Block"></i>
-                </button>
-              </td>
-              <td>
-                <button
-                  className="send-feedback-btn-inline"
-                  onClick={handleSendFeedback}
-                >
-                  Send Feedback
-                </button>
-              </td>
+      {loading ? (
+        <div>Loading feedbacks...</div>
+      ) : feedbacks.length === 0 ? (
+        <div>No feedbacks found.</div>
+      ) : (
+        <table className="feedback-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Shop</th>
+              <th>Feedback</th>
+              <th>Rate</th>
+              <th>Date</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {feedbacks.map((feedback) => (
+              <tr key={feedback.id}>
+                <td>
+                  <div className="user-info">
+                    <img
+                      src={feedback.userPic || "https://via.placeholder.com/50"}
+                      alt="User"
+                      className="user-pic"
+                    />
+                    <span>{feedback.userName}</span>
+                  </div>
+                </td>
+                <td>
+                  <div className="shop-info">
+                    <img
+                      src={feedback.shoppic || "https://via.placeholder.com/50"}
+                      alt="Shop"
+                      className="shop-pic"
+                    />
+                    <span>{feedback.shopName}</span>
+                  </div>
+                </td>
+                <td>{feedback.description}</td>
+                <td>
+                  <span className="rate-status">{feedback.rate} / 5</span>
+                </td>
+                <td>{new Date(feedback.createDate).toLocaleDateString()}</td>
+                <td>
+                  <button
+                    className="block-btn"
+                    onClick={() => handleBlock(feedback.id)}
+                  >
+                    <i className="fas fa-ban" title="Block"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {/* Pagination */}
       <div className="pagination">
@@ -212,7 +215,7 @@ const Feedback = () => {
           background-color: #00cc69;
           border: none;
           color: white;
-cursor: pointer;
+          cursor: pointer;
           margin-left: 10px;
           border-radius: 4px;
         }
@@ -254,19 +257,6 @@ cursor: pointer;
           background-color: transparent;
           border: none;
           cursor: pointer;
-        }
-
-        .send-feedback-btn-inline {
-          background-color: #00cc69;
-          color: white;
-          padding: 8px 16px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-
-        .send-feedback-btn-inline:hover {
-          background-color: #009e50;
         }
       `}</style>
     </div>

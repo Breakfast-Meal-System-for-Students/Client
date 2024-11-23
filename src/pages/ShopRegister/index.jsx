@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Avatar, Grid, Link, InputAdornment, IconButton } from '@mui/material';
+import { TextField, Button, Box, Typography, Avatar, Grid, Link, Autocomplete } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { StyledSelect } from './RegisterPage.style';
-import { ApiRegisterAccount } from '../../services/AuthServices';
 import { useNavigate } from 'react-router-dom';
-import { SHOP_ROLE } from '../../constants/Constant';
 import { ApiCreateShop } from '../../services/ShopServices';
+import { ApiGetAddressAutoComplete } from '../../services/MapServices';
 
 const theme = createTheme({
   palette: {
@@ -31,6 +27,9 @@ const emptyUserData = {
 
 export default function ShopRegister() {
   const [data, setData] = useState(emptyUserData);
+  const [addressSuggestions, setAddressSuggestions] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState('');
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -44,7 +43,7 @@ export default function ShopRegister() {
     if (!isValidateForm()) {
       return;
     } 
-    const result = await ApiCreateShop(data.email, data.name, data.phone, data.address, data.description);
+    const result = await ApiCreateShop(data.email, data.name, data.phone,  selectedAddress, data.description);
     if (result.ok) {
       setData(emptyUserData);
       alert("Shop registration successful, the password has been sent to your email.");
@@ -63,13 +62,32 @@ export default function ShopRegister() {
       alert("Please provide a valid phone.");
       return false;
     }
-    if (data.address === "") {
+    if (selectedAddress === "") {
       alert("Please provide a valid address.");
       return false;
     }
     return true;
   }
   
+  const fetchAddressSuggestions = async (input) => {
+    const result = await ApiGetAddressAutoComplete(input);
+    if (result.ok) {
+      setAddressSuggestions(result.body.predictions);
+    } else {
+      alert("Unknow error");
+    }
+  };
+  const handleAddressChange = (event) => {
+    const { value } = event.target;
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+    const newTimeout = setTimeout(() => {
+      fetchAddressSuggestions(value);
+    }, 1000);
+    setDebounceTimeout(newTimeout);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -133,17 +151,31 @@ export default function ShopRegister() {
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
-                <TextField
-                  name="address"
-                  required
-                  fullWidth
-                  id="address"
-                  label="Address"
-                  autoFocus
-                  onChange={handleChange}
-                  InputProps={{
-                    style: { borderRadius: '30px' },
-                  }}
+              <Autocomplete
+                  freeSolo
+                  options={addressSuggestions}
+                  getOptionLabel={(option) => option.description || ""}
+                  renderOption={(props, option) => (
+                    <li {...props}>
+                      {option.description}
+                    </li>
+                  )}
+                  onInputChange={(event, newInputValue) => handleAddressChange(event)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Address"
+                      required
+                      fullWidth
+                      id="address"
+                      autoFocus
+                      InputProps={{
+                        ...params.InputProps,
+                        style: { borderRadius: '30px' },
+                      }}
+                    />
+                  )}
+                  onChange={(event, newValue) => setSelectedAddress(newValue.description)}
                 />
               </Grid>
               <Grid item xs={12}>

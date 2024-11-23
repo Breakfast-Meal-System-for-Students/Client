@@ -38,12 +38,13 @@ export default function ShopProfile() {
 
   const fetchProfileShopData = async () => {
     const shopId = localStorage.getItem('shopId');
+    const token = localStorage.getItem('token');
     if (!shopId) {
       alert('ShopId is not found');
       navigate('/login'); // Navigate to add product page
       return;
     }
-    const result = await ApiGetShopById(shopId);
+    const result = await ApiGetShopById(shopId, token);
     if (result.ok) {
       setShop(result.body.data);
       setShopUpdate(result.body.data);
@@ -70,6 +71,7 @@ export default function ShopProfile() {
 
   // Save the updated data
   const handleSave = async () => {
+    const token = localStorage.getItem('token');
     const result = await ApiUpdateShop(
       shopUpdate.id, 
       shopUpdate.image, 
@@ -77,6 +79,7 @@ export default function ShopProfile() {
       shopUpdate.phone, 
       shopUpdate.address,
       shopUpdate.description,
+      token
     );
     if (result.ok) {
       alert("Update shop information successfully!");
@@ -97,7 +100,7 @@ export default function ShopProfile() {
                 <CardMedia
                   component="img"
                   height="200"
-                  image={'https://media.istockphoto.com/id/1425139113/photo/purchasing-goods-with-smartphone-at-grocery-store.jpg?s=612x612&w=0&k=20&c=xMbZgp4BZAWCH_j7UkM9YiYTXcpS4zqg3MW4_jRmriM='} // Đường dẫn hình ảnh mặc định nếu shop.Image là null
+                  image={'https://media.istockphoto.com/id/1425139113/photo/purchasing-goods-with-smartphone-at-grocery-store.jpg?s=612x612&w=0&k=20&c=xMbZgp4BZAWCH_j7UkM9YiYTXcpS4zqg3MW4_jRmriM='} 
                   alt={shop.name}
                 />
               </CardContent>
@@ -117,6 +120,9 @@ export default function ShopProfile() {
                 <Typography variant="body2" color="textSecondary" className="mb-2">
                   {shop.description || "No description available"}
                 </Typography>
+                <Box className="mb-2">
+                  <strong>Code:</strong> {shop.id}
+                </Box>
                 <Box className="mb-2">
                   <strong>Email:</strong> {shop.email}
                 </Box>

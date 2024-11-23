@@ -29,12 +29,13 @@ const ProductPage = () => {
     const navigate = useNavigate();
 
     const fetchProducts = async () => {
+        const token = localStorage.getItem('token');
         const shopId = localStorage.getItem('shopId');
         if (!shopId) {
             console.error('No shopId found in local storage');
             return;
         }
-        const result = await ApiGetProductsByShopId(shopId, searchTerm, true, pageIndex, pageSize);
+        const result = await ApiGetProductsByShopId(shopId, searchTerm, true, pageIndex, pageSize, token);
         if (result.ok) {
             setProducts(result.body.data.data);
             setTotalPages(result.body.data.lastPage || 0); 

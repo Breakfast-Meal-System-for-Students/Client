@@ -21,13 +21,25 @@ export const HTTP_HEADER_TOKEN = (token) => {
     }
 };
 
+export const HEADER_TOKEN = (token) => {
+    return {
+        'Authorization': `Bearer ${token}`,
+    }
+};
+
+/*
+ ** GOOGLE API KEY
+ */
+ export const API_KEY = "AlzaSyGpCG5SrSCk-n1TWzoyTLa1Wt891BhXWBO";
+ export const URL_MAP_AUTOCOMPLETE = "https://maps.gomaps.pro/maps/api/place/autocomplete/json";
+
 /*
  ** RESPONSE CONFIG
  */
-export const ResponseData = async (res) => {
+export const ResponseData = async (res, onlyOk = false) => {
     try {
         const body = await res.json();
-        if (res.ok && body.isSuccess) {
+        if ((res.ok && body.isSuccess) || (res.ok && onlyOk)) {
             return {
                 ok: true,
                 message: "Data transaction success",
@@ -113,3 +125,6 @@ export const API_GET_SHOP_BY_ID = HTTP_SERVER + "/api/Shop/";
 ** API PACKAGE
 */
 export const API_GET_PACKAGES = HTTP_SERVER + "/api/Package/";
+export const API_GET_PACKAGE_BY_ID = HTTP_SERVER + "/api/Package/";
+export const API_BUY_PACKAGE = HTTP_SERVER + "/api/Package/BuyPackageByShop";
+export const API_VNPAY_BUY_PACKAGE = HTTP_SERVER + "/api/Payment/create-payment-url-forbuypackage";
