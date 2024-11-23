@@ -127,3 +127,4 @@ export const API_GET_SHOP_BY_ID = HTTP_SERVER + "/api/Shop/";
 export const API_GET_PACKAGES = HTTP_SERVER + "/api/Package/";
 export const API_GET_PACKAGE_BY_ID = HTTP_SERVER + "/api/Package/";
 export const API_BUY_PACKAGE = HTTP_SERVER + "/api/Package/BuyPackageByShop";
+export const API_VNPAY_BUY_PACKAGE = HTTP_SERVER + "/api/Payment/create-payment-url-forbuypackage";
