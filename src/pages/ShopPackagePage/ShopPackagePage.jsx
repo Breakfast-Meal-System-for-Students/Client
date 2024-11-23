@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './CouponPage.scss';
+import './ShopPackagePage.scss';
 import { useNavigate } from 'react-router-dom';
 import { ApiGetPackages } from '../../services/PackageServices';
 import Avatar from '@mui/material/Avatar';
@@ -18,8 +18,8 @@ const ShopPackagePage = () => {
   };
 
   useEffect(() => {
-     // Fetch coupons for the shop
-     const fetchPackages = async () => {
+    // Fetch coupons for the shop
+    const fetchPackages = async () => {
       const token = localStorage.getItem('token');
       const result = await ApiGetPackages(searchTerm, true, currentPage, 6, token);
       if (result.ok) {
@@ -31,6 +31,7 @@ const ShopPackagePage = () => {
     };
     fetchPackages();
   }, [currentPage, searchTerm]);
+
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -42,9 +43,11 @@ const ShopPackagePage = () => {
     setCurrentPage(1); // Reset to first page on search
   };
 
+
   return (
     <div className="coupon-container">
       <h1>SHOP PACKAGES</h1>
+
       <div className="coupon-box">
         <div className="search-and-add">
           <input
@@ -122,13 +125,6 @@ const ShopPackagePage = () => {
             Next
           </button>
         </div>
-        {isPopupOpen && couponEdit &&
-            <UpdateCoupon
-              coupon={couponEdit}
-              onSave={fetchPackages}
-              onClose={() => setPopupOpen(false)} 
-            />
-        }
       </div>
     </div>
   );
