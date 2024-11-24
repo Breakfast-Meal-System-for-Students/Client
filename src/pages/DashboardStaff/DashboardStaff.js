@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, Grid, CircularProgress, Paper } from "@mui/material";
-import { Bar } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 import axios from "axios";
 import "chart.js/auto";
 
@@ -33,8 +33,10 @@ const StatsCard = ({ title, value, gradient }) => (
 );
 
 const DashboardStaff = () => {
-  const [newUsersData, setNewUsersData] = useState(Array(12).fill(0)); // Initialize with zeroes
-  const [totalSales, setTotalSales] = useState(0); // State for Total Sales
+  const [newUsersData, setNewUsersData] = useState([]);
+  const [ordersData, setOrdersData] = useState([]);
+  const [revenueData, setRevenueData] = useState([]);
+  const [totalUsers, setTotalUsers] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -47,49 +49,43 @@ const DashboardStaff = () => {
         const token = localStorage.getItem("token");
         const year = 2024;
 
-        // Fetch monthly new users data for each month in parallel
-        const monthlyRequests = Array.from({ length: 12 }, (_, i) => {
-          return axios.get(
-            `https://bms-fs-api.azurewebsites.net/api/User/CountNewUser?day=1&month=${
+        // Fetch monthly new users
+        const userRequests = Array.from({ length: 12 }, (_, i) =>
+          axios.get(
+            `https://bms-fs-api.azurewebsites.net/api/User/CountNewUser?month=${
               i + 1
             }&year=${year}`,
             {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+              headers: { Authorization: `Bearer ${token}` },
             }
-          );
-        });
-
-        const monthlyResponses = await Promise.all(monthlyRequests);
-        const monthlyData = monthlyResponses.map((response, index) => {
-          if (response.data.isSuccess) {
-            return response.data.data; // Count of new users for each month
-          } else {
-            console.warn(`Failed to fetch data for month ${index + 1}`);
-            return 0;
-          }
-        });
-        setNewUsersData(monthlyData);
-
-        // Fetch total sales data
-        const totalSalesResponse = await axios.get(
-          "https://bms-fs-api.azurewebsites.net/api/User/GetTotalUser",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          )
         );
 
-        if (totalSalesResponse.data.isSuccess) {
-          setTotalSales(totalSalesResponse.data.data); // Set total sales value
-        } else {
-          throw new Error("Failed to fetch total sales");
+        const userResponses = await Promise.all(userRequests);
+        const monthlyNewUsers = userResponses.map((response) =>
+          response.data.isSuccess ? response.data.data : 0
+        );
+        setNewUsersData(monthlyNewUsers);
+
+        // Fetch total users
+        const totalUsersResponse = await axios.get(
+          "https://bms-fs-api.azurewebsites.net/api/User/GetTotalUser",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        if (totalUsersResponse.data.isSuccess) {
+          setTotalUsers(totalUsersResponse.data.data);
         }
+
+        // Fetch order and revenue data (replace with actual API if available)
+        setOrdersData([50, 60, 70, 85, 95, 110, 120, 140, 150, 160, 170, 200]); // Example data
+        setRevenueData([
+          500, 600, 700, 850, 950, 1100, 1200, 1400, 1500, 1600, 1700, 2000,
+        ]); // Example data
       } catch (error) {
         console.error("Error fetching data:", error);
-        setError(error.response ? error.response.data : error.message);
+        setError(error.message || "Failed to fetch data");
       } finally {
         setLoading(false);
       }
@@ -143,8 +139,22 @@ const DashboardStaff = () => {
       {
         label: "New Users",
         data: newUsersData,
-        backgroundColor: "#3f51b5",
-        borderColor: "#3f51b5",
+        backgroundColor: "#42a5f5",
+        borderColor: "#1e88e5",
+        borderWidth: 1,
+      },
+      {
+        label: "Orders",
+        data: ordersData,
+        backgroundColor: "#66bb6a",
+        borderColor: "#43a047",
+        borderWidth: 1,
+      },
+      {
+        label: "Revenue (x1000 VND)",
+        data: revenueData.map((r) => r / 1000),
+        backgroundColor: "#ffa726",
+        borderColor: "#fb8c00",
         borderWidth: 1,
       },
     ],
@@ -153,53 +163,46 @@ const DashboardStaff = () => {
   const chartOptions = {
     responsive: true,
     scales: {
-      y: {
-        beginAtZero: true,
-        ticks: { color: "#555" },
-        grid: { color: "#e0e0e0" },
-      },
-      x: {
-        ticks: { color: "#555" },
-        grid: { color: "#e0e0e0" },
-      },
+      y: { beginAtZero: true },
     },
-    plugins: {
-      legend: { display: false },
-    },
+    plugins: { legend: { position: "top" } },
   };
 
   return (
-    <Box sx={{ padding: 4, backgroundColor: "#f0f2f5", minHeight: "100vh" }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
-        User Dashboard
+    <Box sx={{ padding: 4, backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
+      <Typography variant="h4" gutterBottom>
+        Dashboard - Breakfast App
       </Typography>
+
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} md={3}>
           <StatsCard
-            title="Total Sales"
-            value={`${totalSales.toLocaleString()}`} // Format the sales value
+            title="Total Users"
+            value={totalUsers}
             gradient="linear-gradient(135deg, #2196F3 0%, #21CBF3 100%)"
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <StatsCard
-            title="Total Impressions"
-            value="47,403"
-            gradient="linear-gradient(135deg, #3f51b5 0%, #5c6bc0 100%)"
+            title="Total Orders"
+            value={ordersData.reduce((acc, val) => acc + val, 0)}
+            gradient="linear-gradient(135deg, #66BB6A 0%, #43A047 100%)"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <StatsCard
+            title="Total Revenue"
+            value={`${revenueData
+              .reduce((acc, val) => acc + val, 0)
+              .toLocaleString()}đ`}
+            gradient="linear-gradient(135deg, #FFA726 0%, #FB8C00 100%)"
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <StatsCard
             title="New Users"
             value={newUsersData.reduce((acc, val) => acc + val, 0)}
-            gradient="linear-gradient(135deg, #66BB6A 0%, #43A047 100%)"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatsCard
-            title="Total Orders"
-            value="55,093"
-            gradient="linear-gradient(135deg, #FF7043 0%, #FF5722 100%)"
+            gradient="linear-gradient(135deg, #42A5F5 0%, #1E88E5 100%)"
           />
         </Grid>
 
@@ -208,16 +211,14 @@ const DashboardStaff = () => {
             sx={{
               padding: 3,
               borderRadius: 4,
-              boxShadow: 3,
               backgroundColor: "#fff",
+              boxShadow: 3,
             }}
           >
             <Typography variant="h6" gutterBottom>
-              Monthly New Users for 2024
+              Monthly Performance
             </Typography>
-            <Box sx={{ height: 400 }}>
-              <Bar data={barChartData} options={chartOptions} />
-            </Box>
+            <Bar data={barChartData} options={chartOptions} />
           </Box>
         </Grid>
       </Grid>

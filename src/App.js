@@ -11,7 +11,7 @@ import ShopApplication from "./pages/ShopApplication/ShopApplication.js";
 import DetailApplication from "./pages/DetailApplication/DetailApplication.js";
 import ShopOverview from "./pages/ShopOverview/ShopOverview.js";
 import NotificationManagement from "./pages/NotificationManagement/NotificationManagement.js";
-
+import ShopDetail from "./pages/ShopDetail/ShopDetail.js";
 import UserDetail from "./pages/UserInformation/UserDetail.js";
 import UserList from "./pages/UserInformation/UserList.js";
 import DashboardStaff from "./pages/DashboardStaff/DashboardStaff.js";
@@ -130,11 +130,21 @@ function App() {
             />
             <Route
               path="/shop/package"
-              element={<ProtectedRoute element={<ShopPackagePage />} requiredRole={"Shop"} />}
+              element={
+                <ProtectedRoute
+                  element={<ShopPackagePage />}
+                  requiredRole={"Shop"}
+                />
+              }
             />
-             <Route
+            <Route
               path="/shop/package/payment"
-              element={<ProtectedRoute element={<PackagePayment />} requiredRole={"Shop"} />}
+              element={
+                <ProtectedRoute
+                  element={<PackagePayment />}
+                  requiredRole={"Shop"}
+                />
+              }
             />
             <Route
               path="/shop/feedback-shop"
@@ -168,14 +178,12 @@ function App() {
             />
             <Route
               path="/shop/profile"
-
               element={
                 <ProtectedRoute
                   element={<ProfilePage />}
                   requiredRole={"Shop"}
                 />
               }
-
             />
             <Route
               path="/shop/about-shop"
@@ -204,10 +212,15 @@ function App() {
                 />
               } // Add route for AddProduct
             />
-             <Route path="/shop/shop-location" 
-             element={<ProtectedRoute element={<ShopLocation />} requiredRole={"Shop"} />} // Add route for AddProduct
-             />
-
+            <Route
+              path="/shop/shop-location"
+              element={
+                <ProtectedRoute
+                  element={<ShopLocation />}
+                  requiredRole={"Shop"}
+                />
+              } // Add route for AddProduct
+            />
           </Route>
 
           {/* Staff Routes */}
@@ -279,6 +292,15 @@ function App() {
               }
             />
             <Route
+              path="/shop-details/:id"
+              element={
+                <ProtectedRoute
+                  element={<ShopDetail />}
+                  requiredRole={"Staff"}
+                />
+              }
+            />
+            <Route
               path="/shopOverview"
               element={
                 <ProtectedRoute
@@ -321,10 +343,14 @@ function App() {
                 />
               }
             />
-             <Route
+            <Route
               path="/profile"
-              element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Staff"} />}
-              
+              element={
+                <ProtectedRoute
+                  element={<ProfilePage />}
+                  requiredRole={"Staff"}
+                />
+              }
             />
           </Route>
         </Routes>

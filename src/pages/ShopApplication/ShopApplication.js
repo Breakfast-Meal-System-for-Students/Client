@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useNavigate } from "react-router-dom";
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert } from "@mui/material";
 
 const ShopApplication = () => {
   const [shops, setShops] = useState([]);
@@ -47,18 +47,17 @@ const ShopApplication = () => {
   const updateShopStatus = async (id, status) => {
     try {
       const formData = new FormData();
-      formData.append('id', id);
-      formData.append('status', status);
+      formData.append("id", id);
+      formData.append("status", status);
 
       const response = await axios.put(
-        'https://bms-fs-api.azurewebsites.net/api/ShopApplication',
+        "https://bms-fs-api.azurewebsites.net/api/ShopApplication",
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         }
-
       );
 
       if (response.data.isSuccess) {
@@ -67,9 +66,9 @@ const ShopApplication = () => {
             shop.id === id ? { ...shop, status: status } : shop
           )
         );
-        setSnackbarMessage('Shop status updated successfully!');
+        setSnackbarMessage("Shop status updated successfully!");
         setSnackbarOpen(true);
-        
+
         setTimeout(() => {
           window.location.reload();
         }, 2000);
@@ -97,7 +96,6 @@ const ShopApplication = () => {
     }, 300); // Adjust the delay as needed
 
     setDebounceTimeout(newTimeout); // Store the timeout ID
-
   };
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -131,7 +129,6 @@ const ShopApplication = () => {
               <th>Description</th>
               <th>Rate</th>
               <th>Actions</th>
-
             </tr>
           </thead>
           <tbody>
@@ -303,7 +300,11 @@ const ShopApplication = () => {
         autoHideDuration={6000}
         onClose={() => setSnackbarOpen(false)}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

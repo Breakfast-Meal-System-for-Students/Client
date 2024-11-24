@@ -3,21 +3,18 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditCategory = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Extract ID from the URL
   const [category, setCategory] = useState({
     name: "",
     description: "",
     image: null,
+    currentImage: "", // Display the current image
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [formErrors, setFormErrors] = useState({
-    name: "",
-    description: "",
-    image: "",
-  });
   const navigate = useNavigate();
 
+  // Fetch the current category details
   useEffect(() => {
     const fetchCategory = async () => {
       try {
@@ -28,247 +25,159 @@ const EditCategory = () => {
           setCategory({
             name: response.data.data.name,
             description: response.data.data.description,
-            image: null,
+            currentImage: response.data.data.image,
+            image: null, // To allow for new image uploads
           });
+        } else {
+          // Do not set error message here
+          // setError(response.data.message || "Failed to fetch category details.");
         }
-        setLoading(false);
       } catch (error) {
-        setError("Error fetching category data");
+        // Do not set error message here
+        // const apiError = error.response?.data?.message || "Error fetching category details.";
+        // setError(apiError);
+      } finally {
         setLoading(false);
       }
     };
     fetchCategory();
   }, [id]);
 
+  // Validate the form inputs before submission
   const validateForm = () => {
-    let valid = true;
-    const errors = { name: "", description: "", image: "" };
-
-    if (!category.name) {
-      errors.name = "Category name is required.";
-      valid = false;
+    if (!category.name || !category.description) {
+      setError("Name and description are required.");
+      return false;
     }
-
-    if (!category.description) {
-      errors.description = "Description is required.";
-      valid = false;
-    }
-
-    if (!category.image) {
-      errors.image = "Image is required.";
-      valid = false;
-    }
-
-    setFormErrors(errors);
-    return valid;
+    return true;
   };
 
+  // Handle updating the category
   const handleUpdateCategory = async (e) => {
     e.preventDefault();
 
-    // Validate form before submitting
-    if (!validateForm()) {
-      setError("Please fill in all fields and select an image.");
-      return;
+    // Validate before submitting
+    if (!validateForm()) return;
+
+    const formData = new FormData();
+    formData.append("id", id); // Append the category ID
+    formData.append("name", category.name); // Append the category name
+    formData.append("description", category.description); // Append the description
+    if (category.image) {
+      formData.append("image", category.image); // Append the new image if provided
     }
 
-    // Create FormData object to send data
-    const formData = new FormData();
-    formData.append("image", category.image);
-
     try {
-      // Send PUT request to API with query parameters
       const response = await axios.put(
-        `https://bms-fs-api.azurewebsites.net/api/Category/${id}?name=${encodeURIComponent(
-          category.name
-        )}&description=${encodeURIComponent(category.description)}`,
+        "https://bms-fs-api.azurewebsites.net/api/Category",
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data", // Set header for multipart form-data
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer <YOUR_ACCESS_TOKEN>`, 
           },
         }
       );
 
       if (response.data.isSuccess) {
-        // Show success message (optional)
-        alert("Cập nhật danh mục thành công!"); // Alert message in Vietnamese
-        navigate("/category"); // Redirect to category list after successful update
+        alert("Category updated successfully!");
+        navigate("/category"); // Redirect to the category list
       } else {
-        setError("Có lỗi xảy ra khi cập nhật danh mục");
+        setError(
+          response.data.messages?.[0]?.content || "Failed to update category."
+        );
       }
     } catch (error) {
-      console.error("Error updating category:", error);
-      setError("Có lỗi xảy ra khi cập nhật danh mục");
+      // Handle error without setting specific error messages
+      // const apiError = error.response?.data?.message || "Error updating category.";
+      // setError(apiError);
     }
   };
-
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "image") {
-      setCategory({ ...category, image: files[0] });
-    } else {
-      setCategory({ ...category, [name]: value });
-    }
-  };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="edit-category-container">
       <h1>Edit Category</h1>
-
       {error && <div className="error-message">{error}</div>}
-
       <form onSubmit={handleUpdateCategory}>
         <div className="form-group">
-          <label htmlFor="name">Category Name</label>
           <input
             type="text"
-            id="name"
-            name="name"
+            placeholder="Category Name"
             value={category.name}
-            onChange={handleChange}
-            required
+            onChange={(e) => setCategory({ ...category, name: e.target.value })}
           />
-          {formErrors.name && (
-            <div className="form-error">{formErrors.name}</div>
-          )}
         </div>
-
         <div className="form-group">
-          <label htmlFor="description">Description</label>
           <textarea
-            id="description"
-            name="description"
+            placeholder="Description"
             value={category.description}
-            onChange={handleChange}
-            required
+            onChange={(e) =>
+              setCategory({ ...category, description: e.target.value })
+            }
           />
-          {formErrors.description && (
-            <div className="form-error">{formErrors.description}</div>
-          )}
         </div>
-
         <div className="form-group">
-          <label htmlFor="image">Category Image</label>
           <input
             type="file"
-            id="image"
-            name="image"
-            accept="image/*"
-            onChange={handleChange}
+            onChange={(e) =>
+              setCategory({ ...category, image: e.target.files[0] })
+            }
           />
-          {formErrors.image && (
-            <div className="form-error">{formErrors.image}</div>
+          {category.currentImage && (
+            <div>
+              <p>Current Image:</p>
+              <img
+                src={category.currentImage}
+                alt="Current"
+                style={{ width: "100px", borderRadius: "8px" }}
+              />
+            </div>
           )}
         </div>
-
         <button type="submit" className="submit-btn">
           Update Category
         </button>
       </form>
-
       <style>{`
-  .edit-category-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 30px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    font-family: 'Arial', sans-serif;
-  }
-
-  h1 {
-    text-align: center;
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 20px;
-    font-weight: bold;
-  }
-
-  .form-group {
-    margin-bottom: 20px;
-  }
-
-  .form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #555;
-  }
-
-  .form-group input,
-  .form-group textarea {
-    width: 100%;
-    padding: 12px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    transition: border-color 0.3s;
-  }
-
-  .form-group input:focus,
-  .form-group textarea:focus {
-    border-color: #00cc69;
-    outline: none;
-  }
-
-  .form-error {
-    color: #e74c3c;
-    font-size: 13px;
-    margin-top: 5px;
-  }
-
-  .submit-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background-color: #00cc69;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  .submit-btn:hover {
-    background-color: #009e50;
-  }
-
-  .error-message {
-    color: #e74c3c;
-    font-size: 14px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-weight: 600;
-  }
-
-  .form-group input[type="file"] {
-    padding: 5px;
-  }
-
-  @media (max-width: 768px) {
-    .edit-category-container {
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 20px;
-    }
-
-    .submit-btn {
-      padding: 10px;
-      font-size: 15px;
-    }
-  }
-`}</style>
+        .edit-category-container {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #fff;
+          border-radius: 8px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        .form-group {
+          margin-bottom: 15px;
+        }
+        .form-group input,
+        .form-group textarea {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+        }
+        .submit-btn {
+          width: 100%;
+          padding: 10px;
+          background-color: #00cc69;
+          color: white;
+          border: none;
+          border-radius: 4px;
+        }
+        .submit-btn:hover {
+          background-color: #009e50;
+        }
+        .error-message {
+          color: red;
+          text-align: center;
+          margin-bottom: 15px;
+        }
+      `}</style>
     </div>
   );
 };
