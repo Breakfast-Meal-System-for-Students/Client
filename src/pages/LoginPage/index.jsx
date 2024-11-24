@@ -58,7 +58,6 @@ export default function Login() {
       navigate('/shop-application');
     } else if (decoded.role.includes('Shop')) {
       setShopLocalInfo(token);
-      navigate('/shop/menu');
     } else {
       alert('Unauthorized role');
     }
@@ -70,6 +69,7 @@ export default function Login() {
       localStorage.setItem("shopId", result.body.data.shopId);
       localStorage.setItem("shopName", result.body.data.shopName);
     }
+    navigate('/shop/menu');
   }
 
   const handleChange = (event) => {
