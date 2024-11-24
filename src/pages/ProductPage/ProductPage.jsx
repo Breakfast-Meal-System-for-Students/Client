@@ -30,7 +30,6 @@ const ProductPage = () => {
     const fetchProducts = async () => {
         const token = localStorage.getItem('token');
         const shopId = localStorage.getItem('shopId');
-        const token = localStorage.getItem('token');
         if (!shopId) {
             console.error('No shopId found in local storage');
             return;

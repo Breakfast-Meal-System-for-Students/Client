@@ -2,66 +2,40 @@ import React, { useEffect, useState } from 'react';
 import { Button, Radio, FormControl, FormLabel, RadioGroup, FormControlLabel } from '@mui/material';
 import './PackagePayment.scss';
 import { useLocation } from 'react-router-dom';
-
-import { ApiBuyPackage, ApiCreatePaymentVNPayURL, ApiGetPackageById } from '../../services/PackageServices';
+import { ApiBuyPackage, ApiGetPackageById } from '../../services/PackageServices';
 import { useNavigate } from 'react-router-dom';
-
 const PackagePayment = () => {
   const location = useLocation();
   const [selectedPayment, setSelectedPayment] = useState('VNPay');
   const [price, setPrice] = useState(0); // Đơn giá VND
-  const [packageName, setPackageName] = useState(""); // Đơn giá VND
   const navigate = useNavigate();
-
   const searchParams = new URLSearchParams(location.search);
   const packageId = searchParams.get('packageId');
-
   useEffect(()=>{
     fetchPackageById(packageId);
   }, []);
-
   const fetchPackageById = async (packageId) => {
-    const token = localStorage.getItem('token');
-    const result = await ApiGetPackageById(packageId, token);
+    const result = await ApiGetPackageById(packageId);
     if (result.ok) {
       setPrice(result.body.data.price);
-      setPackageName(result.body.data.name);
     } else {
       alert(result.message);
     }
   }
-
   const handleSubmitPayment = async () => {
-    if (selectedPayment === "VNPay") {
-      const shopId = localStorage.getItem('shopId');
-      const token = localStorage.getItem('token');
-      const packagePrice = price < 1000 && price * 100000 || price;
-      const result = await ApiCreatePaymentVNPayURL(shopId, packageId, "Customer 1", packageName, packagePrice, token);
-      if (result.ok) {
-        window.location.href = result.body.data;
-      } else {
-        alert(result.message);
-      }
-    } else if (selectedPayment === "Momo") {
-      alert("This payment method is not support!");
+    const shopId = localStorage.getItem('shopId');
+    const result = await ApiBuyPackage(shopId, packageId);
+    if (result.ok) {
+      alert("Your package purchase was successful.");
+      navigate(`/shop/package`);
     } else {
-      const token = localStorage.getItem('token');
-      const shopId = localStorage.getItem('shopId');
-      const result = await ApiBuyPackage(shopId, packageId, token);
-      if (result.ok) {
-        alert("Your package purchase was successful.");
-        navigate(`/shop/package`);
-      } else {
-        alert(result.message);
-      }
+      alert(result.message);
     }
   };
-
   const handlePaymentChange = async (event) => {
     const paymentMethod = event.target.value;
     setSelectedPayment(paymentMethod);
   };
-
   return (
     <div className="coupon-container">
       <div className="payment-container">
@@ -121,7 +95,5 @@ const PackagePayment = () => {
       </div>
     </div>
   );
-
 };
-
 export default PackagePayment;

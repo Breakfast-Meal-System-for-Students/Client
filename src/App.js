@@ -42,6 +42,7 @@ import ShopProfile from "./pages/ShopProfile/index.jsx";
 import ShopPackagePage from "./pages/ShopPackagePage/ShopPackagePage.jsx";
 import PackagePayment from "./pages/ShopPackagePage/PackagePayment.jsx";
 import PackagePaymentReturn from "./pages/PackagePaymentReturn/PackagePaymentReturn.jsx";
+import ShopLocation from "./pages/ShopLocation/ShopLocation.jsx";
 
 function App() {
   return (
@@ -223,7 +224,7 @@ function App() {
             />
 
             <Route
-              path="/shop/shop-location"
+              path="/shop/location"
               element={
                 <ProtectedRoute
                   element={<ShopLocation />}

@@ -2,20 +2,19 @@ import React, { useState, useEffect, useContext } from 'react';
 import './PackagePaymentReturn.scss';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ApiBuyPackage } from '../../services/PackageServices';
-
 const PackagePaymentReturn = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = useState(true);
   const searchParams = new URLSearchParams(location.search);
   const packageId = searchParams.get('packageId');
-  const vnp_ResponseCode = searchParams.get('vnp_ResponseCode');
+  const paymentStatus = searchParams.get('paymentStatus');
   useEffect(()=>{
     const fetchApiBuyPayement = async () => {
-      if (!packageId || !vnp_ResponseCode) {
+      if (!packageId || !paymentStatus) {
         navigate('/shop')
       }
-      if  (vnp_ResponseCode == "00") {
+      if  (paymentStatus == "SUCCESS") {
         const shopId = localStorage.getItem('shopId');
         const token = localStorage.getItem('token');
         setIsSuccess(true);
@@ -23,17 +22,19 @@ const PackagePaymentReturn = () => {
         if (result.ok) {
           setTimeout(() => {
             navigate(`/shop/package`);
-          }, 3000);
+          }, 3000); // Điều hướng sau 3 giây
         } else {
           alert(result.message);
         }
+        setTimeout(() => {
+          navigate(`/shop/package`);
+        }, 3000); // Điều hướng sau 3 giây
       } else {
         setIsSuccess(false);
       }
     }
     fetchApiBuyPayement();
-  }, [packageId, vnp_ResponseCode]);
-
+  }, [packageId, paymentStatus]);
   return (
     <div className="coupon-container">
       <div className='d-flex justify-content-center'>
@@ -56,5 +57,4 @@ const PackagePaymentReturn = () => {
     </div>
   );
 };
-
 export default PackagePaymentReturn;
