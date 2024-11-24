@@ -103,12 +103,16 @@ export default function ShopProfile() {
   // Save the updated data
   const handleSave = async () => {
     const token = localStorage.getItem('token');
+    var address = shopUpdate.address;
+    if (selectedAddress && selectedAddress.trim().length > 0) {
+      address = selectedAddress;
+    }
     const result = await ApiUpdateShop(
       shopUpdate.id,
       shopUpdate.image,
       shopUpdate.name,
       shopUpdate.phone,
-      selectedAddress,
+      address,
       shopUpdate.description,
       token
     );
