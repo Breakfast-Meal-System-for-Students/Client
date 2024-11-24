@@ -20,14 +20,26 @@ export const HTTP_HEADER_TOKEN = (token) => {
         'Authorization': `Bearer ${token}`,
     }
 };
+export const HEADER_TOKEN = (token) => {
+    return {
+        'Authorization': `Bearer ${token}`,
+    }
+};
+
+
+/*
+ ** GOOGLE API KEY
+ */
+export const API_KEY = "AlzaSyGpCG5SrSCk-n1TWzoyTLa1Wt891BhXWBO";
+export const URL_MAP_AUTOCOMPLETE = "https://maps.gomaps.pro/maps/api/place/autocomplete/json";
 
 /*
  ** RESPONSE CONFIG
  */
-export const ResponseData = async (res) => {
+export const ResponseData = async (res, onlyOk = false) => {
     try {
         const body = await res.json();
-        if (res.ok && body.isSuccess) {
+        if ((res.ok && body.isSuccess) || (res.ok && onlyOk)) {
             return {
                 ok: true,
                 message: "Data transaction success",
@@ -59,8 +71,8 @@ export const ENABLE_DEBUG_DIGIT_CODE = false;
 export const DIGIT_CODE_DEFAULT = "123456";
 
 /*
-** USER ROLE
-*/
+ ** USER ROLE
+ */
 export const SHOP_ADMIN = 1;
 export const SHOP_ROLE = 2;
 export const SHOP_STAFF = 3;
@@ -68,10 +80,10 @@ export const SHOP_STAFF = 3;
 /*
  ** USER ACCOUNT STATUS
  */
- export const USER_STATUS_PENDING = 1;
- export const USER_STATUS_ACCEPTED = 2;
- export const USER_STATUS_DENIED = 3;
- export const USER_STATUS_CLOSED = 4;
+export const USER_STATUS_PENDING = 1;
+export const USER_STATUS_ACCEPTED = 2;
+export const USER_STATUS_DENIED = 3;
+export const USER_STATUS_CLOSED = 4;
 
 /*
  ** API AUTH
@@ -86,14 +98,14 @@ export const API_RESET_PASSWORD = HTTP_SERVER + "/api/Account/ResetPassword";
 /*
  ** API ACCOUNT
  */
- export const API_GET_MY_PROFILE = HTTP_SERVER + "/api/Account/my-profile";
+export const API_GET_MY_PROFILE = HTTP_SERVER + "/api/Account/my-profile";
 
- /*
+/*
  ** API COUPON
  */
- export const API_CREATE_COUPON = HTTP_SERVER + "/api/Coupon";
- export const API_UPDATE_COUPON = HTTP_SERVER + "/api/Coupon/";
- 
+export const API_CREATE_COUPON = HTTP_SERVER + "/api/Coupon";
+export const API_UPDATE_COUPON = HTTP_SERVER + "/api/Coupon/";
+
 /*
  ** API PRODUCT
  */
@@ -113,3 +125,6 @@ export const API_GET_SHOP_BY_ID = HTTP_SERVER + "/api/Shop/";
 ** API PACKAGE
 */
 export const API_GET_PACKAGES = HTTP_SERVER + "/api/Package/";
+export const API_GET_PACKAGE_BY_ID = HTTP_SERVER + "/api/Package/";
+export const API_BUY_PACKAGE = HTTP_SERVER + "/api/Package/BuyPackageByShop";
+export const API_VNPAY_BUY_PACKAGE = HTTP_SERVER + "/api/Payment/create-payment-url-forbuypackage";

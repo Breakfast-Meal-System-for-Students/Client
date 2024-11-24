@@ -53,13 +53,13 @@ const Sidebar = () => {
     ];
   } else if (user && user.role && user.role.includes("Shop")) {
     sidebarItems = [
-      { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/shop/orders" },
       { text: "Coupon", icon: <ConfirmationNumberIcon />, path: "/shop/coupon-page" },
-      { text: "Shop Package", icon: <BalanceIcon />, path: "/shop/package" },
       { text: "Breakfast-Menu", icon: <RestaurantMenuIcon />, path: "/shop/menu" },
+      { text: "Shop Package", icon: <BalanceIcon />, path: "/shop/package" },
       { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/shop/feedback-shop" },
-      { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/shop-location" },
-      { text: "Profile", icon: <PortraitIcon />, path: "/shop/profile" },
+      { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/location" },
+      { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/shop/orders" },
+      // { text: "Profile", icon: <PortraitIcon />, path: "/shop/profile" },
       { text: "About Shop", icon: <ContactPhoneIcon />, path: "/shop/about-shop" },
     ];
   }

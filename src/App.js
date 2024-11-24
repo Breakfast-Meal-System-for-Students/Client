@@ -15,13 +15,13 @@ import LoginPage from "./pages/LoginPage/index.jsx";
 import RegisterPage from "./pages/RegisterPage/index.jsx";
 import ProtectedRoute from "./ProtectedRoute.js";
 import MainLayout from "./components/MainLayout/index.jsx";
-import ShopPage from "./pages/ShopPage/index.jsx"; 
+import ShopPage from "./pages/ShopPage/index.jsx"; // Sửa tên chính xác
 import ProfilePage from "./pages/ProfilePage/index.jsx";
 import FeedbackPage from "./pages/FeedbackPage/FeedbackPage.jsx";
 import CouponPage from "./pages/CouponPage/CouponPage.jsx";
 import ProductPage from "./pages/ProductPage/ProductPage.jsx";
 import StaffPage from "./pages/StaffPage/StaffPage.jsx";
-import AddProduct from "./pages/ProductPage/AddProduct.jsx";
+import AddProduct from "./pages/ProductPage/AddProduct.jsx"; // Import AddProduct
 import UserDetails from "./pages/CustomerPage/UserDetails.jsx";
 import AddCoupon from "./pages/CouponPage/AddCoupon.jsx";
 import FeedBackShop from './pages/FeedbackPage/FeedbackShop.jsx';
@@ -33,8 +33,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ShopRegister from "./pages/ShopRegister/index.jsx";
 import ForgotPassword from "./pages/ForgotPassword/index.jsx";
 import ShopProfile from "./pages/ShopProfile/index.jsx";
-import ShopLocation from "./pages/ShopLocation/ShopLocation"; // Import ShopLocation
 import ShopPackagePage from "./pages/ShopPackagePage/ShopPackagePage.jsx";
+import PackagePayment from "./pages/ShopPackagePage/PackagePayment.jsx";
+import PackagePaymentReturn from "./pages/PackagePaymentReturn/PackagePaymentReturn.jsx";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/join-shop" element={<ShopRegister />} />
+
           {/* Admin Routes */}
           <Route element={<MainLayout />} path="/admin">
             <Route
@@ -90,6 +92,14 @@ function App() {
               element={<ProtectedRoute element={<ShopPackagePage />} requiredRole={"Shop"} />}
             />
             <Route
+              path="/shop/package/payment"
+              element={<ProtectedRoute element={<PackagePayment />} requiredRole={"Shop"} />}
+            />
+            <Route
+              path="/shop/package/payment/return"
+              element={<ProtectedRoute element={<PackagePaymentReturn />} requiredRole={"Shop"} />}
+            />
+            <Route
               path="/shop/feedback-shop"
               element={<ProtectedRoute element={<FeedBackShop />} requiredRole={"Shop"} />}
             />
@@ -108,7 +118,6 @@ function App() {
             <Route
               path="/shop/profile"
               element={<ProtectedRoute element={<ProfilePage />} requiredRole={"Shop"} />}
-              
             />
             <Route
               path="/shop/about-shop"
@@ -122,10 +131,6 @@ function App() {
               path="/shop/add-product"
               element={<ProtectedRoute element={<AddProduct />} requiredRole={"Shop"} />} // Add route for AddProduct
             />
-             <Route path="/shop/shop-location" 
-             element={<ProtectedRoute element={<ShopLocation />} requiredRole={"Shop"} />} // Add route for AddProduct
-             />
-
           </Route>
 
           {/* Staff Routes */}

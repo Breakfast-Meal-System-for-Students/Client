@@ -25,6 +25,7 @@ const emptyUserData = {
   lastName: "",
   password: ""
 };
+
 export default function Register() {
   const [data, setData] = useState(emptyUserData);
   const [selectedRole, setSelectedRole] = useState('');
@@ -75,6 +76,7 @@ export default function Register() {
     }
     return true;
   }
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);  
   };
@@ -87,7 +89,7 @@ export default function Register() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)', 
+          background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
           width: '100%',
           padding: '0',
           margin: '0',
@@ -199,7 +201,7 @@ export default function Register() {
                 borderRadius: '30px', 
                 padding: '10px 0',
                 fontSize: '18px',
-                background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)', 
+                background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
                 boxShadow: '0px 6px 12px rgba(0,0,0,0.1)', 
               }}
               onClick={handleSubmitRegister}

@@ -67,11 +67,11 @@ export default function Login() {
   const setShopLocalInfo = async (token) => {
     const result = await ApiGetProfile(token);
     if (result.ok) {
-      localStorage.setItem ("shopId", result.body.data.shopId);
-      localStorage.setItem ("shopName", result.body.data.shopName);
+      localStorage.setItem("shopId", result.body.data.shopId);
+      localStorage.setItem("shopName", result.body.data.shopName);
     }
   }
-  
+
   const handleChange = (event) => {
     setData({
       ...data,
@@ -113,7 +113,7 @@ export default function Login() {
           }}
         >
           <Box>
-          <Avatar
+            <Avatar
               src="/LOGO.png"
               sx={{ width: 300, height: 300, bgcolor: '#088A08', marginBottom: 2 }}
             />
@@ -136,8 +136,7 @@ export default function Login() {
                 variant="outlined"
                 placeholder="Email"
                 name="email"
-                type= {'email'}
-                required
+                type={'email'}
                 fullWidth
                 onChange={handleChange}
                 InputProps={{
@@ -153,7 +152,6 @@ export default function Login() {
                 placeholder="Password"
                 name="password"
                 type={showPassword ? 'text' : 'password'}
-                required
                 fullWidth
                 onChange={handleChange}
                 InputProps={{
@@ -190,7 +188,7 @@ export default function Login() {
               LOGIN
             </Button>
 
-            <Box 
+            <Box
               sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}
             >
               <Typography variant="body2">
@@ -198,7 +196,7 @@ export default function Login() {
                   Forgot Password
                 </RouterLink>
               </Typography>
-              
+
               <Typography variant="body2">
                 <RouterLink to="/join-shop" style={{ textDecoration: 'none', color: '#088A08' }}>
                   Join as a Shop Owner
@@ -211,6 +209,7 @@ export default function Login() {
                 Create your Account →
               </RouterLink>
             </Typography>
+
           </Box>
         </Box>
       </Box>

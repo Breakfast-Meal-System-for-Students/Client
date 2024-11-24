@@ -38,12 +38,13 @@ export default function ShopProfile() {
 
   const fetchProfileShopData = async () => {
     const shopId = localStorage.getItem('shopId');
+    const token = localStorage.getItem('token');
     if (!shopId) {
       alert('ShopId is not found');
       navigate('/login'); // Navigate to add product page
       return;
     }
-    const result = await ApiGetShopById(shopId);
+    const result = await ApiGetShopById(shopId, token);
     if (result.ok) {
       setShop(result.body.data);
       setShopUpdate(result.body.data);
@@ -70,6 +71,7 @@ export default function ShopProfile() {
 
   // Save the updated data
   const handleSave = async () => {
+    const token = localStorage.getItem('token');
     const result = await ApiUpdateShop(
       shopUpdate.id, 
       shopUpdate.image, 
@@ -77,6 +79,7 @@ export default function ShopProfile() {
       shopUpdate.phone, 
       shopUpdate.address,
       shopUpdate.description,
+      token
     );
     if (result.ok) {
       alert("Update shop information successfully!");
@@ -85,7 +88,7 @@ export default function ShopProfile() {
       alert(result.message);
     }
   };
-  
+
   return (
     <ProfileContainer>
       <ProfileCard>
@@ -102,6 +105,7 @@ export default function ShopProfile() {
                 />
               </CardContent>
             </Grid>
+
             {/* Thông tin chi tiết */}
             <Grid item xs={12} sm={8}>
               <CardContent sx={{ textAlign: 'left' }}>
@@ -118,6 +122,9 @@ export default function ShopProfile() {
                   {shop.description || "No description available"}
                 </Typography>
                 <Box className="mb-2">
+                  <strong>Code:</strong> {shop.id}
+                </Box>
+                <Box className="mb-2">
                   <strong>Email:</strong> {shop.email}
                 </Box>
                 <Box className="mb-2">
@@ -130,6 +137,7 @@ export default function ShopProfile() {
             </Grid>
           </Grid>
         </Card>
+
         <Button variant="contained" color="primary" onClick={handleOpenEditDialog} sx={{
           borderRadius: '15px',
           margin: '20px 0',
@@ -139,12 +147,14 @@ export default function ShopProfile() {
         }}>
           Update Profile
         </Button>
+
         {/* Dialog for editing profile */}
         <Dialog open={editDialogOpen} onClose={handleCloseEditDialog}>
           <DialogTitle>UPDATE PROFILE</DialogTitle>
           <DialogContent>
-          <Grid item xs={12} sm={8}>
+            <Grid item xs={12} sm={8}>
               <CardContent>
+
                 {/* Tên Shop */}
                 <TextField
                   fullWidth
@@ -155,6 +165,7 @@ export default function ShopProfile() {
                   variant="outlined"
                   className="mb-3"
                 />
+
                 {/* Số điện thoại */}
                 <TextField
                   fullWidth
@@ -165,6 +176,7 @@ export default function ShopProfile() {
                   variant="outlined"
                   className="mb-3"
                 />
+
                 {/* Địa chỉ */}
                 <TextField
                   fullWidth
@@ -175,6 +187,7 @@ export default function ShopProfile() {
                   variant="outlined"
                   className="mb-3"
                 />
+
                 {/* Mô tả */}
                 <TextField
                   fullWidth
@@ -187,6 +200,7 @@ export default function ShopProfile() {
                   rows={4}
                   className="mb-3"
                 />
+
                 {/* Upload ảnh từ máy tính */}
                 <Box className="mb-3">
                   <Typography>Upload Image:</Typography>
@@ -196,6 +210,7 @@ export default function ShopProfile() {
                     onChange={handleImageChange}
                   />
                 </Box>
+
               </CardContent>
             </Grid>
           </DialogContent>

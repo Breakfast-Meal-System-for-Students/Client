@@ -22,7 +22,7 @@ const ProtectedRoute = ({ element, requiredRole }) => {
         } else if (decoded.role.includes('Staff')) {
           navigate('/home-staff');
         } else if (decoded.role.includes('Shop')) {
-          navigate('/shop');
+          // navigate('/shop');
         } else {
           setError('Unauthorized role');
 
