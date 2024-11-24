@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const CRUDCategory = () => {
-  const [categories, setCategories] = useState([]); // Danh sách categories
-  const [loading, setLoading] = useState(true); // Trạng thái loading
-  const [searchTerm, setSearchTerm] = useState(""); // Từ khóa tìm kiếm
-  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
-  const [categoriesPerPage] = useState(5); // Số lượng categories trên mỗi trang
-  const [totalCategories, setTotalCategories] = useState(0); // Tổng số lượng categories để phân trang
-  const navigate = useNavigate(); // Điều hướng sử dụng useNavigate
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [categoriesPerPage] = useState(5);
+  const [totalCategories, setTotalCategories] = useState(0);
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
+  const navigate = useNavigate();
 
-  // Lấy dữ liệu từ API với phân trang và tìm kiếm
   useEffect(() => {
     const fetchCategories = async () => {
-      setLoading(true); // Bật trạng thái loading
+      setLoading(true);
       try {
         const response = await axios.get(
           `https://bms-fs-api.azurewebsites.net/api/Category?pageIndex=${currentPage}&pageSize=${categoriesPerPage}&search=${encodeURIComponent(
@@ -24,123 +23,134 @@ const CRUDCategory = () => {
         );
 
         if (response.data.isSuccess) {
-          setCategories(response.data.data.data); // Lưu danh sách categories
-          setTotalCategories(response.data.data.total); // Lưu tổng số lượng categories
+          setCategories(response.data.data.data);
+          setTotalCategories(response.data.data.total);
         }
       } catch (error) {
         console.error(error);
       } finally {
-        setLoading(false); // Tắt trạng thái loading
+        setLoading(false);
       }
     };
 
-    fetchCategories(); // Gọi hàm fetchCategories
-  }, [searchTerm, currentPage]); // Cập nhật khi từ khóa tìm kiếm hoặc trang thay đổi
+    fetchCategories();
+  }, [searchTerm, currentPage, categoriesPerPage]);
 
-  // Hàm xử lý chỉnh sửa category
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+
+    const newTimeout = setTimeout(() => {
+      setCurrentPage(1);
+    }, 300);
+
+    setDebounceTimeout(newTimeout);
+  };
+
   const handleEdit = (id) => {
     navigate(`/edit-category/${id}`);
   };
 
-  // Hàm xử lý xóa category
   const handleDelete = async (id) => {
-    try {
-      await axios.delete(
-        `https://bms-fs-api.azurewebsites.net/api/Category/${id}`,
-        {
-          headers: {
-            Accept: "*/*",
-          },
-        }
-      );
-      setCategories((prevCategories) =>
-        prevCategories.filter((category) => category.id !== id)
-      ); // Loại bỏ category đã xóa khỏi danh sách
-    } catch (error) {
-      console.error("Error deleting category:", error);
+    if (window.confirm("Are you sure you want to delete this category?")) {
+      try {
+        await axios.delete(
+          `https://bms-fs-api.azurewebsites.net/api/Category/${id}`,
+          {
+            headers: {
+              Accept: "*/*",
+            },
+          }
+        );
+        setCategories((prevCategories) =>
+          prevCategories.filter((category) => category.id !== id)
+        );
+      } catch (error) {
+        console.error("Error deleting category:", error);
+      }
     }
   };
 
-  // Hàm điều hướng tới trang thêm category
   const handleAddCategory = () => {
     navigate("/add-category");
   };
 
-  // Hàm xử lý phân trang
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Hiển thị trạng thái loading khi đang tải dữ liệu
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div className="category-list-container">
-      <div className="header-container">
-        {/* Tìm kiếm */}
-        <div className="search-container">
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Search categories..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value); // Cập nhật từ khóa tìm kiếm
-              setCurrentPage(1); // Reset về trang đầu tiên khi thay đổi tìm kiếm
-            }}
-          />
-          <button className="search-button">
-            <i className="fas fa-search"></i>
-          </button>
-        </div>
-        <button className="add-category-btn" onClick={handleAddCategory}>
-          Add Category
+    <div className="container">
+      <div className="header">
+        <h1>Categories</h1>
+        <button className="add-button" onClick={handleAddCategory}>
+          + Add
         </button>
       </div>
 
-      {/* Bảng danh sách categories */}
-      <table className="category-table">
-        <thead>
-          <tr>
-            <th>Category Name</th>
-            <th>Description</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {categories.map((category) => (
-            <tr key={category.id}>
-              <td>
-                <div className="category-name">
-                  <img
-                    src={category.image || "https://via.placeholder.com/50"}
-                    alt={category.name}
-                    className="category-img"
-                  />
-                  <span>{category.name}</span>
-                </div>
-              </td>
-              <td>{category.description}</td>
-              <td>
-                <button
-                  className="edit-btn"
-                  onClick={() => handleEdit(category.id)}
-                >
-                  <i className="fas fa-edit" title="Edit"></i>
-                </button>
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(category.id)}
-                >
-                  <i className="fas fa-trash" title="Delete"></i>
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="search-box">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+        />
+      </div>
 
-      {/* Pagination */}
+      {loading ? (
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+        </div>
+      ) : categories.length === 0 ? (
+        <div className="no-data">No categories found.</div>
+      ) : (
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {categories.map((category) => (
+                <tr key={category.id}>
+                  <td>
+                    <div className="category-info">
+                      <img
+                        src={category.image || "https://via.placeholder.com/50"}
+                        alt={category.name}
+                      />
+                      <span>{category.name}</span>
+                    </div>
+                  </td>
+                  <td>{category.description}</td>
+                  <td>
+                    <div className="action-buttons">
+                      <button
+                        className="edit-button"
+                        onClick={() => handleEdit(category.id)}
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDelete(category.id)}
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       <div className="pagination">
         {Array.from(
           { length: Math.ceil(totalCategories / categoriesPerPage) },
@@ -148,9 +158,7 @@ const CRUDCategory = () => {
             <button
               key={i + 1}
               onClick={() => paginate(i + 1)}
-              className={`pagination-button ${
-                currentPage === i + 1 ? "active" : ""
-              }`}
+              className={`page-button ${currentPage === i + 1 ? "active" : ""}`}
             >
               {i + 1}
             </button>
@@ -158,124 +166,187 @@ const CRUDCategory = () => {
         )}
       </div>
 
-      <style>{`
-        .header-container {
+      <style jsx>{`
+        .container {
+          max-width: 1000px;
+          margin: 1rem auto;
+          padding: 0 0.5rem;
+        }
+
+        .header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 20px;
+          margin-bottom: 1rem;
         }
 
-        .search-container {
-          display: flex;
-          align-items: center;
+        h1 {
+          font-size: 1.5rem;
+          color: #333;
+          margin: 0;
         }
 
-        .search-input {
-          padding: 10px;
-          font-size: 16px;
-          width: 300px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-        }
-
-        .search-button {
-          padding: 10px;
-          background-color: #00cc69;
-          border: none;
-          color: white;
-          cursor: pointer;
-          margin-left: 10px;
-          border-radius: 4px;
-        }
-
-        .add-category-btn {
-          display: block;
-          width: 200px;
-          padding: 10px;
-          background-color: #00cc69;
+        .add-button {
+          background-color: #4caf50;
           color: white;
           border: none;
+          padding: 0.4rem 0.8rem;
           border-radius: 4px;
           cursor: pointer;
+          font-size: 0.9rem;
         }
 
-        .add-category-btn:hover {
-          background-color: #009e50;
+        .add-button:hover {
+          background-color: #45a049;
         }
 
-        .category-table {
+        .search-box {
+          margin-bottom: 1rem;
+        }
+
+        .search-box input {
+          width: 100%;
+          padding: 0.5rem;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 0.9rem;
+        }
+
+        .search-box input:focus {
+          outline: none;
+          border-color: #4caf50;
+        }
+
+        .table-container {
+          background: white;
+          border-radius: 4px;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          overflow-x: auto;
+        }
+
+        table {
           width: 100%;
           border-collapse: collapse;
-          margin-bottom: 20px;
         }
 
-        .category-table th, .category-table td {
-          border: 1px solid #ddd;
-          padding: 10px;
+        th,
+        td {
+          padding: 0.6rem;
           text-align: left;
+          border-bottom: 1px solid #eee;
+          font-size: 0.9rem;
         }
 
-        .category-name {
+        th {
+          background-color: #f8f9fa;
+          font-weight: 500;
+          color: #333;
+        }
+
+        .category-info {
           display: flex;
           align-items: center;
+          gap: 0.5rem;
         }
 
-        .category-img {
-          width: 50px;
-          height: 50px;
+        .category-info img {
+          width: 30px;
+          height: 30px;
           border-radius: 50%;
           object-fit: cover;
-          margin-right: 10px;
         }
 
-        .edit-btn, .delete-btn {
-          background-color: transparent;
+        .action-buttons {
+          display: flex;
+          gap: 0.3rem;
+          justify-content: center;
+        }
+
+        .edit-button,
+        .delete-button {
+          padding: 0.3rem;
           border: none;
+          border-radius: 3px;
           cursor: pointer;
-          margin-right: 10px;
+          background: none;
         }
 
-        .edit-btn i {
-          color: #00cc69;
-        }
-
-        .delete-btn i {
-          color: #f44336;
-        }
-
-        .edit-btn:hover i {
-          color: #009e50;
-        }
-
-        .delete-btn:hover i {
-          color: #d32f2f;
+        .edit-button:hover,
+        .delete-button:hover {
+          background-color: #f0f0f0;
         }
 
         .pagination {
           display: flex;
           justify-content: center;
-          margin: 20px 0;
+          gap: 0.3rem;
+          margin-top: 1rem;
         }
 
-        .pagination-button {
-          padding: 10px 15px;
-          margin: 0 5px;
+        .page-button {
+          padding: 0.3rem 0.6rem;
           border: 1px solid #ddd;
-          background-color: #fff;
+          background: white;
+          border-radius: 3px;
           cursor: pointer;
-          font-size: 14px;
-          border-radius: 5px;
+          font-size: 0.9rem;
         }
 
-        .pagination-button.active {
-          background-color: #00cc69;
+        .page-button:hover {
+          background-color: #f0f0f0;
+        }
+
+        .page-button.active {
+          background-color: #4caf50;
           color: white;
-          border-color: #00cc69;
+          border-color: #4caf50;
         }
 
-        .pagination-button:hover {
-          background-color: #f1f1f1;
+        .loading-spinner {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 150px;
+        }
+
+        .spinner {
+          width: 30px;
+          height: 30px;
+          border: 3px solid #f3f3f3;
+          border-top: 3px solid #4caf50;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        .no-data {
+          text-align: center;
+          padding: 1rem;
+          color: #666;
+          font-size: 0.9rem;
+        }
+
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+
+        @media (max-width: 600px) {
+          .container {
+            padding: 0 0.3rem;
+          }
+
+          th,
+          td {
+            padding: 0.5rem;
+          }
+
+          .action-buttons {
+            flex-direction: row;
+          }
         }
       `}</style>
     </div>

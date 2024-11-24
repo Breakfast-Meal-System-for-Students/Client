@@ -6,18 +6,20 @@ const ShopOverview = () => {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(""); // State for debounced search term
   const [currentPage, setCurrentPage] = useState(1);
   const [shopsPerPage] = useState(5);
   const [totalShops, setTotalShops] = useState(0);
   const navigate = useNavigate();
 
+  // Fetch data from API
   useEffect(() => {
     const fetchShops = async () => {
       setLoading(true);
       try {
         const response = await axios.get(
           `https://bms-fs-api.azurewebsites.net/api/ShopApplication?pageIndex=${currentPage}&pageSize=${shopsPerPage}&search=${encodeURIComponent(
-            searchTerm
+            debouncedSearchTerm
           )}`
         );
         if (response.data.isSuccess) {
@@ -32,10 +34,21 @@ const ShopOverview = () => {
     };
 
     fetchShops();
-  }, [searchTerm, currentPage]);
+  }, [debouncedSearchTerm, currentPage]);
+
+  // Debounce effect for search
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm); // Update debounced term after delay
+    }, 300); // Adjust debounce delay as needed
+
+    return () => {
+      clearTimeout(handler); // Cleanup debounce timeout
+    };
+  }, [searchTerm]);
 
   const handleViewDetails = (id) => {
-    navigate(`/detail-application/${id}`);
+    navigate(`/shop-details/${id}`);
   };
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -66,44 +79,52 @@ const ShopOverview = () => {
           placeholder="Search shops..."
           value={searchTerm}
           onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1);
+            setSearchTerm(e.target.value); // Update search term immediately
+            setCurrentPage(1); // Reset to first page when search changes
           }}
         />
       </div>
 
-      <table className="shop-table">
-        <thead>
-          <tr>
-            <th>Shop Image</th>
-            <th>Shop Name</th>
-            <th>Description</th>
-            <th>Rate</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {shops.map((shop) => (
-            <tr key={shop.id}>
-              <td>
-                <img
-                  src={shop.image || "https://via.placeholder.com/50"}
-                  alt={shop.name}
-                  style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-                />
-              </td>
-              <td>{shop.name}</td>
-              <td>{shop.description}</td>
-              <td>{renderStars(shop.rate)}</td>
-              <td>
-                <button onClick={() => handleViewDetails(shop.id)}>
-                  View Details
-                </button>
-              </td>
+      {shops.length === 0 ? (
+        <div className="no-results">No shops found.</div>
+      ) : (
+        <table className="shop-table">
+          <thead>
+            <tr>
+              <th>Shop Image</th>
+              <th>Shop Name</th>
+              <th>Description</th>
+              <th>Rate</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {shops.map((shop) => (
+              <tr key={shop.id}>
+                <td>
+                  <img
+                    src={shop.image || "https://via.placeholder.com/50"}
+                    alt={shop.name}
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                </td>
+                <td>{shop.name}</td>
+                <td>{shop.description}</td>
+                <td>{renderStars(shop.rate)}</td>
+                <td>
+                  <button onClick={() => handleViewDetails(shop.id)}>
+                    View Details
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       <div className="pagination">
         {Array.from(
@@ -171,6 +192,12 @@ const ShopOverview = () => {
         }
         .pagination-button:hover {
           background-color: #f1f1f1;
+        }
+        .no-results {
+          text-align: center;
+          font-size: 18px;
+          color: #777;
+          margin: 20px 0;
         }
       `}</style>
     </div>
