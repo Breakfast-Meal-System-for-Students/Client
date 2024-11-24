@@ -1,12 +1,15 @@
 import React, { useState, useRef } from 'react';
 import { Grid, TextField } from '@mui/material';
 import { LoadScript, Autocomplete } from '@react-google-maps/api';
+
 const AddressField = () => {
   const [address, setAddress] = useState('');
   const autocompleteRef = useRef(null);
+
   const handleLoad = (autocompleteInstance) => {
     autocompleteRef.current = autocompleteInstance;
   };
+
   const handlePlaceChanged = () => {
     if (autocompleteRef.current) {
       const place = autocompleteRef.current.getPlace();
@@ -15,6 +18,7 @@ const AddressField = () => {
       }
     }
   };
+
   return (
     <LoadScript googleMapsApiKey="AlzaSyGpCG5SrSCk-n1TWzoyTLa1Wt891BhXWBO" libraries={['places']}>
       <Grid item xs={12} sm={12}>
@@ -42,4 +46,5 @@ const AddressField = () => {
     </LoadScript>
   );
 };
+
 export default AddressField;

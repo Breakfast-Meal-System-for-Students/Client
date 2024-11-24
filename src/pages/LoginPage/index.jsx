@@ -76,11 +76,11 @@ export default function Login() {
     const result = await ApiGetProfile(token);
     if (result.ok) {
 
-      localStorage.setItem ("shopId", result.body.data.shopId);
-      localStorage.setItem ("shopName", result.body.data.shopName);
-
+      localStorage.setItem("shopId", result.body.data.shopId);
+      localStorage.setItem("shopName", result.body.data.shopName);
     }
   };
+
 
   const handleChange = (event) => {
     setData({
@@ -123,18 +123,10 @@ export default function Login() {
           }}
         >
           <Box>
-
             <Avatar
-              sx={{
-                width: 200,
-                height: 200,
-                bgcolor: "#088A08",
-                marginBottom: 2,
-              }}
-            >
-              <LockOutlinedIcon sx={{ fontSize: 100 }} />
-            </Avatar>
-
+              src="/LOGO.png"
+              sx={{ width: 300, height: 300, bgcolor: '#088A08', marginBottom: 2 }}
+            />
           </Box>
 
           <Box
@@ -174,8 +166,7 @@ export default function Login() {
                 variant="outlined"
                 placeholder="Email"
                 name="email"
-                type={"email"}
-                required
+                type={'email'}
                 fullWidth
                 onChange={handleChange}
                 InputProps={{
@@ -192,8 +183,7 @@ export default function Login() {
                 variant="outlined"
                 placeholder="Password"
                 name="password"
-                type={showPassword ? "text" : "password"}
-                required
+                type={showPassword ? 'text' : 'password'}
                 fullWidth
                 onChange={handleChange}
                 InputProps={{
@@ -232,11 +222,7 @@ export default function Login() {
             </Button>
 
             <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: 2,
-              }}
+              sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}
             >
               <Typography variant="body2">
                 <RouterLink
@@ -265,6 +251,7 @@ export default function Login() {
                 Create your Account →
               </RouterLink>
             </Typography>
+
           </Box>
         </Box>
       </Box>

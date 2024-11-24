@@ -7,8 +7,10 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { ApiUpdateCoupon } from '../../services/CouponServices';
 
+
 const UpdateCoupon = ({coupon, onSave, onClose}) => {
     const [successMessage, setSuccessMessage] = useState('');
+
     // State cho các trường trong form
     const [name, setCouponName] = useState(coupon?.name ?? '');
     const [percentDiscount, setPercentDiscount] = useState(coupon?.percentDiscount ?? '');
@@ -16,8 +18,10 @@ const UpdateCoupon = ({coupon, onSave, onClose}) => {
     const [maxDiscount, setMaxDiscount] = useState(coupon?.maxDiscount ?? '');
     const [minPrice, setMinPrice] = useState(coupon?.minPrice ?? '');
     const [minDiscount, setMinDiscount] = useState(coupon?.minDiscount ?? '');
+
     const [errors, setErrors] = useState({});
     const [imageFiles, setImageFiles] = useState([]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const newErrors = {};
@@ -26,11 +30,13 @@ const UpdateCoupon = ({coupon, onSave, onClose}) => {
         if (!maxDiscount) newErrors.maxDiscount = 'Max Discount is required';
         if (!minPrice) newErrors.minPrice = 'Min Price is required';
         if (!minDiscount) newErrors.minDiscount = 'Min Discount is required';
+
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             return;
         }
-        const result = await ApiUpdateCoupon(name, percentDiscount, isPercentDiscount, maxDiscount, minPrice, minDiscount, coupon.id);
+        const token = localStorage.getItem('token');
+        const result = await ApiUpdateCoupon(name, percentDiscount, isPercentDiscount, maxDiscount, minPrice, minDiscount, coupon.id, token);
         if (result.ok) {
             setSuccessMessage('Coupon update successfully!');
             onSave();
@@ -39,6 +45,7 @@ const UpdateCoupon = ({coupon, onSave, onClose}) => {
             alert(result.message);
         }
     };
+
     return (
         <Dialog open={true} onClose={onClose} fullWidth maxWidth="sm">
             <DialogTitle>
@@ -49,16 +56,20 @@ const UpdateCoupon = ({coupon, onSave, onClose}) => {
                     </IconButton>
                 </Box>
             </DialogTitle>
+
             <form onSubmit={handleSubmit}>
                 <DialogContent dividers>
+
                             <Typography variant="h4" align="center" gutterBottom>
                                 Coupon information
                             </Typography>
+
                             {successMessage && (
                                 <Typography variant="body1" color="success" className="text-center mb-3">
                                     {successMessage}
                                 </Typography>
                             )}
+
                             <form className="add-coupon-form" onSubmit={handleSubmit}>
                                 {/* Coupon Name */}
                                 <TextField
@@ -72,6 +83,7 @@ const UpdateCoupon = ({coupon, onSave, onClose}) => {
                                     error={Boolean(errors.name)}
                                     helperText={errors.name}
                                 />
+
                                 {/* Percent Discount */}
                                 <Box display="flex" alignItems="flex-start">
                                     <TextField
@@ -88,6 +100,7 @@ const UpdateCoupon = ({coupon, onSave, onClose}) => {
                                     />
                                     <input type='checkbox' defaultChecked={isPercentDiscount} className='form-check-input ms-2 mt-3' style={{ width: 50, height: 56 }} onChange={(e) => setIsPercentDiscount(e.target.checked)} />
                                 </Box>
+
                                 {/* Max Discount */}
                                 <TextField
                                     label="Max Discount *"
@@ -101,6 +114,7 @@ const UpdateCoupon = ({coupon, onSave, onClose}) => {
                                     error={Boolean(errors.maxDiscount)}
                                     helperText={errors.maxDiscount}
                                 />
+
                                 {/* Min Price */}
                                 <TextField
                                     label="Min Price *"
@@ -114,6 +128,7 @@ const UpdateCoupon = ({coupon, onSave, onClose}) => {
                                     error={Boolean(errors.minPrice)}
                                     helperText={errors.minPrice}
                                 />
+
                                 {/* Min Discount */}
                                 <TextField
                                     label="Min Discount *"
@@ -127,8 +142,10 @@ const UpdateCoupon = ({coupon, onSave, onClose}) => {
                                     error={Boolean(errors.minDiscount)}
                                     helperText={errors.minDiscount}
                                 />
+
                             </form>
                 </DialogContent>
+
                 <DialogActions>
                     <Button type="submit" variant="contained" color="primary">
                         Save
@@ -141,4 +158,5 @@ const UpdateCoupon = ({coupon, onSave, onClose}) => {
         </Dialog>
     );
 };
+
 export default UpdateCoupon;

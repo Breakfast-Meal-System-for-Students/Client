@@ -27,6 +27,7 @@ export const ApiConfirmDigitCode = async (email, digitCode) => {
     });
     return Constant.ResponseData(response);
 }
+
 export const ApiSendOTP = async (email) => {
     const formData = new FormData();
     formData.append("email", email);
@@ -36,6 +37,7 @@ export const ApiSendOTP = async (email) => {
     });
     return Constant.ResponseData(response);
 }
+
 export const ApiChangePassword = async (email, newPassword) => {
     if (Constant.ENABLE_DEBUG_CHANGE_PASSWORD) {
         return {
@@ -53,6 +55,7 @@ export const ApiChangePassword = async (email, newPassword) => {
         return Constant.ResponseData(response);
     }
 }
+
 export const ApiResetPassword = async (email, newPassword) => {
     const formData = new FormData();
     formData.append("email", email);
