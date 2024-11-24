@@ -17,6 +17,7 @@ export const ApiCreateCoupon = async (name, percentDiscount, isPercentDiscount, 
     return Constant.ResponseData(response);
 }
 
+
 export const ApiUpdateCoupon = async (name, percentDiscount, isPercentDiscount, maxDiscount, minPrice, minDiscount, couponId, token) => {
     const response = await fetch(`${Constant.API_UPDATE_COUPON + couponId}`, {
         method: "PUT",

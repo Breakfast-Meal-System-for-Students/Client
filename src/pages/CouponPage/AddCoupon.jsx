@@ -43,7 +43,8 @@ const AddCouponPage = () => {
             setErrors(newErrors);
             return;
         }
-        const result = await ApiCreateCoupon(name, percentDiscount, isPercentDiscount, maxDiscount, minPrice, minDiscount, shopId);
+        const token = localStorage.getItem('token');
+        const result = await ApiCreateCoupon(name, percentDiscount, isPercentDiscount, maxDiscount, minPrice, minDiscount, shopId, token);
         if (result.ok) {
             setSuccessMessage('Coupon added successfully!');
             setTimeout(() => {

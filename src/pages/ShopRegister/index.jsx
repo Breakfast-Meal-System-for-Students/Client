@@ -69,6 +69,7 @@ export default function ShopRegister() {
     return true;
   }
 
+  
   const fetchAddressSuggestions = async (input) => {
     const result = await ApiGetAddressAutoComplete(input);
     if (result.ok) {

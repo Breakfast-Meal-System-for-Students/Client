@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Radio, FormControl, FormLabel, RadioGroup, FormControlLabel } from '@mui/material';
 import './PackagePayment.scss';
 import { useLocation } from 'react-router-dom';
+
 import { ApiBuyPackage, ApiCreatePaymentVNPayURL, ApiGetPackageById } from '../../services/PackageServices';
 import { useNavigate } from 'react-router-dom';
 
@@ -120,6 +121,7 @@ const PackagePayment = () => {
       </div>
     </div>
   );
+
 };
 
 export default PackagePayment;
