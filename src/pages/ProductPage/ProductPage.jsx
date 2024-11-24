@@ -4,7 +4,6 @@ import './ProductPage.scss';
 import { useNavigate } from 'react-router-dom';
 import { Alert, Grid } from '@mui/material';
 import { ApiGetProductsByShopId } from '../../services/ProductServices';
-
 const API = 'https://bms-fs-api.azurewebsites.net/api/Product'; // Base API URL
 
 // Function to get products
@@ -31,6 +30,7 @@ const ProductPage = () => {
     const fetchProducts = async () => {
         const token = localStorage.getItem('token');
         const shopId = localStorage.getItem('shopId');
+        const token = localStorage.getItem('token');
         if (!shopId) {
             console.error('No shopId found in local storage');
             return;
@@ -92,20 +92,19 @@ const ProductPage = () => {
             </div>
             <Grid container spacing={2}>
                 {products.map((product) => (
-                      <Grid item xs={6} sm={6} md={6} lg={4} xl={2} key={product.id}>
-                      <ProductCard
-                          key={product.id}
-                          product={{
-                              id: product.id,
-                              name: product.name,
-                              description: product.description,
-                              price: product.price,
-                              imageUrl: product.images?.[0]?.url || '', // Safely check for images
-                          }}
-                          onEdit={fetchProducts}
-                          onDelete={() => handleDeleteProduct(product.id)} // Pass delete handler
-                      />
-                  </Grid>
+                    <Grid item xs={6} sm={6} md={6} lg={4} xl={2} key={product.id}>
+                        <ProductCard
+                            product={{
+                                id: product.id,
+                                name: product.name,
+                                description: product.description,
+                                price: product.price,
+                                imageUrl: product.images?.[0]?.url || '', // Safely check for images
+                            }}
+                            onEdit={fetchProducts}
+                            onDelete={() => handleDeleteProduct(product.id)} // Pass delete handler
+                        />
+                    </Grid>
                 ))}
             </Grid>
             {products && products.length > 0 && (

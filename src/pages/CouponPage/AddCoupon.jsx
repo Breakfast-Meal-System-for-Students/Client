@@ -12,7 +12,7 @@ const AddCouponPage = () => {
     const [shopId, setShopId] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
 
-    // State cho các trường trong form
+     // State cho các trường trong form
     const [percentDiscount, setPercentDiscount] = useState('');
     const [isPercentDiscount, setIsPercentDiscount] = useState(false);
     const [maxDiscount, setMaxDiscount] = useState('');
@@ -40,7 +40,7 @@ const AddCouponPage = () => {
         if (!minDiscount) newErrors.minDiscount = 'Min Discount is required';
 
         if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors)
+            setErrors(newErrors);
             return;
         }
         const token = localStorage.getItem('token');
@@ -65,11 +65,13 @@ const AddCouponPage = () => {
                 <Typography variant="h4" align="center" gutterBottom>
                     Add New Coupon
                 </Typography>
+
                 {successMessage && (
                     <Typography variant="body1" color="success" className="text-center mb-3">
                         {successMessage}
                     </Typography>
                 )}
+
                 <form className="add-coupon-form" onSubmit={handleSubmit}>
                     {/* Coupon Name */}
                     <TextField
@@ -83,6 +85,7 @@ const AddCouponPage = () => {
                         error={Boolean(errors.name)}
                         helperText={errors.name}
                     />
+
                     {/* Percent Discount */}
                     <Box display="flex" alignItems="flex-start">
                         <TextField
@@ -99,6 +102,7 @@ const AddCouponPage = () => {
                         />
                         <input type='checkbox' className='form-check-input ms-2 mt-3' style={{width:50,height:56}} onChange={(e)=>setIsPercentDiscount(e.target.checked)}/>
                     </Box>
+
                     {/* Max Discount */}
                     <TextField
                         label="Max Discount *"
@@ -112,6 +116,7 @@ const AddCouponPage = () => {
                         error={Boolean(errors.maxDiscount)}
                         helperText={errors.maxDiscount}
                     />
+
                     {/* Min Price */}
                     <TextField
                         label="Min Price *"
@@ -125,6 +130,7 @@ const AddCouponPage = () => {
                         error={Boolean(errors.minPrice)}
                         helperText={errors.minPrice}
                     />
+
                     {/* Min Discount */}
                     <TextField
                         label="Min Discount *"
@@ -138,6 +144,7 @@ const AddCouponPage = () => {
                         error={Boolean(errors.minDiscount)}
                         helperText={errors.minDiscount}
                     />
+
                     {/* Form Actions */}
                     <Box className="form-actions d-flex justify-content-end mt-4">
                         <Button

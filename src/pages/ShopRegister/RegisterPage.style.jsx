@@ -1,10 +1,12 @@
 import { Grid } from "@mui/material";
 import styled from "styled-components";
+
 export const StyledSelect = styled(Grid)`
   display: flex;
   flex-direction: column;
   margin: 20px auto;
   width: 100%;
+
   .select-dropdown {
     padding: 15px;
     font-size: 16px;
@@ -17,6 +19,7 @@ export const StyledSelect = styled(Grid)`
     transition: border-color 0.3s;
     font-family: 'Roboto', sans-serif; /* Đồng bộ font chữ */
   }
+
   .select-dropdown:focus {
     border-color: #007BFF;
   }

@@ -11,7 +11,6 @@ const ProductCard = ({ product, onDelete, onEdit}) => {
         setPopupOpen(true);
     };
 
-   
     return (
         <div className="product-card" style={{height:450}}>
             <img style={{width:'100%',height:170,objectFit:'cover'}}
@@ -24,7 +23,7 @@ const ProductCard = ({ product, onDelete, onEdit}) => {
                 <p>Price: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</p>
                 <p>{product.description}</p>
             </div>
-            
+           
             <div className="card-actions">
                 <button onClick={handleEdit} className="edit-button">
                     <BorderColorIcon/>

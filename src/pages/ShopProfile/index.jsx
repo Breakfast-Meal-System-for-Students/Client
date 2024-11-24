@@ -88,7 +88,7 @@ export default function ShopProfile() {
       alert(result.message);
     }
   };
-  
+
   return (
     <ProfileContainer>
       <ProfileCard>
@@ -105,6 +105,7 @@ export default function ShopProfile() {
                 />
               </CardContent>
             </Grid>
+
             {/* Thông tin chi tiết */}
             <Grid item xs={12} sm={8}>
               <CardContent sx={{ textAlign: 'left' }}>
@@ -136,6 +137,7 @@ export default function ShopProfile() {
             </Grid>
           </Grid>
         </Card>
+
         <Button variant="contained" color="primary" onClick={handleOpenEditDialog} sx={{
           borderRadius: '15px',
           margin: '20px 0',
@@ -145,12 +147,14 @@ export default function ShopProfile() {
         }}>
           Update Profile
         </Button>
+
         {/* Dialog for editing profile */}
         <Dialog open={editDialogOpen} onClose={handleCloseEditDialog}>
           <DialogTitle>UPDATE PROFILE</DialogTitle>
           <DialogContent>
-          <Grid item xs={12} sm={8}>
+            <Grid item xs={12} sm={8}>
               <CardContent>
+
                 {/* Tên Shop */}
                 <TextField
                   fullWidth
@@ -161,6 +165,7 @@ export default function ShopProfile() {
                   variant="outlined"
                   className="mb-3"
                 />
+
                 {/* Số điện thoại */}
                 <TextField
                   fullWidth
@@ -171,6 +176,7 @@ export default function ShopProfile() {
                   variant="outlined"
                   className="mb-3"
                 />
+
                 {/* Địa chỉ */}
                 <TextField
                   fullWidth
@@ -181,6 +187,7 @@ export default function ShopProfile() {
                   variant="outlined"
                   className="mb-3"
                 />
+
                 {/* Mô tả */}
                 <TextField
                   fullWidth
@@ -193,6 +200,7 @@ export default function ShopProfile() {
                   rows={4}
                   className="mb-3"
                 />
+
                 {/* Upload ảnh từ máy tính */}
                 <Box className="mb-3">
                   <Typography>Upload Image:</Typography>
@@ -202,6 +210,7 @@ export default function ShopProfile() {
                     onChange={handleImageChange}
                   />
                 </Box>
+
               </CardContent>
             </Grid>
           </DialogContent>

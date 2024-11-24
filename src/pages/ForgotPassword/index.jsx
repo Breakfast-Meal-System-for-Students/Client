@@ -10,6 +10,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import AuthContext from '../../auth/AuthContext';
 import { DIGIT_CODE_EXPIRED } from '../../constants/Constant';
 import { ApiChangePassword, ApiConfirmDigitCode, ApiResetPassword, ApiSendOTP } from '../../services/AuthServices';
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -54,6 +55,7 @@ export default function ForgotPassword() {
   const nextStep = () => {
     setStep(step + 1);
   }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (step === 1) { // 1. Enter email

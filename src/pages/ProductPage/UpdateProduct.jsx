@@ -8,10 +8,9 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {ApiGetProductByID,  ApiUpdateProduct } from '../../services/ProductServices';
+import { ApiGetProductByID, ApiUpdateProduct } from '../../services/ProductServices';
 
 const UpdateProduct = ({ product, onClose, onSave }) => {
-    console.log(product);
     const [showImages, setShowImages] = useState(false);
     const [images, setImages] = useState([]);
     const [updatedProduct, setUpdatedProduct] = useState({
@@ -20,14 +19,45 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         price: product.price || 0,
         images: [],
     });
-    const [errors, setErrors] = useState({});
     const [imageFiles, setImageFiles] = useState([]);
+    const [errors, setErrors] = useState({
+        name: "",
+        description: "",
+        price: "",
+    });
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setUpdatedProduct({
             ...updatedProduct,
             [name]: value,
         });
+
+        // Reset lỗi khi người dùng nhập
+        setErrors({ ...errors, [name]: "" });
+    };
+
+    const validate = () => {
+        const newErrors = {};
+
+        if (!updatedProduct.name.trim()) {
+            newErrors.name = "Product Name is required.";
+        }
+
+        if (!updatedProduct.description.trim()) {
+            newErrors.description = "Description is required.";
+        } else if (updatedProduct.description.length < 10) {
+            newErrors.description = "Description must be at least 10 characters.";
+        }
+
+        if (!updatedProduct.price) {
+            newErrors.price = "Price is required.";
+        } else if (Number(updatedProduct.price) <= 0) {
+            newErrors.price = "Price must be greater than 0.";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleImageChange = (e) => {
@@ -53,7 +83,11 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await ApiUpdateProduct(updatedProduct, product.id, imageFiles);
+        if (!validate()) {
+            return;
+        }
+        const token = localStorage.getItem('token');
+        const result = await ApiUpdateProduct(updatedProduct, product.id, imageFiles, token);
         if (result.ok) {
             alert('Dish updated successfully.');
             onSave();
@@ -88,6 +122,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                     </IconButton>
                 </Box>
             </DialogTitle>
+
             <form onSubmit={handleSubmit}>
                 <DialogContent dividers>
                     <Box display="flex" flexDirection="column" gap={2}>
@@ -98,8 +133,11 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                             onChange={handleChange}
                             fullWidth
                             required
+                            error={!!errors.name}
+                            helperText={errors.name}
                         />
-                    <TextField
+
+                        <TextField
                             label="Description"
                             name="description"
                             value={updatedProduct.description}
@@ -108,8 +146,11 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                             multiline
                             rows={3}
                             required
+                            error={!!errors.description}
+                            helperText={errors.description}
                         />
-                    <TextField
+
+                        <TextField
                             label="Price"
                             name="price"
                             type="number"
@@ -117,6 +158,8 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                             onChange={handleChange}
                             fullWidth
                             required
+                            error={!!errors.price}
+                            helperText={errors.price}
                         />
                         <Box>
                             <Typography variant="subtitle1" gutterBottom>
@@ -150,7 +193,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                                 {showImages && "Hide" || "Show"}
                             </Button>
                         </Box>
-                     <Box>
+                        <Box>
                             <Typography variant="subtitle1" gutterBottom>
                                 Product Images *
                             </Typography>
@@ -167,7 +210,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                                     hidden
                                     onChange={handleImageChange}
                                 />
-                                </Button>
+                            </Button>
                             {errors.image && (
                                 <Tooltip title={errors.image} arrow>
                                     <Typography color="error" variant="caption">
@@ -175,6 +218,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                                     </Typography>
                                 </Tooltip>
                             )}
+
                             <Grid container spacing={2} marginTop={1}>
                                 {imageFiles.map((file, index) => (
                                     <Grid item key={index}>
@@ -204,6 +248,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                         </Box>
                     </Box>
                 </DialogContent>
+
                 <DialogActions>
                     <Button type="submit" variant="contained" color="primary">
                         Save
@@ -224,11 +269,13 @@ export default UpdateProduct;
     const { name, value } = e.target;
     setUpdatedProduct((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleImageChange = (index, value) => {
     const newImages = [...updatedProduct.images];
     newImages[index] = value;
     setUpdatedProduct((prev) => ({ ...prev, images: newImages }));
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave(updatedProduct);

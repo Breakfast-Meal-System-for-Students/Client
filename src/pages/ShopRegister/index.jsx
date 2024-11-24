@@ -42,13 +42,13 @@ export default function ShopRegister() {
   const handleSubmitRegister = async () => {
     if (!isValidateForm()) {
       return;
-    } 
-    const result = await ApiCreateShop(data.email, data.name, data.phone,  selectedAddress, data.description);
+    }
+    const result = await ApiCreateShop(data.email, data.name, data.phone, selectedAddress, data.description);
     if (result.ok) {
       setData(emptyUserData);
       alert("Shop registration successful, the password has been sent to your email.");
       navigate('/login');
-    }else {
+    } else {
       alert(result.message);
     }
   };
@@ -68,6 +68,7 @@ export default function ShopRegister() {
     }
     return true;
   }
+
   
   const fetchAddressSuggestions = async (input) => {
     const result = await ApiGetAddressAutoComplete(input);
@@ -77,14 +78,18 @@ export default function ShopRegister() {
       alert("Unknow error");
     }
   };
+
   const handleAddressChange = (event) => {
     const { value } = event.target;
+
     if (debounceTimeout) {
       clearTimeout(debounceTimeout);
     }
+
     const newTimeout = setTimeout(() => {
       fetchAddressSuggestions(value);
     }, 1000);
+
     setDebounceTimeout(newTimeout);
   };
 
@@ -96,7 +101,7 @@ export default function ShopRegister() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)', 
+          background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
           width: '100%',
           padding: '0',
           margin: '0',
@@ -106,8 +111,8 @@ export default function ShopRegister() {
           sx={{
             backgroundColor: '#fff',
             padding: '40px',
-            borderRadius: '20px', 
-            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)', 
+            borderRadius: '20px',
+            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -115,10 +120,10 @@ export default function ShopRegister() {
             maxWidth: '500px',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: '#088A08' }}> 
+          <Avatar sx={{ m: 1, bgcolor: '#088A08' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5"sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
+          <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
             SHOP REGISTRATION
           </Typography>
           <Box sx={{ mt: 3, width: '100%' }}>
@@ -146,12 +151,12 @@ export default function ShopRegister() {
                   name="phone"
                   onChange={handleChange}
                   InputProps={{
-                    style: { borderRadius: '30px' }, 
+                    style: { borderRadius: '30px' },
                   }}
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
-              <Autocomplete
+                <Autocomplete
                   freeSolo
                   options={addressSuggestions}
                   getOptionLabel={(option) => option.description || ""}
@@ -188,10 +193,11 @@ export default function ShopRegister() {
                   autoComplete="email"
                   onChange={handleChange}
                   InputProps={{
-                    style: { borderRadius: '30px' }, 
+                    style: { borderRadius: '30px' },
                   }}
                 />
               </Grid>
+
               <Grid item xs={12} sm={12}>
                 <TextField
                   multiline
@@ -212,20 +218,21 @@ export default function ShopRegister() {
               type="submit"
               fullWidth
               variant="contained"
-              color="primary" 
+              color="primary"
               sx={{
                 mt: 5,
                 mb: 2,
-                borderRadius: '30px', 
+                borderRadius: '30px',
                 padding: '10px 0',
                 fontSize: '18px',
-                background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)', 
-                boxShadow: '0px 6px 12px rgba(0,0,0,0.1)', 
+                background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
+                boxShadow: '0px 6px 12px rgba(0,0,0,0.1)',
               }}
               onClick={handleSubmitRegister}
             >
-              Sign Up Your Shop 
+              Sign Up Your Shop
             </Button>
+
             <Typography variant="body2" align="center">
               <Link href="/login" variant="body2" underline="none" sx={{ color: '#088A08' }}>
                 Already have an account? Sign in →

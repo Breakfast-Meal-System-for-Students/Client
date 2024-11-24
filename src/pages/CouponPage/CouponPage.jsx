@@ -9,9 +9,9 @@ import UpdateCoupon from './UpdateCoupon';
 const CouponPage = () => {
   const { user: { token } } = useContext(AuthContext);
   const [coupons, setCoupons] = useState([]);
+  const [couponEdit, setCouponEdit] = useState([]);
   const [shopId, setShopId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [couponEdit, setCouponEdit] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [isPopupOpen, setPopupOpen] = useState(false);
@@ -21,7 +21,7 @@ const CouponPage = () => {
     setCouponEdit(coupon);
     setPopupOpen(true);
   }
-  
+
   // Fetch shopId from local storage
   useEffect(() => {
     const storedShopId = localStorage.getItem('shopId');
@@ -29,6 +29,7 @@ const CouponPage = () => {
       setShopId(storedShopId);
     }
   }, []);
+
   // Fetch coupons for the shop
   const fetchCoupons = async () => {
     if (shopId) {
@@ -48,6 +49,7 @@ const CouponPage = () => {
             // },
           }
         );
+
         console.log('API Response:', response.data.data);
         setCoupons(response.data.data.data);
         setTotalPages(Math.ceil(response.data.total / 6));
@@ -56,18 +58,22 @@ const CouponPage = () => {
       }
     }
   };
+
   useEffect(() => {
     fetchCoupons();
   }, [shopId, currentPage, searchTerm]);
+
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
   };
+
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1); // Reset to first page on search
   };
+
   const handleDeleteCoupon = async (couponId) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this coupon?');
     if (confirmDelete) {
@@ -83,9 +89,11 @@ const CouponPage = () => {
       }
     }
   };
+
   return (
     <div className="coupon-container">
       <h1>Shop Coupons</h1>
+
       <div className="coupon-box">
         <div className="search-and-add">
           <input
@@ -99,6 +107,7 @@ const CouponPage = () => {
             Add Coupon
           </button>
         </div>
+
         <table className="coupon-table">
           <thead>
             <tr>
@@ -125,7 +134,7 @@ const CouponPage = () => {
                   <td>${coupon.minDiscount}</td>
                   <td className="coupon-actions">
                     <AiOutlineEdit
-                      onClick={() => setPopupOpen(true)}
+                      onClick={() => handleSetCouponEdit(coupon)}
                       className="edit-icon"
                     />
                     <AiOutlineDelete
@@ -142,6 +151,7 @@ const CouponPage = () => {
             )}
           </tbody>
         </table>
+
         {/* Pagination */}
         <div className="pagination">
           <button
@@ -162,13 +172,18 @@ const CouponPage = () => {
             Next
           </button>
         </div>
-        {isPopupOpen && 
-            <UpdateCoupon/>
+
+        {isPopupOpen && couponEdit &&
+            <UpdateCoupon
+              coupon={couponEdit}
+              onSave={fetchCoupons}
+              onClose={() => setPopupOpen(false)} 
+            />
         }
+
       </div>
     </div>
   );
 };
-
 
 export default CouponPage;

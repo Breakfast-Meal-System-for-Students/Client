@@ -44,6 +44,7 @@ const ShopPackagePage = () => {
   };
 
 
+
   return (
     <div className="coupon-container">
       <h1>SHOP PACKAGES</h1>
@@ -58,7 +59,7 @@ const ShopPackagePage = () => {
             className="search-bar"
           />
         </div>
-        
+
         <table className="coupon-table">
           <thead>
             <tr>
@@ -76,9 +77,9 @@ const ShopPackagePage = () => {
                 <tr key={row.id}>
                   <td>
                     <div className='d-flex justify-content-center'>
-                      <Avatar 
-                        src={`/${GetImagePackage(row.name)}`} 
-                        alt={`${row.name} package`} 
+                      <Avatar
+                        src={`/${GetImagePackage(row.name)}`}
+                        alt={`${row.name} package`}
                         variant="rounded" // Optional: 'circle' or 'square' are other options
                         sx={{ width: 100, height: 100 }} // Adjust size as needed
                       />
@@ -106,6 +107,7 @@ const ShopPackagePage = () => {
             )}
           </tbody>
         </table>
+
         {/* Pagination */}
         <div className="pagination">
           <button
@@ -130,4 +132,5 @@ const ShopPackagePage = () => {
     </div>
   );
 };
+
 export default ShopPackagePage;

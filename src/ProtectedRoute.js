@@ -17,12 +17,13 @@ const ProtectedRoute = ({ element, requiredRole }) => {
       if (!user) {
         setUser(decoded);
 
-        if (decoded.role.includes("Admin")) {
-          navigate("/admin");
-        } else if (decoded.role.includes("Staff")) {
-          navigate("/shop-application");
-        } else if (decoded.role.includes("Shop")) {
-          navigate("/shop");
+        if (decoded.role.includes('Admin')) {
+          navigate('/admin');
+        } else if (decoded.role.includes('Staff')) {
+          navigate('/home-staff');
+        } else if (decoded.role.includes('Shop')) {
+          // navigate('/shop');
+
         } else {
           setError("Unauthorized role");
 
