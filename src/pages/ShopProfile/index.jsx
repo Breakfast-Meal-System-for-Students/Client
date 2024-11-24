@@ -3,11 +3,13 @@ import {
   ProfileContainer,
   ProfileCard,
 } from './ProfilePage.style';
-import { Card, CardContent, Typography, CardMedia, Grid, Box } from '@mui/material';
+import { Card, CardContent, Typography, CardMedia, Grid, Box, Autocomplete } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { ApiGetShopById, ApiUpdateShop } from '../../services/ShopServices';
 import { useNavigate } from 'react-router-dom';
+import { ApiGetAddressAutoComplete } from '../../services/MapServices';
+
 
 export default function ShopProfile() {
   const navigate = useNavigate();
@@ -15,7 +17,21 @@ export default function ShopProfile() {
   const [shopUpdate, setShopUpdate] = useState([]);
   const [roundedRate, setRoundedRate] = useState(1);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [addressSuggestions, setAddressSuggestions] = useState([]);
+  const [titleAddress, setTitleAddress] = useState('');
+  const [selectedAddress, setSelectedAddress] = useState('');
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
+
   const token = localStorage.getItem('token');
+
+  const fetchAddressSuggestions = async (input) => {
+    const result = await ApiGetAddressAutoComplete(input);
+    if (result.ok) {
+      setAddressSuggestions(result.body.predictions);
+    } else {
+      alert("Unknow error");
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,13 +41,27 @@ export default function ShopProfile() {
     });
   };
 
+  const handleAddressChange = (event) => {
+    const { value } = event.target;
+
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+
+    const newTimeout = setTimeout(() => {
+      fetchAddressSuggestions(value);
+    }, 1000);
+    setTitleAddress("Address");
+    setDebounceTimeout(newTimeout);
+  };
+
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const imageURL = URL.createObjectURL(file);
       setShopUpdate({
         ...shopUpdate,
-        image: imageURL,
+        image: file, // Lưu tệp gốc
       });
     }
   };
@@ -49,6 +79,7 @@ export default function ShopProfile() {
       setShop(result.body.data);
       setShopUpdate(result.body.data);
       setRoundedRate(Math.round(result.body.data.rate))
+      setTitleAddress(result.body.data.address);
     } else {
       alert(result.message);
     }
@@ -73,17 +104,18 @@ export default function ShopProfile() {
   const handleSave = async () => {
     const token = localStorage.getItem('token');
     const result = await ApiUpdateShop(
-      shopUpdate.id, 
-      shopUpdate.image, 
-      shopUpdate.name, 
-      shopUpdate.phone, 
-      shopUpdate.address,
+      shopUpdate.id,
+      shopUpdate.image,
+      shopUpdate.name,
+      shopUpdate.phone,
+      selectedAddress,
       shopUpdate.description,
       token
     );
     if (result.ok) {
       alert("Update shop information successfully!");
       fetchProfileShopData();
+      handleCloseEditDialog();
     } else {
       alert(result.message);
     }
@@ -100,7 +132,7 @@ export default function ShopProfile() {
                 <CardMedia
                   component="img"
                   height="200"
-                  image={'https://media.istockphoto.com/id/1425139113/photo/purchasing-goods-with-smartphone-at-grocery-store.jpg?s=612x612&w=0&k=20&c=xMbZgp4BZAWCH_j7UkM9YiYTXcpS4zqg3MW4_jRmriM='} 
+                  image={shop.image ?? 'https://media.istockphoto.com/id/1425139113/photo/purchasing-goods-with-smartphone-at-grocery-store.jpg?s=612x612&w=0&k=20&c=xMbZgp4BZAWCH_j7UkM9YiYTXcpS4zqg3MW4_jRmriM='} // Đường dẫn hình ảnh mặc định nếu shop.Image là null
                   alt={shop.name}
                 />
               </CardContent>
@@ -128,7 +160,7 @@ export default function ShopProfile() {
                   <strong>Email:</strong> {shop.email}
                 </Box>
                 <Box className="mb-2">
-                  <strong>Phone:</strong> {shop.phoneNumber || "Not provided"}
+                  <strong>Phone:</strong> {shop.phone || "Not provided"}
                 </Box>
                 <Box className="mb-2">
                   <strong>Address:</strong> {shop.address}
@@ -160,7 +192,7 @@ export default function ShopProfile() {
                   fullWidth
                   label="Name"
                   name="name"
-                  value={shop.name}
+                  value={shopUpdate.name}
                   onChange={handleChange}
                   variant="outlined"
                   className="mb-3"
@@ -170,30 +202,44 @@ export default function ShopProfile() {
                 <TextField
                   fullWidth
                   label="Phone Number"
-                  name="phoneNumber"
-                  value={shop.phoneNumber}
+                  name="phone"
+                  value={shopUpdate.phone}
                   onChange={handleChange}
                   variant="outlined"
                   className="mb-3"
                 />
 
                 {/* Địa chỉ */}
-                <TextField
-                  fullWidth
-                  label="Address"
-                  name="address"
-                  value={shop.address}
-                  onChange={handleChange}
-                  variant="outlined"
-                  className="mb-3"
-                />
+                <Grid item xs={12} sm={12} className='mb-3'>
+                  <Autocomplete
+                    freeSolo
+                    options={addressSuggestions}
+                    getOptionLabel={(option) => option.description || ""}
+                    renderOption={(props, option) => (
+                      <li {...props}>
+                        {option.description}
+                      </li>
+                    )}
+                    onInputChange={(event, newInputValue) => handleAddressChange(event)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={titleAddress}
+                        required
+                        fullWidth
+                        id="address"
+                      />
+                    )}
+                    onChange={(event, newValue) => setSelectedAddress(newValue.description ?? '')}
+                  />
+                </Grid>
 
                 {/* Mô tả */}
                 <TextField
                   fullWidth
                   label="Description"
                   name="description"
-                  value={shop.description}
+                  value={shopUpdate.description}
                   onChange={handleChange}
                   variant="outlined"
                   multiline

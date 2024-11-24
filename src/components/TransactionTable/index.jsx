@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableSortLabel,
   TablePagination, TextField, Toolbar, Typography
 } from '@mui/material';
+import { ApiGetTransactions } from '../../services/TransactionServices';
 
 // Sample data for transactions
 const transactionsData = [
@@ -38,6 +39,20 @@ const TransactionsTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState('');
+  const COMPLETE_STATUS = 1;
+
+  useEffect(()=>{
+    const fetchTransactions = async () => {
+      const token = localStorage.getItem('token');
+      const result = await ApiGetTransactions(COMPLETE_STATUS, searchTerm, true, 1, 1000, token);
+      if (result.ok) {
+        setTransactions(result.body.data.data)
+      } else {
+        alert(result.message);
+      }
+    }
+    fetchTransactions();
+  },[]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -59,17 +74,11 @@ const TransactionsTable = () => {
     setPage(0);
   };
 
-  const filteredTransactions = transactions.filter(transaction =>
-    transaction.user.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const sortedTransactions = filteredTransactions.sort(getComparator(order, orderBy));
-
   return (
     <Paper sx={{ padding: 2 }}>
       <Toolbar sx={{ pb: 3}}>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Transactions
+        <Typography variant="h4" sx={{ flexGrow: 1 }}>
+          Recent Transactions
         </Typography>
         <TextField
           variant="outlined"
@@ -83,57 +92,33 @@ const TransactionsTable = () => {
         <Table sx={{ minWidth: 650 }} aria-label="transactions table">
           <TableHead sx={{ background: 'linear-gradient(180deg, #3d996c, #00cc69)'}}>
             <TableRow>
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'user'}
-                  direction={orderBy === 'user' ? order : 'asc'}
-                  onClick={(e) => handleRequestSort(e, 'user')}
-                  sx={{ color: '#fff !important', '& .MuiSvgIcon-root': { color: '#fff', '&:active': {color: '#fff'}} }}
-                >
-                  User
-                </TableSortLabel>
+              <TableCell sx={{ color: '#fff !important', '& .MuiSvgIcon-root': { color: '#fff', '&:active': {color: '#fff'}} }}>
+                  Customer
               </TableCell>
-              <TableCell align="right">
-                <TableSortLabel
-                  active={orderBy === 'orderID'}
-                  direction={orderBy === 'orderID' ? order : 'asc'}
-                  onClick={(e) => handleRequestSort(e, 'orderID')}
-                  sx={{ color: '#fff !important', '& .MuiSvgIcon-root': { color: '#fff', '&:active': {color: '#fff'}} }}
-                >
+              <TableCell sx={{ color: '#fff !important', '& .MuiSvgIcon-root': { color: '#fff', '&:active': {color: '#fff'}} }}>
+                  Shop
+              </TableCell>
+              <TableCell sx={{ color: '#fff !important', '& .MuiSvgIcon-root': { color: '#fff', '&:active': {color: '#fff'}} }}>
                   Order ID
-                </TableSortLabel>
               </TableCell>
-              <TableCell align="right">
-                <TableSortLabel
-                  active={orderBy === 'date'}
-                  direction={orderBy === 'date' ? order : 'asc'}
-                  onClick={(e) => handleRequestSort(e, 'date')}
-                  sx={{ color: '#fff !important', '& .MuiSvgIcon-root': { color: '#fff', '&:active': {color: '#fff'}} }}
-                >
+              <TableCell sx={{ color: '#fff !important', '& .MuiSvgIcon-root': { color: '#fff', '&:active': {color: '#fff'}} }}>
                   Date
-                </TableSortLabel>
               </TableCell>
-              <TableCell align="right">
-                <TableSortLabel
-                  active={orderBy === 'amount'}
-                  direction={orderBy === 'amount' ? order : 'asc'}
-                  onClick={(e) => handleRequestSort(e, 'amount')}
-                  sx={{ color: '#fff !important', '& .MuiSvgIcon-root': { color: '#fff', '&:active': {color: '#fff'}} }}
-                >
+              <TableCell sx={{ color: '#fff !important', '& .MuiSvgIcon-root': { color: '#fff', '&:active': {color: '#fff'}} }}>
                   Amount
-                </TableSortLabel>
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedTransactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((transaction) => (
+            {transactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((transaction) => (
               <TableRow key={transaction.id}>
                 <TableCell component="th" scope="row">
-                  {transaction.user}
+                  {transaction.order && transaction.order.firstName + " " + transaction.order.lastName || ''}
                 </TableCell>
-                <TableCell align="right">{transaction.orderID}</TableCell>
-                <TableCell align="right">{transaction.date}</TableCell>
-                <TableCell align="right">${transaction.amount}</TableCell>
+                <TableCell>{transaction.order?.shopName}</TableCell>
+                <TableCell>{transaction.orderId}</TableCell>
+                <TableCell>{transaction.order?.orderDate && new Date(transaction.order.orderDate).toLocaleString() || ''}</TableCell>
+                <TableCell>{transaction.price && transaction.price.toLocaleString('vi-VN') || 0} VND</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -141,7 +126,7 @@ const TransactionsTable = () => {
       </TableContainer>
       <TablePagination
         component="div"
-        count={filteredTransactions.length}
+        count={transactions.length}
         page={page}
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}

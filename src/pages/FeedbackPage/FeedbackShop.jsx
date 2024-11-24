@@ -31,18 +31,8 @@ const FeedbackShop = () => {
         setLoading(true);
         try {
             let url = `https://bms-fs-api.azurewebsites.net/api/Feedback/${shopId}?pageIndex=${pageIndex}&pageSize=${pageSize}`;
-
-            // Áp dụng các bộ lọc theo rate
-            if (filter === '5') {
-                url += '&minRate=5&maxRate=5';
-            } else if (filter === '4') {
-                url += '&minRate=4&maxRate=5';
-            } else if (filter === '3') {
-                url += '&minRate=3&maxRate=4';
-            } else if (filter === '2') {
-                url += '&minRate=2&maxRate=3';
-            } else if (filter === '1') {
-                url += '&minRate=1&maxRate=2';
+            if (filter !== "All") {
+                url += `&rating=${filter}`;
             }
 
             const response = await axios.get(url);

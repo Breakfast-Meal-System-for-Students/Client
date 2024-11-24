@@ -5,6 +5,10 @@ import {
   Toolbar,
   TableBody,
   TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel
 } from '@mui/material';
 import {
   StyledPaper,
@@ -14,45 +18,32 @@ import {
   StyledTableRow,
   StyledTableCell,
 } from './ManageOrders.style';
+import { ApiGetOrderByShopId } from '../../services/OrderServices';
+import { useNavigate } from 'react-router-dom';
 
 const OrderShop = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState('ORDERED');
   const [searchTerm, setSearchTerm] = useState(''); // State for the search term
+  const navigate = useNavigate();
 
   // Fetch orders from the API
-  const fetchOrders = async () => {
-    try {
-      const response = await fetch('https://bms-fs-api.azurewebsites.net/api/Order/GetListOrders?pageIndex=1&pageSize=6', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch orders');
-      }
-
-      const data = await response.json();
-      console.log(data);
-
-      if (Array.isArray(data.data.data)) {
-        setOrders(data.data.data);
-      } else {
-        console.error('Fetched data is not an array', data.data.data);
-        setOrders([]);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+  const fetchOrdersByShopId = async () => {
+    const shopId = localStorage.getItem('shopId');
+    const token = localStorage.getItem('token');
+    const result = await ApiGetOrderByShopId(shopId, status, searchTerm, null, 1, 10, token);
+    if (result.ok) {
+      setOrders(result.body.data.data);
+    } else {
+      alert(result.message);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    fetchOrdersByShopId();
+  }, [searchTerm, status]);
 
   // Filter orders based on the search term
   const filteredOrders = orders.filter(order => {
@@ -69,26 +60,48 @@ const OrderShop = () => {
     return <Typography variant="h6">Loading orders...</Typography>;
   }
 
-  if (!Array.isArray(orders) || orders.length === 0) {
-    return <Typography variant="h6">No orders available.</Typography>;
+  // if (!Array.isArray(orders) || orders.length === 0) {
+  //   return <Typography variant="h6">No orders available.</Typography>;
+  // }
+
+  const handleNavigateToDetail = (id) => {
+    navigate(`/shop/orders/detail?orderId=${id}`);
   }
 
   return (
     <StyledPaper>
       <Toolbar sx={{ justifyContent: 'space-between', marginBottom: 2 }}>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Manage Orders
+          SHOP ORDERS
         </Typography>
+        <div>
+          {/* SELECT BOX */}
+          <FormControl size="small" sx={{ minWidth: 150 }} className='me-2'>
+            <InputLabel>Status</InputLabel>
+            <Select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              label="Status"
+            >
+              <MenuItem value="ORDERED">Ordered</MenuItem>
+              <MenuItem value="PREPARING">Preparing</MenuItem>
+              <MenuItem value="PREPARED">Prepared</MenuItem>
+              <MenuItem value="TAKENOVER">Taken Over</MenuItem>
+              <MenuItem value="CANCEL">Cancel</MenuItem>
+              <MenuItem value="COMPLETE">Complete</MenuItem>
+            </Select>
+          </FormControl>
+          {/* Search Bar */}
+          <TextField
+            label="Search Orders"
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by Order ID, Customer, or Shop"
+            size="small"
+          />
+        </div>
 
-        {/* Search Bar */}
-        <TextField
-          label="Search Orders"
-          variant="outlined"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search by Order ID, Customer, or Shop"
-          size="small"
-        />
       </Toolbar>
 
       <StyledTableContainer>
@@ -105,35 +118,64 @@ const OrderShop = () => {
             </StyledTableRow>
           </StyledTableHead>
           <TableBody>
-            {filteredOrders.map((order) => (
-              <StyledTableRow key={order.id}>
-                <StyledTableCell>{order.id}</StyledTableCell>
-                <StyledTableCell>
-                  <img
-                    src={order.avatar}
-                    alt={`${order.firstName} ${order.lastName}`}
-                    style={{ width: 30, height: 30, borderRadius: '50%', marginRight: 8 }}
-                  />
-                  {order.firstName} {order.lastName}
-                </StyledTableCell>
-                <StyledTableCell>
-                  <img
-                    src={order.shopImage}
-                    alt={order.shopName}
-                    style={{ width: 30, height: 30, borderRadius: '5%', marginRight: 8 }}
-                  />
-                  {order.shopName}
-                </StyledTableCell>
-                <StyledTableCell>${order.totalPrice.toFixed(2)}</StyledTableCell>
-                <StyledTableCell>{order.status}</StyledTableCell>
-                <StyledTableCell>{new Date(order.orderDate).toLocaleString()}</StyledTableCell>
-                <StyledTableCell align="right">
-                  <Button variant="contained" color="primary">
-                    View Details
-                  </Button>
+            {filteredOrders.length > 0 ? (
+              filteredOrders.map((order) => (
+                <StyledTableRow key={order.id}>
+                  <StyledTableCell>{order.id}</StyledTableCell>
+                  <StyledTableCell>
+                    <img
+                      src={order.avatar ?? '/user-default.png'}
+                      alt={`${order.firstName} ${order.lastName}`}
+                      style={{
+                        width: 30,
+                        height: 30,
+                        borderRadius: '50%',
+                        marginRight: 8,
+                      }}
+                    />
+                    {order.firstName} {order.lastName}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <img
+                      src={order.shopImage}
+                      alt={order.shopName}
+                      style={{
+                        width: 30,
+                        height: 30,
+                        borderRadius: '5%',
+                        marginRight: 8,
+                      }}
+                    />
+                    {order.shopName}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    {new Intl.NumberFormat('vi-VN', {
+                      style: 'currency',
+                      currency: 'VND',
+                    }).format(order.totalPrice)}
+                  </StyledTableCell>
+                  <StyledTableCell>{order.status}</StyledTableCell>
+                  <StyledTableCell>
+                    {new Date(order.orderDate).toLocaleString()}
+                  </StyledTableCell>
+                  <StyledTableCell align="right">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleNavigateToDetail(order.id)}
+                    >
+                      View Details
+                    </Button>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))
+            ) : (
+              <StyledTableRow>
+                <StyledTableCell colSpan={7} align="center">
+                  Not Found Any Order
                 </StyledTableCell>
               </StyledTableRow>
-            ))}
+            )}
           </TableBody>
         </StyledTable>
       </StyledTableContainer>

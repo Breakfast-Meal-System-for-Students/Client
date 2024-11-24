@@ -20,11 +20,11 @@ export const HTTP_HEADER_TOKEN = (token) => {
         'Authorization': `Bearer ${token}`,
     }
 };
-// export const HEADER_TOKEN = (token) => {
-//     return {
-//         'Authorization': `Bearer ${token}`,
-//     }
-// };
+export const HEADER_TOKEN = (token) => {
+    return {
+        'Authorization': `Bearer ${token}`,
+    }
+};
 
 
 /*
@@ -32,13 +32,6 @@ export const HTTP_HEADER_TOKEN = (token) => {
  */
 export const API_KEY = "AlzaSyGpCG5SrSCk-n1TWzoyTLa1Wt891BhXWBO";
 export const URL_MAP_AUTOCOMPLETE = "https://maps.gomaps.pro/maps/api/place/autocomplete/json";
-
-export const HEADER_TOKEN = (token) => {
-    return {
-        'Authorization': `Bearer ${token}`,
-    }
-};
-
 
 /*
  ** RESPONSE CONFIG
@@ -93,6 +86,11 @@ export const USER_STATUS_DENIED = 3;
 export const USER_STATUS_CLOSED = 4;
 
 /*
+ ** API USER
+ */
+ export const API_GET_TOTAL_NEW_USER = HTTP_SERVER + "/api/User/CountNewUser";
+
+/*
  ** API AUTH
  */
 export const API_REGISTER_ACCOUNT = HTTP_SERVER + "/api/Auth/register";
@@ -132,6 +130,23 @@ export const API_GET_SHOP_BY_ID = HTTP_SERVER + "/api/Shop/";
 ** API PACKAGE
 */
 export const API_GET_PACKAGES = HTTP_SERVER + "/api/Package/";
+export const API_GET_PACKAGE_FOR_SHOP_IN_USE = HTTP_SERVER + "/api/Package/GetPackageForShopInUse/";
 export const API_GET_PACKAGE_BY_ID = HTTP_SERVER + "/api/Package/";
 export const API_BUY_PACKAGE = HTTP_SERVER + "/api/Package/BuyPackageByShop";
 export const API_VNPAY_BUY_PACKAGE = HTTP_SERVER + "/api/Payment/create-payment-url-forbuypackage";
+
+/*
+** API ORDER
+*/
+export const API_GET_ORDER_BY_SHOP_ID = HTTP_SERVER + "/api/Order/GetOrderByShop";
+export const API_GET_ORDER_BY_ID = HTTP_SERVER + "/api/Order/GetOrderById/";
+export const API_UPDATE_ORDER_STATUS = HTTP_SERVER + "/api/Order/";
+export const API_GET_TOTAL_ORDERS = HTTP_SERVER + "/api/Order/GetTotalOrder";
+
+
+/*
+ ** API TRANSACTION
+ */
+ export const API_GET_ALL_TRANSACTION = HTTP_SERVER + "/api/Transaction/GetListTransactions";
+ export const API_GET_TOTAL_REVENUE = HTTP_SERVER + "/api/Transaction/GetTotalRevenue";
+ export const API_GET_TOP_5_USER_PURCHARSE = HTTP_SERVER + "/api/Transaction/GetTopUserHaveHighTransaction";

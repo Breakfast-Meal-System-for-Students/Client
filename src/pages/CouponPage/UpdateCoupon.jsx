@@ -35,8 +35,7 @@ const UpdateCoupon = ({coupon, onSave, onClose}) => {
             setErrors(newErrors);
             return;
         }
-        const token = localStorage.getItem('token');
-        const result = await ApiUpdateCoupon(name, percentDiscount, isPercentDiscount, maxDiscount, minPrice, minDiscount, coupon.id, token);
+        const result = await ApiUpdateCoupon(name, percentDiscount, isPercentDiscount, maxDiscount, minPrice, minDiscount, coupon.id);
         if (result.ok) {
             setSuccessMessage('Coupon update successfully!');
             onSave();
