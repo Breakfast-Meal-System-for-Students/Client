@@ -17,7 +17,7 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material';
-import { ApiGetOrderById, ApiUpdateOrderStatus } from '../../services/OrderServices';
+import { ApiChangeOrderStatus, ApiGetOrderById, ApiUpdateOrderStatus } from '../../services/OrderServices';
 import { useLocation } from 'react-router-dom';
 import { StyledPaper } from '../OrderPage/ManageOrders.style';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
@@ -38,9 +38,13 @@ const OrderDetailPage = () => {
     fetchUpdateOrderStatus();
   };
 
+  const handleOpenQR = () => {
+    // fetchUpdateOrderStatus();
+  };
+
   const fetchUpdateOrderStatus = async () => {
     const token = localStorage.getItem('token');
-    const result = await ApiUpdateOrderStatus(status, orderId, token);
+    const result = await ApiChangeOrderStatus(status, orderId, token);
     if (result.ok) {
       alert("Updated order status successfully!!!");
     } else {
@@ -189,6 +193,14 @@ const OrderDetailPage = () => {
               onClick={handleUpdateStatus}
             >
               Update Status
+            </Button>
+            <Button
+              className='ms-2'
+              variant="contained"
+              color="primary"
+              onClick={handleOpenQR}
+            >
+              Show QR
             </Button>
           </Box>
         </Box>

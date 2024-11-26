@@ -44,30 +44,14 @@ const Sidebar = () => {
  // Ensure user and user.role are defined before using them
  if (user && user.role && user.role.includes("Staff")) {
     sidebarItems = [
-    {
-      text: "NotificationManagement",
-      icon: <FaHome />,
-      path: "/notificationManagement",
-    },
+    { text: "NotificationManagement", icon: <FaHome />, path: "/notificationManagement", },
     { text: "Category", icon: <FaListAlt />, path: "/category" },
     { text: "Feedback", icon: <FaComments />, path: "/feedback" },
     { text: "ShopOverview", icon: <FaCog />, path: "/shopOverview" },
-    {
-      text: "Shop Application",
-      icon: <FaListAlt />,
-      path: "/shop-application",
-    },
+    { text: "Shop Application", icon: <FaListAlt />, path: "/shop-application", },
     { text: "Profile", icon: <PortraitIcon />, path: "/admin/profile" },
-    // {
-    //   text: "UserInformation",
-    //   icon: <PortraitIcon />,
-    //   path: "/user-information/:userId",
-    // },
-    {
-      text: "DashboardStaff",
-      icon: <PortraitIcon />,
-      path: "/dashboardStaff",
-    },
+    // { text: "UserInformation", icon: <PortraitIcon />, path: "/user-information/:userId", },
+    { text: "DashboardStaff", icon: <PortraitIcon />, path: "/dashboardStaff" },
   ];
   } else if (user && user.role && user.role.includes("Shop")) {
     sidebarItems = [
@@ -77,7 +61,6 @@ const Sidebar = () => {
       { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/shop/feedback-shop" },
       // { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/location" },
       { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/location" },
-
       { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/shop/orders" },
       // { text: "Profile", icon: <PortraitIcon />, path: "/shop/profile" },
       { text: "About Shop", icon: <ContactPhoneIcon />, path: "/shop/about-shop" },

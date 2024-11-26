@@ -104,6 +104,8 @@ export const API_RESET_PASSWORD = HTTP_SERVER + "/api/Account/ResetPassword";
  ** API ACCOUNT
  */
 export const API_GET_MY_PROFILE = HTTP_SERVER + "/api/Account/my-profile";
+export const API_UPDATE_ACCOUNT = HTTP_SERVER + "/api/Account";
+export const API_UPDATE_AVATAR = HTTP_SERVER + "/api/Account/update-avatar";
 
 /*
  ** API COUPON
@@ -129,7 +131,10 @@ export const API_GET_SHOP_BY_ID = HTTP_SERVER + "/api/Shop/";
 /*
 ** API PACKAGE
 */
-export const API_GET_PACKAGES = HTTP_SERVER + "/api/Package/";
+export const API_GET_PACKAGES = HTTP_SERVER + "/api/Package";
+export const API_ADD_PACKAGE = HTTP_SERVER + "/api/Package";
+export const API_UPDATE_PACKAGE = HTTP_SERVER + "/api/Package/";
+export const API_DELETE_PACKAGE = HTTP_SERVER + "/api/Package/";
 export const API_GET_PACKAGE_FOR_SHOP_IN_USE = HTTP_SERVER + "/api/Package/GetPackageForShopInUse/";
 export const API_GET_PACKAGE_BY_ID = HTTP_SERVER + "/api/Package/";
 export const API_BUY_PACKAGE = HTTP_SERVER + "/api/Package/BuyPackageByShop";
@@ -141,8 +146,9 @@ export const API_VNPAY_BUY_PACKAGE = HTTP_SERVER + "/api/Payment/create-payment-
 export const API_GET_ORDER_BY_SHOP_ID = HTTP_SERVER + "/api/Order/GetOrderByShop";
 export const API_GET_ORDER_BY_ID = HTTP_SERVER + "/api/Order/GetOrderById/";
 export const API_UPDATE_ORDER_STATUS = HTTP_SERVER + "/api/Order/";
+export const API_CHANGE_ORDER_STATUS = HTTP_SERVER + "/api/Order/ChangeOrderStatus";
 export const API_GET_TOTAL_ORDERS = HTTP_SERVER + "/api/Order/GetTotalOrder";
-
+export const API_GET_LIST_ORDERS = HTTP_SERVER + "/api/Order/GetListOrders";
 
 /*
  ** API TRANSACTION
