@@ -152,7 +152,12 @@ const PackagePage = () => {
                   </td>
                   <td>{row.name}</td>
                   <td>{row.duration}</td>
-                  <td>{row.price}</td>
+                  <td>
+                    {new Intl.NumberFormat('vi-VN', {
+                      style: 'currency',
+                      currency: 'VND',
+                    }).format(row.price)}
+                  </td>
                   <td>
                     <Button variant="contained" color="primary" onClick={() => handleOpenDialogUpdate(row.id)} sx={{
                       borderRadius: '15px',

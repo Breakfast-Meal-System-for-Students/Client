@@ -37,7 +37,7 @@ const Sidebar = () => {
     { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/admin/feedback" },
     { text: 'Customer', icon: <PersonIcon />, path: "/admin/customer-details" },
     { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/admin/orders" },
-    // { text: "Package", icon: <Inventory2OutlinedIcon />, path: "/admin/Package" },
+    { text: "Package", icon: <Inventory2OutlinedIcon />, path: "/admin/Package" },
     { text: 'Profile', icon: <PortraitIcon />, path: "/admin/profile" },
   ];
 

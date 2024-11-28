@@ -79,6 +79,7 @@ const OrderDetailPage = () => {
     const result = await ApiChangeOrderStatus(status, orderId, token);
     if (result.ok) {
       alert("Updated order status successfully!!!");
+      fetchApiGetOrderById();
     } else {
       alert(result.message);
     }
@@ -139,7 +140,7 @@ const OrderDetailPage = () => {
                     <span className='text-dark fw-bold'>Order Date:</span> {new Date(order.orderDate).toLocaleString()}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    <span className='text-dark fw-bold'>Status:</span> {status}
+                    <span className='text-dark fw-bold'>Status:</span> {order.status}
                   </Typography>
                 </div>
               </div>

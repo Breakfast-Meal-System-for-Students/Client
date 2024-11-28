@@ -120,7 +120,12 @@ const ShopPackagePage = () => {
                   </td>
                   <td>{row.name}</td>
                   <td>{row.duration}</td>
-                  <td>{row.price}</td>
+                  <td>
+                    {new Intl.NumberFormat('vi-VN', {
+                      style: 'currency',
+                      currency: 'VND',
+                    }).format(row.price)}
+                  </td>
                   <td>
                     {row.isBought && (
                       <p className='fw-bold text-success'>Purchased </p>
