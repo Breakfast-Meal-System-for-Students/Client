@@ -43,17 +43,16 @@ const Sidebar = () => {
 
   // Default sidebar items
   let sidebarItems = [
-    { text: "Dashboard", icon: <HomeIcon />, path: "/admin" },
-    { text: "Staff", icon: <AnalyticsIcon />, path: "/admin/manage-staff" },
-    {
-      text: "Feedback",
-      icon: <RateReviewOutlinedIcon />,
-      path: "/admin/feedback",
-    },
-    { text: "Customer", icon: <PersonIcon />, path: "/admin/customer-details" },
-    { text: "Orders", icon: <StoreOutlinedIcon />, path: "/admin/orders" },
-    // { text: "Package", icon: <Inventory2OutlinedIcon />, path: "/admin/Package" },
-    { text: "Profile", icon: <PortraitIcon />, path: "/admin/profile" },
+
+    { text: 'Dashboard', icon: <HomeIcon />, path: "/admin" },
+    { text: 'Staff', icon: <AnalyticsIcon />, path: "/admin/manage-staff" },
+    { text: 'Feedback', icon: <RateReviewOutlinedIcon />, path: "/admin/feedback" },
+    { text: 'Customer', icon: <PersonIcon />, path: "/admin/customer-details" },
+    { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/admin/orders" },
+    { text: "Package", icon: <Inventory2OutlinedIcon />, path: "/admin/Package" },
+    { text: 'Profile', icon: <PortraitIcon />, path: "/admin/profile" },
+  ];
+
   ];
 
   // Ensure user and user.role are defined before using them
@@ -103,13 +102,9 @@ const Sidebar = () => {
         path: "/shop/feedback-shop",
       },
       // { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/location" },
-      {
-        text: "Location",
-        icon: <FmdGoodOutlinedIcon />,
-        path: "/shop/location",
-      },
 
-      { text: "Orders", icon: <StoreOutlinedIcon />, path: "/shop/orders" },
+      { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/location" },
+      { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/shop/orders" },
       // { text: "Profile", icon: <PortraitIcon />, path: "/shop/profile" },
       {
         text: "About Shop",

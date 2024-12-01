@@ -16,12 +16,14 @@ const FeedbackPageUI = ({
   return (
     <Container>
       {/* Average Rating Section */}
-      <Box sx={{ textAlign: 'center', mb: 2 }}>
-        <Typography variant="h5" fontWeight="bold">
-          Average Rating: {averageRating} / 5
-        </Typography>
-        <Rating value={parseFloat(averageRating)} readOnly precision={0.5} />
-      </Box>
+      {averageRating && (
+        <Box sx={{ textAlign: 'center', mb: 2 }}>
+          <Typography variant="h5" fontWeight="bold">
+            Average Rating: {averageRating} / 5
+          </Typography>
+          <Rating value={parseFloat(averageRating)} readOnly precision={0.5} />
+        </Box>
+      )}
 
       {/* Filter Bar */}
       <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 3, mb: 3 }}>
