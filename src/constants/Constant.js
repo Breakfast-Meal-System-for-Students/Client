@@ -4,6 +4,7 @@ import { GetMessageError } from "../utils/StringUtils";
  ** HTTP CONFIG
  */
 export const HTTP_SERVER = "https://bms-fs-api.azurewebsites.net";
+export const HTTP_SOCKET_SERVER = "https://bms-socket.onrender.com";
 
 /*
  ** REQUEST CONFIG
