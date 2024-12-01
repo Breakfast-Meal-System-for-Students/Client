@@ -53,7 +53,7 @@ const Sidebar = () => {
     { text: 'Profile', icon: <PortraitIcon />, path: "/admin/profile" },
   ];
 
-  ];
+  
 
   // Ensure user and user.role are defined before using them
   if (user && user.role && user.role.includes("Staff")) {
