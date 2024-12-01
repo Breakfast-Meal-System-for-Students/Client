@@ -4,6 +4,7 @@ import { GetMessageError } from "../utils/StringUtils";
  ** HTTP CONFIG
  */
 export const HTTP_SERVER = "https://bms-fs-api.azurewebsites.net";
+export const HTTP_SOCKET_SERVER = "https://bms-socket.onrender.com";
 
 /*
  ** REQUEST CONFIG
@@ -86,9 +87,16 @@ export const USER_STATUS_DENIED = 3;
 export const USER_STATUS_CLOSED = 4;
 
 /*
+ ** API NOTIFICATION
+ */
+export const API_GET_NOTI_FOR_SHOP = HTTP_SERVER + "/api/Notification/GetNotificationForShop";
+export const API_READ_ALL_NOTI_FOR_SHOP = HTTP_SERVER + "/api/Notification/ReadAllNotificationForShop";
+export const API_COUNT_UNREAD_FOR_SHO = HTTP_SERVER + "/api/Notification/CountNotificationForShop";
+
+/*
  ** API USER
  */
- export const API_GET_TOTAL_NEW_USER = HTTP_SERVER + "/api/User/CountNewUser";
+export const API_GET_TOTAL_NEW_USER = HTTP_SERVER + "/api/User/CountNewUser";
 
 /*
  ** API AUTH
@@ -154,6 +162,6 @@ export const API_GET_LIST_ORDERS = HTTP_SERVER + "/api/Order/GetListOrders";
 /*
  ** API TRANSACTION
  */
- export const API_GET_ALL_TRANSACTION = HTTP_SERVER + "/api/Transaction/GetListTransactions";
- export const API_GET_TOTAL_REVENUE = HTTP_SERVER + "/api/Transaction/GetTotalRevenue";
- export const API_GET_TOP_5_USER_PURCHARSE = HTTP_SERVER + "/api/Transaction/GetTopUserHaveHighTransaction";
+export const API_GET_ALL_TRANSACTION = HTTP_SERVER + "/api/Transaction/GetListTransactions";
+export const API_GET_TOTAL_REVENUE = HTTP_SERVER + "/api/Transaction/GetTotalRevenue";
+export const API_GET_TOP_5_USER_PURCHARSE = HTTP_SERVER + "/api/Transaction/GetTopUserHaveHighTransaction";

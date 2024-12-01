@@ -58,17 +58,9 @@ const Sidebar = () => {
   // Ensure user and user.role are defined before using them
   if (user && user.role && user.role.includes("Staff")) {
     sidebarItems = [
-      {
-        text: "DashboardStaff",
-        icon: <PortraitIcon />,
-        path: "/dashboardStaff",
-      },
+      { text: "DashboardStaff", icon: <PortraitIcon />, path: "/dashboardStaff" },
       { text: "ShopOverview", icon: <FaCog />, path: "/shopOverview" },
-      {
-        text: "Notification",
-        icon: <FaHome />,
-        path: "/notificationManagement",
-      },
+      { text: "Notification", icon: <FaHome />, path: "/notificationManagement" },
       { text: "Category", icon: <FaListAlt />, path: "/category" },
       { text: "Feedback", icon: <FaComments />, path: "/feedback" },
       {
@@ -78,36 +70,20 @@ const Sidebar = () => {
       },
       { text: "Package", icon: <Inventory2OutlinedIcon />, path: "/admin/Package" },
       { text: 'Customer', icon: <PersonIcon />, path: "/admin/customer-details" },
+
       { text: "Profile", icon: <PortraitIcon />, path: "/admin/profile" },
     ];
   } else if (user && user.role && user.role.includes("Shop")) {
     sidebarItems = [
-      {
-        text: "Coupon",
-        icon: <ConfirmationNumberIcon />,
-        path: "/shop/coupon-page",
-      },
-      {
-        text: "Breakfast-Menu",
-        icon: <RestaurantMenuIcon />,
-        path: "/shop/menu",
-      },
+      { text: "Coupon", icon: <ConfirmationNumberIcon />, path: "/shop/coupon-page" },
+      { text: "Breakfast-Menu", icon: <RestaurantMenuIcon />, path: "/shop/menu" },
       { text: "Shop Package", icon: <BalanceIcon />, path: "/shop/package" },
-      {
-        text: "Feedback",
-        icon: <RateReviewOutlinedIcon />,
-        path: "/shop/feedback-shop",
-      },
+      { text: "Feedback", icon: <RateReviewOutlinedIcon />, path: "/shop/feedback-shop" },
       // { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/location" },
-
       { text: "Location", icon: <FmdGoodOutlinedIcon />, path: "/shop/location" },
       { text: 'Orders', icon: <StoreOutlinedIcon />, path: "/shop/orders" },
       // { text: "Profile", icon: <PortraitIcon />, path: "/shop/profile" },
-      {
-        text: "About Shop",
-        icon: <ContactPhoneIcon />,
-        path: "/shop/about-shop",
-      },
+      { text: "About Shop", icon: <ContactPhoneIcon />, path: "/shop/about-shop" },
     ];
   }
 
@@ -126,6 +102,9 @@ const Sidebar = () => {
 
       if (response.ok) {
         localStorage.removeItem("token");
+        localStorage.removeItem("shopId");
+        localStorage.removeItem("shopName");
+        localStorage.removeItem("userId");
         navigate("/login");
       } else {
         console.error("Failed to log out");
