@@ -58,7 +58,7 @@ export default function ShopRegister() {
     const result = await ApiCreateShop(data.email, data.name, data.phone, selectedAddress, data.description, data.avatar);
     if (result.ok) {
       setData(emptyUserData);
-      alert("Your shop registration request  successful, the password has been submitted. Please wait for staff verification.");
+      alert("Your shop registration request  successful, the Application has been submitted. Please wait for staff verification.");
       navigate('/login');
     } else {
       alert(result.message);

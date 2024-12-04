@@ -101,10 +101,10 @@ const FeedbackPageUI = ({
                   </Box>
                 )}
 
-                {/* Reply Button */}
+                {/* Reply Button
                 <IconButton sx={{ position: 'absolute', bottom: 10, right: 10 }} color="primary" onClick={() => console.log(`Reply to feedback ID: ${feedback.id}`)}>
                   <ReplyIcon />
-                </IconButton>
+                </IconButton> */}
               </Paper>
             ))}
 
