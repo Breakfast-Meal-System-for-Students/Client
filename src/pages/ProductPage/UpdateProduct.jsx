@@ -23,7 +23,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         images: [],
     });
     const token = localStorage.getItem('token');
-    const [showOutOfStock, setShowOutOfStock] = useState(false);
+    const [showOutOfStock, setShowOutOfStock] = useState(product.isOutOfStock);
     const [imageFiles, setImageFiles] = useState([]);
     const [errors, setErrors] = useState({
         name: "",

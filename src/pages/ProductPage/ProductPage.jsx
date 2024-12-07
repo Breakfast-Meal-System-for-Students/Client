@@ -140,6 +140,7 @@ const ProductPage = () => {
                                     description: product.description,
                                     price: product.price,
                                     imageUrl: product.images?.[0]?.url || '', // Safely check for images
+                                    isOutOfStock: product.isOutOfStock
                                 }}
                                 onEdit={fetchProducts}
                                 onDelete={() => handleDeleteProduct(product.id)} // Pass delete handler
