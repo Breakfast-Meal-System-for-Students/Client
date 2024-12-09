@@ -141,7 +141,6 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         }
         const result = await ApiUpdateProduct(updatedProduct, product.id, imageFiles, token);
         if (result.ok) {
-            alert('Dish updated successfully.');
             onSave();
             onClose();
         } else {
@@ -167,7 +166,6 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         setShowOutOfStock(value);
         const result = await ApiChangeStockOut(product.id, token);
         if (result.ok) {
-            alert('Dish updated successfully.');
             onSave();
             onClose();
         } else {
