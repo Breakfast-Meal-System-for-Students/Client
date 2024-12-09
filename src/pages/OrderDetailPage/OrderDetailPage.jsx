@@ -23,6 +23,7 @@ import { CheckCircleOutline } from '@mui/icons-material';
 import { QRCodeCanvas } from 'qrcode.react';
 import { io } from 'socket.io-client';
 import { HTTP_SOCKET_SERVER } from '../../constants/Constant';
+import { Snackbar, Alert } from '@mui/material';
 
 const OrderDetailPage = () => {
   const [socket, setSocket] = useState(null);
@@ -37,6 +38,14 @@ const OrderDetailPage = () => {
   const handleCloseQR = () => {
     setOpen(false);
     fetchApiGetOrderById();
+  };
+  const [openAlert, setOpenAlert] = useState(false);
+  const [messageAlert, setMessageAlert] = useState('');
+  const handleCloseAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenAlert(false);
   };
 
   const handleStatusChange = (event) => {
@@ -81,6 +90,8 @@ const OrderDetailPage = () => {
     const token = localStorage.getItem('token');
     const result = await ApiChangeOrderStatus(status, orderId, token);
     if (result.ok) {
+      setMessageAlert("Updated order status successfully!");
+      setOpenAlert(true);
       alert("Updated order status successfully!!!");
       fetchApiGetOrderById();
     } else {
@@ -331,6 +342,16 @@ const OrderDetailPage = () => {
           <Typography variant="h6">Total: {formatCurrency(order.totalPrice)}</Typography>
         </Box>
       </Box>
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={3000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseAlert} severity="success" sx={{ width: '100%' }}>
+          {messageAlert}
+        </Alert>
+      </Snackbar>
     </StyledPaper>
   );
 };
