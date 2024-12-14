@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AddProductPage.scss';
-import { ApiCreateProduct } from '../../services/ProductServices';
+import { ApiCreateProduct, ApiSendProductToStaff } from '../../services/ProductServices';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddProductPage = () => {
     const navigate = useNavigate();
@@ -12,6 +14,8 @@ const AddProductPage = () => {
     const [errors, setErrors] = useState({});
     const [shopId, setShopId] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
+    const [saveFailCount, setSaveFailCount] = useState(0); // Track save button failures
+    const [isSendToStaffVisible, setSendToStaffVisible] = useState(false); // Toggle visibility of the Send to Staff button
 
     useEffect(() => {
         const storedShopId = localStorage.getItem('shopId');
@@ -57,6 +61,43 @@ const AddProductPage = () => {
                 navigate('/shop/menu');
             }, 2000);
         } else {
+            // Increment the fail count and check if the button should become visible
+            setSaveFailCount((prevCount) => {
+                const newCount = prevCount + 1;
+                if (newCount >= 3) {
+                    setSendToStaffVisible(true);
+                    toast.error('You have encountered multiple issues while saving the product. Please send the information to the staff for further assistance.');
+                }
+                return newCount;
+            });
+            toast.error(result.message);
+        }
+    };
+
+    const handleSendToStaff = async () => {
+        const token = localStorage.getItem('token');
+        const validationErrors = {};
+        if (!name) validationErrors.name = 'Product name is required';
+        if (!price) {
+            validationErrors.price = 'Price is required';
+        } else if (price <= 0) {
+            validationErrors.price = 'Price must be greater than 0';
+        }
+        if (!description) validationErrors.description = 'Description is required';
+        if (images.length === 0) validationErrors.image = 'At least one product image is required';
+
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        const result = await ApiSendProductToStaff(name, description, price, shopId, images, token);
+        if (result.ok) {
+            setSuccessMessage('Product sent to staff successfully!');
+            setTimeout(() => {
+                navigate('/shop/menu');
+            }, 2000);
+        } else {
             alert(result.message);
         }
     };
@@ -67,7 +108,7 @@ const AddProductPage = () => {
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
-        setImages(prevImages => [...prevImages, ...files]);
+        setImages((prevImages) => [...prevImages, ...files]); // Append new images
     };
 
     const handleRemoveImage = (index) => {
@@ -76,6 +117,7 @@ const AddProductPage = () => {
 
     return (
         <div className="add-product-page">
+            <ToastContainer />
             <h1 className="form-header">Add New Product</h1>
             {successMessage && <p className="success-message">{successMessage}</p>}
             <form className="add-product-form" onSubmit={handleSubmit}>
@@ -132,6 +174,15 @@ const AddProductPage = () => {
                 </div>
                 <div className="form-actions">
                     <button type="submit" className="submit-button">Save</button>
+                    {isSendToStaffVisible && (
+                        <button
+                            type="button"
+                            className="submit-button"
+                            onClick={handleSendToStaff}
+                        >
+                            Send to Staff
+                        </button>
+                    )}
                     <button type="button" className="cancel-button" onClick={handleCancel}>Cancel</button>
                 </div>
             </form>

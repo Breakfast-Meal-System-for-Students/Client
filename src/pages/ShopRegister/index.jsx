@@ -5,6 +5,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { ApiCreateShop } from '../../services/ShopServices';
 import { ApiGetAddressAutoComplete } from '../../services/MapServices';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const theme = createTheme({
   palette: {
@@ -61,10 +63,10 @@ export default function ShopRegister() {
     const result = await ApiCreateShop(data.email, data.name, data.phone, selectedAddress, data.description, data.avatar);
     if (result.ok) {
       setData(emptyUserData);
-      alert('Your shop registration request was successful. Please wait for staff verification.');
+      toast.success('Your shop registration request successful, the Application has been submitted. Please wait for staff verification.');
       navigate('/login');
     } else {
-      alert(result.message);
+      toast.error(result.message);
     }
   };
 
@@ -97,7 +99,7 @@ export default function ShopRegister() {
 
     const newTimeout = setTimeout(() => {
       fetchAddressSuggestions(value);
-    }, 1000);
+    }, 300);
 
     setDebounceTimeout(newTimeout);
   };
@@ -212,8 +214,10 @@ export default function ShopRegister() {
                   freeSolo
                   options={addressSuggestions}
                   getOptionLabel={(option) => option.description || ''}
-                  renderOption={(props, option) => <li {...props}>{option.description}</li>}
-                  onInputChange={handleAddressChange}
+                  renderOption={(props, option) => (
+                    <li {...props}>{option.description || 'No description available'}</li>
+                  )}
+                  onInputChange={(event, newInputValue) => handleAddressChange(event)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -228,7 +232,7 @@ export default function ShopRegister() {
                       }}
                     />
                   )}
-                  onChange={(event, newValue) => setSelectedAddress(newValue?.description || '')}
+                  onChange={(event, newValue) => setSelectedAddress(newValue ? newValue.description : '')}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -279,6 +283,7 @@ export default function ShopRegister() {
           </Box>
         </Box>
       </Box>
+      <ToastContainer />
     </ThemeProvider>
   );
 }

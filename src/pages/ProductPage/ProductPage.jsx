@@ -143,7 +143,7 @@ const ProductPage = () => {
                                     name: product.name,
                                     description: product.description,
                                     price: product.price,
-                                    imageUrl: product.images?.[0]?.url || '',
+                                    imageUrl: product.images || '', // Safely check for images
                                     isOutOfStock: product.isOutOfStock
                                 }}
                                 onEdit={onEditSuccess}
