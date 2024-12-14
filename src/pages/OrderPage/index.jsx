@@ -71,9 +71,10 @@ const ManageOrderPage = () => {
               label="Status"
             >
               <MenuItem value="ORDERED">Ordered</MenuItem>
+              <MenuItem value="CHECKING">Checking</MenuItem>
               <MenuItem value="PREPARING">Preparing</MenuItem>
               <MenuItem value="PREPARED">Prepared</MenuItem>
-              <MenuItem value="TAKENOVER">Taken Over</MenuItem>
+              {/* <MenuItem value="TAKENOVER">Taken Over</MenuItem> */}
               <MenuItem value="CANCEL">Cancel</MenuItem>
               <MenuItem value="COMPLETE">Complete</MenuItem>
             </Select>

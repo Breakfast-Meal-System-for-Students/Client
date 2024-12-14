@@ -11,6 +11,7 @@ import { jwtDecode } from 'jwt-decode';
 import AuthContext from '../../auth/AuthContext';
 import { ApiLoginByAccount } from '../../services/AuthServices';
 import { ApiGetProfile } from '../../services/AccountServices';
+import { Snackbar, Alert } from '@mui/material';
 
 const theme = createTheme({
   palette: {
@@ -25,7 +26,6 @@ const theme = createTheme({
 
 export default function Login() {
   const { setUser } = useContext(AuthContext)
-
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -33,11 +33,29 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false); // Thêm state để theo dõi trạng thái hiển thị mật khẩu
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
+  const [openAlert, setOpenAlert] = useState(false);
+  const [messageAlert, setMessageAlert] = useState('');
+  const handleCloseAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenAlert(false);
+  };
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
-    if (!data.email || !data.password) {
-      alert('Please enter both email and password');
+    if (!data.email && !data.password) {
+      setMessageAlert('Please enter both email and password'); // Alert if both are empty
+      setOpenAlert(true); // Open Snackbar
+      return;
+    }
+    if (!data.email) {
+      setMessageAlert('Please enter your email address'); // Alert if email is empty
+      setOpenAlert(true); // Open Snackbar
+      return;
+    }
+    if (!data.password) {
+      setMessageAlert('Please enter your password'); // Alert if password is empty
+      setOpenAlert(true); // Open Snackbar
       return;
     }
     const result = await ApiLoginByAccount(data);
@@ -209,7 +227,16 @@ export default function Login() {
                 Create your Account →
               </RouterLink>
             </Typography>
-
+            <Snackbar
+              open={openAlert}
+              autoHideDuration={2000}
+              onClose={handleCloseAlert}
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+              <Alert onClose={handleCloseAlert} severity="error" sx={{ width: '100%' }}>
+                {messageAlert}
+              </Alert>
+            </Snackbar>
           </Box>
         </Box>
       </Box>
