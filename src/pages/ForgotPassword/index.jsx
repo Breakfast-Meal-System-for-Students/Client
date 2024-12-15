@@ -177,7 +177,7 @@ export default function ForgotPassword() {
                 <TextField
                   value={oldEmail}
                   variant="outlined"
-                  placeholder="Enter your email"
+                  placeholder="Enter your email *"
                   name="email"
                   type={'email'}
                   required

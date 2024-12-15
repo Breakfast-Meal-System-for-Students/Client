@@ -157,7 +157,7 @@ const StaffPage = () => {
                 <TableCell>Email</TableCell>
                 <TableCell>Phone</TableCell>
                 <TableCell>Create Date</TableCell>
-                <TableCell>Role</TableCell>
+
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -173,7 +173,7 @@ const StaffPage = () => {
                     <TableCell>{staffMember.email}</TableCell>
                     <TableCell>{staffMember.phone || 'N/A'}</TableCell>
                     <TableCell>{new Date(staffMember.createDate).toLocaleDateString()}</TableCell>
-                    <TableCell>{staffMember.role || 'N/A'}</TableCell>
+
                     <TableCell>
                       <Button
                         variant="contained"
