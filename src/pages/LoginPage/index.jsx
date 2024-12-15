@@ -129,7 +129,7 @@ export default function Login() {
 
           <Box component="form" onSubmit={handleSubmitLogin} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
             <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
-              WELCOME BACK!
+              WELCOME BMS !
             </Typography>
 
             {error && (
@@ -142,7 +142,7 @@ export default function Login() {
               <EmailIcon sx={{ mr: 1, color: '#088A08' }} />
               <TextField
                 variant="outlined"
-                placeholder="Email"
+                placeholder="Email *"
                 name="email"
                 type={'email'}
                 fullWidth
@@ -157,7 +157,7 @@ export default function Login() {
               <LockIcon sx={{ mr: 1, color: '#088A08' }} />
               <TextField
                 variant="outlined"
-                placeholder="Password"
+                placeholder="Password *"
                 name="password"
                 type={showPassword ? 'text' : 'password'}
                 fullWidth
@@ -212,11 +212,11 @@ export default function Login() {
               </Typography>
             </Box>
 
-            <Typography variant="body2" align="center" sx={{ marginBottom: 2 }}>
+            {/* <Typography variant="body2" align="center" sx={{ marginBottom: 2 }}>
               <RouterLink to="/register" style={{ textDecoration: 'none', color: '#088A08' }}>
                 Create your Account →
               </RouterLink>
-            </Typography>
+            </Typography> */}
             <Snackbar
               open={openAlert}
               autoHideDuration={2000}
