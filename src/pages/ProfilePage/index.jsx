@@ -232,9 +232,9 @@ export default function ProfilePage() {
       </ProfileCard>
       <Snackbar
         open={openAlert}
-        autoHideDuration={3000}
+        autoHideDuration={2000}
         onClose={handleCloseAlert}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={handleCloseAlert} severity="success" sx={{ width: '100%' }}>
           {messageAlert}

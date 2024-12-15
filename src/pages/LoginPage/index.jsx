@@ -13,7 +13,7 @@ import { ApiLoginByAccount } from '../../services/AuthServices';
 import { ApiGetProfile } from '../../services/AccountServices';
 import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
 import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast notifications
-
+import {Snackbar, Alert} from '@mui/material';
 const theme = createTheme({
   palette: {
     primary: {
@@ -27,7 +27,6 @@ const theme = createTheme({
 
 export default function Login() {
   const { setUser } = useContext(AuthContext)
-
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -35,7 +34,14 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false); // Thêm state để theo dõi trạng thái hiển thị mật khẩu
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
+  const [openAlert, setOpenAlert] = useState(false);
+  const [messageAlert, setMessageAlert] = useState('');
+  const handleCloseAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenAlert(false);
+  };
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
     if (!data.email || !data.password) {
@@ -211,7 +217,16 @@ export default function Login() {
                 Create your Account →
               </RouterLink>
             </Typography>
-
+            <Snackbar
+              open={openAlert}
+              autoHideDuration={2000}
+              onClose={handleCloseAlert}
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+              <Alert onClose={handleCloseAlert} severity="error" sx={{ width: '100%' }}>
+                {messageAlert}
+              </Alert>
+            </Snackbar>
           </Box>
         </Box>
       </Box>

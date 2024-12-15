@@ -56,6 +56,8 @@ const OrderDetailPage = () => {
   };
 
   const handleUpdateStatus = () => {
+    setMessageAlert('Order Status updated successfully!'); // Đặt thông báo
+    setOpenAlert(true); // Mở Snackbar
     fetchUpdateOrderStatus();
   };
 
@@ -251,9 +253,10 @@ const OrderDetailPage = () => {
                 <InputLabel>Status</InputLabel>
                 <Select value={status} onChange={handleStatusChange} label="Status">
                   <MenuItem value="ORDERED">Ordered</MenuItem>
+                  <MenuItem value="CHECKING">Checking</MenuItem>
                   <MenuItem value="PREPARING">Preparing</MenuItem>
                   <MenuItem value="PREPARED">Prepared</MenuItem>
-                  <MenuItem value="TAKENOVER">Taken Over</MenuItem>
+                  {/* <MenuItem value="TAKENOVER">Taken Over</MenuItem> */}
                   <MenuItem value="CANCEL">Cancel</MenuItem>
                   <MenuItem value="COMPLETE">Complete</MenuItem>
                 </Select>
@@ -348,9 +351,9 @@ const OrderDetailPage = () => {
       </Box>
       <Snackbar
         open={openAlert}
-        autoHideDuration={3000}
+        autoHideDuration={2000}
         onClose={handleCloseAlert}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={handleCloseAlert} severity="success" sx={{ width: '100%' }}>
           {messageAlert}
