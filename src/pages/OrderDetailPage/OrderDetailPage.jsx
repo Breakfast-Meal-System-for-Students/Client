@@ -247,7 +247,8 @@ const OrderDetailPage = () => {
               </TableBody>
             </Table>
           </TableContainer>
-          {shopId && (
+          {shopId && shopId !== "" && ( 
+            
             <Box sx={{ marginTop: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
               <FormControl sx={{ minWidth: 200 }}>
                 <InputLabel>Status</InputLabel>

@@ -26,6 +26,7 @@ export default function ProfilePage() {
     shopId: '',
     shopName: '',
   });
+
   const [openAlert, setOpenAlert] = useState(false);
   const [messageAlert, setMessageAlert] = useState('');
   const handleCloseAlert = (event, reason) => {
@@ -69,7 +70,9 @@ export default function ProfilePage() {
           shopId: data.data.shopId,
           shopName: data.data.shopName,
         });
-        localStorage.setItem ("shopId",data.data.shopId );
+        if (data.data.shopId !== null) {
+          localStorage.setItem("shopId", data.data.shopId);
+        }
         localStorage.setItem("shopName", data.data.shopName);
       } else {
         console.error('Failed to fetch profile data');
