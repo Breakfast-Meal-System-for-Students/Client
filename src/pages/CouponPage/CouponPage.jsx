@@ -116,7 +116,7 @@ const CouponPage = () => {
               <th>End Date</th>
               <th>Discount (%)</th>
               <th>Max Discount</th>
-              <th>Min Price</th>
+              <th>Price</th>
               <th>Min Discount</th>
               <th>Actions</th>
             </tr>

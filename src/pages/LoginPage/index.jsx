@@ -129,7 +129,9 @@ export default function Login() {
 
           <Box component="form" onSubmit={handleSubmitLogin} sx={{ mt: 1, width: '100%', maxWidth: '400px' }}>
             <Typography component="h1" variant="h5" sx={{ textAlign: 'center', marginBottom: 2, fontWeight: 'bold', color: '#088A08' }}>
+
               WELCOME TO BMS !
+
             </Typography>
 
             {error && (

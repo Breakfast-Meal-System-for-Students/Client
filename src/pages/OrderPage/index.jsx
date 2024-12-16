@@ -105,7 +105,7 @@ const ManageOrderPage = () => {
             </StyledTableRow>
           </StyledTableHead>
           <TableBody>
-          {filteredOrders.length > 0 ? (
+            {filteredOrders.length > 0 ? (
               filteredOrders.map((order) => (
                 <StyledTableRow key={order.id}>
                   <StyledTableCell>{order.id}</StyledTableCell>
@@ -166,14 +166,16 @@ const ManageOrderPage = () => {
           </TableBody>
         </StyledTable>
       </StyledTableContainer>
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
-        <Pagination
-          count={Math.ceil(totalOrders / PAGE_SIZE_DEFAULT)} // Total pages
-          page={currentPage}
-          onChange={handlePageChange}
-          color="primary"
-        />
-      </div>
+      {filteredOrders.length > 0 && (
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
+          <Pagination
+            count={Math.ceil(totalOrders / PAGE_SIZE_DEFAULT)} // Total pages
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+          />
+        </div>
+      )}
     </StyledPaper>
   );
 };
