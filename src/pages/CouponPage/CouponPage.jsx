@@ -35,7 +35,7 @@ const CouponPage = () => {
     if (shopId) {
       try {
         const response = await axios.get(
-          'https://bms-fs-api.azurewebsites.net/api/Coupon/get-all-coupon-for-shop',
+          'https://bms-fs-api.azurewebsites.net/api/Coupon/GetAllCouponForShopInWeb',
           {
             params: {
               shopId: shopId,
