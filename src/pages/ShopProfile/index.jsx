@@ -14,6 +14,8 @@ import { InputAdornment, IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ShopProfile() {
   const navigate = useNavigate();
@@ -47,25 +49,25 @@ export default function ShopProfile() {
 
   const handleChangePassword = async () => {
     if (!passwordData.oldPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
-      setMessageAlert("Please enter the old password, new password, and password confirmation.");
-      setOpenAlert(true);
+      toast.error("Please enter the old password, new password, and password confirmation.");
+   //   setOpenAlert(true);
       return;
     }
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setMessageAlert("The new password and password confirmation do not match.");
-      setOpenAlert(true);
+      toast.error("The new password and password confirmation do not match.");
+     // setOpenAlert(true);
       return;
     }
     const lowercaseRegex = /[a-z]/;
     const uppercaseRegex = /[A-Z]/;
     if (!lowercaseRegex.test(passwordData.newPassword)) {
-      setMessageAlert("The new password must contain at least one lowercase letter.");
-      setOpenAlert(true);
+      toast.error("The new password must contain at least one lowercase letter.");
+     // setOpenAlert(true);
       return;
     }
     if (!uppercaseRegex.test(passwordData.newPassword)) {
-      setMessageAlert("he new password must contain at least one uppercase letter.");
-      setOpenAlert(true);
+      toast.error("the new password must contain at least one uppercase letter.");
+     // setOpenAlert(true);
       return;
     }
 
@@ -73,7 +75,7 @@ export default function ShopProfile() {
       const token = localStorage.getItem("token");
       if (!token) {
         setMessageAlert("Token not found. Please log in again.");
-        setOpenAlert(true);
+      //  setOpenAlert(true);
         return;
       }
 
@@ -92,22 +94,18 @@ export default function ShopProfile() {
       );
 
       if (response.data.isSuccess === true) {
-        setMessageAlert("Password changed successfully.");
-        setOpenAlert(true);
+        toast.success("Password changed successfully.");
         setChangePasswordDialogOpen(false);
         setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
       } else {
         if (response.data.message === "Incorrect password") {
-          setMessageAlert("The old password is incorrect.");
-          setOpenAlert(true);
+          toast.error("The old password is incorrect.");
         } else {
-          setMessageAlert("Password change unsuccessful. Please try again.");
-          setOpenAlert(true);
+          toast.error("Password change unsuccessful. Please try again.");
         }
       }
     } catch (error) {
-      setMessageAlert("An error occurred while changing the password.");
-      setOpenAlert(true);
+      toast.error("An error occurred while changing the password.");
       console.error("Password change error:", error);
     }
   };
@@ -440,6 +438,7 @@ export default function ShopProfile() {
             {messageAlert}
           </Alert>
         </Snackbar>
+        <ToastContainer />
       </ProfileCard>
     </ProfileContainer>
   );
