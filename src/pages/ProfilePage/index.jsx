@@ -12,7 +12,7 @@ import { ApiUpdateAccount, ApiUpdateAvatar } from '../../services/AccountService
 import { Snackbar, Alert } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Button, TextField, ListItemText, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Alert, InputAdornment, IconButton } from '@mui/material';
+import { Button, TextField, ListItemText, Dialog, DialogActions, DialogContent, DialogTitle, InputAdornment, IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import axios from 'axios';
@@ -46,6 +46,8 @@ export default function ProfilePage() {
   });
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
   const handleCloseAlert = (event, reason) => {
     if (reason === 'clickaway') {
@@ -192,6 +194,33 @@ export default function ProfilePage() {
       toast.error(resultAccount.message);
     }
 
+  };
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedFile) {
+      // Handle case where no file is selected
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      const response = await axios.post('your/api/endpoint', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Handle response...
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
   };
 
   return (
