@@ -56,8 +56,6 @@ const OrderDetailPage = () => {
   };
 
   const handleUpdateStatus = () => {
-    setMessageAlert('Order Status updated successfully!'); // Đặt thông báo
-    setOpenAlert(true); // Mở Snackbar
     fetchUpdateOrderStatus();
   };
 
@@ -95,8 +93,6 @@ const OrderDetailPage = () => {
     const token = localStorage.getItem('token');
     const result = await ApiChangeOrderStatus(status, orderId, token);
     if (result.ok) {
-      setMessageAlert("Updated order status successfully!");
-      setOpenAlert(true);
       toast.success("Updated order status successfully!!!");
       fetchApiGetOrderById();
     } else {
