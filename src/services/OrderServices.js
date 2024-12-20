@@ -45,6 +45,17 @@ export const ApiChangeOrderStatus = async (status, orderId, token) => {
     return Constant.ResponseData(response);
 }
 
+export const ApiCancelListOrders = async (orderIds, token) => {
+    const formData = new FormData();
+    formData.append("orderIds", orderIds);
+    const response = await fetch(`${Constant.API_CANCEL_LIST_ORDERS}`, {
+        method: "POST",
+        headers: Constant.HEADER_TOKEN(token),
+        body: formData
+    });
+    return Constant.ResponseData(response);
+}
+
 export const ApiGetTotalOrders = async (month, year, status, token) => {
     const response = await fetch(`${Constant.API_GET_TOTAL_ORDERS}?month=${month}&year=${year}&status=${status}`, {
         headers: Constant.HEADER_TOKEN(token),
