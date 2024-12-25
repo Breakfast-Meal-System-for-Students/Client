@@ -3,6 +3,8 @@ import { TextField, Grid, Button, Box, Typography, FormControlLabel, Checkbox } 
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';  // Đảm bảo sử dụng đúng Adapter
 import { ApiGetOperationHoursForShop, ApiUpdateOperationHours } from '../../services/OpeningHoursService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ShopOperatingHours() {
   const token = localStorage.getItem("token");
@@ -26,6 +28,7 @@ export default function ShopOperatingHours() {
     if (result.ok) {
       const listOperationHours = result.body.data.data;
       let updatedOperatingHours = { ...operatingHours };
+      console.log(listOperationHours);
       listOperationHours.forEach((row) => {
         const dayIndex = row.day;
         const dayName = getDayName(dayIndex);
@@ -36,12 +39,12 @@ export default function ShopOperatingHours() {
         updatedOperatingHours[dayName] = {
           open: openTime,
           close: closeTime,
-          closed: false,
+          closed: row.isClose ?? false,
         };
       });
       setOperatingHours(updatedOperatingHours);
     } else {
-      alert(result.message);
+      toast.error(result.message);
     }
   }
 
@@ -88,8 +91,9 @@ export default function ShopOperatingHours() {
     const result = await ApiUpdateOperationHours(shopId, convertToListOpeningHours(operatingHours), token);
     if (result.ok) {
       fetchOperationHoursForShop();
+      toast.success("Update Operation hours successfully!");
     } else {
-      alert(result.message);
+      toast.error(result.message);
     }
   };
 
@@ -112,10 +116,11 @@ export default function ShopOperatingHours() {
       if (closed) {
         return {
           day: daysMapping[day],
-          from_hour: 0,
+          from_hour: 5,
           from_minute: 0,
-          to_hour: 0,
+          to_hour: 12,
           to_minute: 0,
+          isOpenToday: false
         };
       }
   
@@ -129,6 +134,7 @@ export default function ShopOperatingHours() {
         from_minute: openDate ? openDate.getMinutes() : 0,
         to_hour: closeDate ? closeDate.getHours() : 0,
         to_minute: closeDate ? closeDate.getMinutes() : 0,
+        isOpenToday: closed ?? false
       };
     });
   };
@@ -182,6 +188,7 @@ export default function ShopOperatingHours() {
       <Button variant="contained" color="primary" onClick={handleSave} sx={{ marginTop: 4 }}>
         Save Operating Hours
       </Button>
+      <ToastContainer />
     </Box>
   );
 }
