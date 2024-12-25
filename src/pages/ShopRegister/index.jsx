@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Avatar, Grid, Link, Autocomplete } from '@mui/material';
+import React, { useEffect,  useState } from 'react';
+import { TextField, Button, Box, Typography, Avatar, Grid, Link, Autocomplete, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,8 @@ import { ApiCreateShop } from '../../services/ShopServices';
 import { ApiGetAddressAutoComplete } from '../../services/MapServices';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ApiGetAllUniversity } from '../../services/UniversityServices';
+
 
 const theme = createTheme({
   palette: {
@@ -34,7 +36,26 @@ export default function ShopRegister() {
   const [selectedAddress, setSelectedAddress] = useState('');
   const [debounceTimeout, setDebounceTimeout] = useState(null);
   const [errors, setErrors] = useState({});
+  const [listUniversity, setListUniversity] = useState([]);
   const navigate = useNavigate();
+  const [selectedUniversity, setSelectedUniversity] = useState('');
+
+  const fetchUniversity = async () => {
+    const result = await ApiGetAllUniversity("", true, 1, 1000);
+    if (result.ok) {
+      setListUniversity(result.body.data.data);
+    } else {
+      alert(result.message);
+    }
+  }
+  
+  useEffect(() => {
+    fetchUniversity();
+  }, []);
+
+  const handleChangeUniversity = (event) => {
+    setSelectedUniversity(event.target.value);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -60,7 +81,7 @@ export default function ShopRegister() {
     if (!isValidateForm()) {
       return;
     }
-    const result = await ApiCreateShop(data.email, data.name, data.phone, selectedAddress, data.description, data.avatar);
+    const result = await ApiCreateShop(data.email, data.name, data.phone, selectedAddress, data.description, data.avatar, selectedUniversity);
     if (result.ok) {
       setData(emptyUserData);
       toast.success('Your shop registration request successful, the Application has been submitted. Please wait for staff verification.');
@@ -74,6 +95,7 @@ export default function ShopRegister() {
 
   const isValidateForm = () => {
     const newErrors = {};
+    if (!selectedUniversity) newErrors.university = 'Please select a university.';
     if (!data.name.trim()) newErrors.name = 'Shop name is required.';
     if (!data.email.trim()) newErrors.email = 'Email is required.';
     if (!data.phone.trim()) newErrors.phone = 'Phone number is required.';
@@ -211,6 +233,27 @@ export default function ShopRegister() {
                   InputProps={{ style: { borderRadius: '30px' } }}
                 />
               </Grid>
+
+              <FormControl fullWidth sx={{ borderRadius: '30px', marginBlockStart: '14px', paddingInlineStart: '14px' }}>
+                <InputLabel id="university-select-label" sx={{ paddingInlineStart: '14px' }}>Select a University</InputLabel>
+                <Select
+                  labelId="university-select-label"
+                  value={selectedUniversity}
+                  onChange={handleChangeUniversity}
+                  label="Select a University"
+                  sx={{ borderRadius: '30px' }}
+                >
+                  {listUniversity.map((university, index) => (
+                    <MenuItem key={index} value={university.id}>
+                      {university.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {errors.university && (
+                  <FormHelperText error>{errors.university}</FormHelperText>
+                )}
+              </FormControl>
+              
               <Grid item xs={12}>
                 <Autocomplete
                   freeSolo

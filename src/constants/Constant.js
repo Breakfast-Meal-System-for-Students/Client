@@ -107,6 +107,11 @@ export const API_REMOVE_PRODUCT_FROM_CATEGORY = HTTP_SERVER + "/api/RegisterCate
 export const API_GET_TOTAL_NEW_USER = HTTP_SERVER + "/api/User/CountNewUser";
 
 /*
+ ** API UNIVERSITY
+ */
+ export const API_GET_ALL_UNIVERSITY = HTTP_SERVER + "/api/University";
+ 
+/*
  ** API AUTH
  */
 export const API_REGISTER_ACCOUNT = HTTP_SERVER + "/api/Auth/register";
