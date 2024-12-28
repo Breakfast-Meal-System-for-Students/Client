@@ -143,6 +143,7 @@ export const API_UPDATE_COUPON = HTTP_SERVER + "/api/Coupon/";
 /*
  ** API PRODUCT
  */
+export const API_DELETE_PRODUCT = HTTP_SERVER + "/api/Product";
 export const API_CHANGE_STOCK_OUT = HTTP_SERVER + "/api/Product/ChangeOutOfStock";
 export const AIP_UPDATE_PRODUCT = HTTP_SERVER + "/api/Product/";
 export const AIP_GET_PRODUCT_BY_ID = HTTP_SERVER + "/api/Product/";

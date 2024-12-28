@@ -12,8 +12,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { ApiChangeStockOut, ApiGetProductByID, ApiUpdateProduct } from '../../services/ProductServices';
 import { ApiGetAllCategory, ApiGetCategoriesByProductId, ApiRegisterProductToCategory, ApiRemoveProductToCategory } from '../../services/CategoryServices';
 import { ApiCancelListOrders } from '../../services/OrderServices';
+import { io } from 'socket.io-client';
+import { HTTP_SOCKET_SERVER } from '../../constants/Constant';
 
 const UpdateProduct = ({ product, onClose, onSave }) => {
+    const shopId = localStorage.getItem('shopId');
+    const [socket, setSocket] = useState(null);
     const [showImages, setShowImages] = useState(false);
     const [images, setImages] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -21,6 +25,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
     const [confirmMessage, setConfirmMessage] = useState("");
     const [listOrderId, setListOrderId] = useState([]);
+    const [listCustomerId, setListCustomerId] = useState([]);
     const [updatedProduct, setUpdatedProduct] = useState({
         name: product.name || '',
         description: product.description || '',
@@ -49,10 +54,35 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         }
         const resultCancel = await ApiCancelListOrders(listOrderId, token);
         if (resultCancel.ok) {
-            onSave();
-            onClose();
+            for (let i = 0; i < listOrderId.length; i++) {
+                const orderId = listOrderId[i];
+                if (listCustomerId.length > i) {
+                    const customerId = listCustomerId[i];
+                    await sendNotiToUser(orderId, customerId, shopId);
+                }
+            }
+            // re-change stock after cancel orders
+            const resultChangeStock = await ApiChangeStockOut(product.id, token);
+            if (resultChangeStock.ok) {
+                onSave();
+                onClose();
+            } else {
+                alert(resultChangeStock.message);
+            }
         } else {
             alert(resultCancel.message);
+        }
+    };
+
+    const sendNotiToUser = async (orderId, userId, shopId) => {
+        if (socket) {
+            socket.emit('join-user-topic', userId);
+            const orderData = {
+                userId,
+                shopId,
+                orderId,
+            };
+            socket.emit('new-order', orderData);
         }
     };
 
@@ -86,6 +116,13 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
     useEffect(() => {
         fetchCategories();
         fetchCategoriesByProductId();
+        const socketConnection = io(HTTP_SOCKET_SERVER);
+        setSocket(socketConnection);
+        return () => {
+            setTimeout(() => {
+                socketConnection.disconnect(); // Delay disconnect by 2 seconds
+            }, 2000); // 2 seconds delay
+        };
     }, []);
 
     const handleChange = (e) => {
@@ -194,6 +231,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
 
     const handleToggleOutOfStock = async (value) => {
         setListOrderId([]);
+        setListCustomerId([]);
         setShowOutOfStock(value);
         const result = await ApiChangeStockOut(product.id, token);
         if (result.ok) {
@@ -203,6 +241,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
             if (result.body.data && result.body.data.listOrderId && result.body.data.listOrderId.length > 0) {
                 setConfirmMessage(result.message);
                 setListOrderId(result.body.data.listOrderId);
+                setListCustomerId(result.body.data.listCustomerId);
                 handleResultMessage(result);
             } else {
                 alert(result.message);

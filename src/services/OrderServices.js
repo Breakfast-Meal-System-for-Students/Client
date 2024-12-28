@@ -49,7 +49,7 @@ export const ApiCancelListOrders = async (orderIds, token) => {
     const formData = new FormData();
     formData.append("orderIds", orderIds);
     const response = await fetch(`${Constant.API_CANCEL_LIST_ORDERS}`, {
-        method: "POST",
+        method: "PUT",
         headers: Constant.HEADER_TOKEN(token),
         body: formData
     });

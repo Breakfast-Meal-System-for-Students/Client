@@ -1,4 +1,4 @@
-import { AIP_UPDATE_PRODUCT, AIP_GET_PRODUCT_BY_ID, AIP_CREATE_PRODUCT, API_GET_PRODUCTS_BY_SHOP_ID, ResponseData, HEADER_TOKEN, API_CHANGE_STOCK_OUT, AIP_CREATE_PRODUCT_FOR_STAFF, API_GET_TOP_5_DISHES } from "../constants/Constant"
+import { AIP_UPDATE_PRODUCT, API_DELETE_PRODUCT, AIP_GET_PRODUCT_BY_ID, AIP_CREATE_PRODUCT, API_GET_PRODUCTS_BY_SHOP_ID, ResponseData, HEADER_TOKEN, API_CHANGE_STOCK_OUT, AIP_CREATE_PRODUCT_FOR_STAFF, API_GET_TOP_5_DISHES } from "../constants/Constant"
 
 export const ApiGetProductByID = async (productId, token) => {
     const response = await fetch(`${AIP_GET_PRODUCT_BY_ID + productId}`, {
@@ -28,6 +28,14 @@ export const ApiChangeStockOut = async (productId, token) => {
         method: "PUT",
         headers: HEADER_TOKEN(token),
         body: formData
+    });
+    return ResponseData(response);
+}
+
+export const ApiDeleteProduct = async (productId, token) => {
+    const response = await fetch(`${API_DELETE_PRODUCT}/${productId}`, {
+        method: "DELETE",
+        headers: HEADER_TOKEN(token),
     });
     return ResponseData(response);
 }
