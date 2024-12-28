@@ -46,12 +46,10 @@ export const ApiChangeOrderStatus = async (status, orderId, token) => {
 }
 
 export const ApiCancelListOrders = async (orderIds, token) => {
-    const formData = new FormData();
-    formData.append("orderIds", orderIds);
     const response = await fetch(`${Constant.API_CANCEL_LIST_ORDERS}`, {
         method: "PUT",
-        headers: Constant.HEADER_TOKEN(token),
-        body: formData
+        headers: Constant.HTTP_HEADER_TOKEN(token),
+        body: JSON.stringify(orderIds)
     });
     return Constant.ResponseData(response);
 }
