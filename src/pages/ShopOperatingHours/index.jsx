@@ -39,7 +39,7 @@ export default function ShopOperatingHours() {
         updatedOperatingHours[dayName] = {
           open: openTime,
           close: closeTime,
-          closed: row.isClose ?? false,
+          closed: !row.isOpenToday ?? false,
         };
       });
       setOperatingHours(updatedOperatingHours);
@@ -134,7 +134,7 @@ export default function ShopOperatingHours() {
         from_minute: openDate ? openDate.getMinutes() : 0,
         to_hour: closeDate ? closeDate.getHours() : 0,
         to_minute: closeDate ? closeDate.getMinutes() : 0,
-        isOpenToday: closed ?? false
+        isOpenToday: !closed ?? false
       };
     });
   };
