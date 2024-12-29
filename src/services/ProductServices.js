@@ -40,12 +40,13 @@ export const ApiDeleteProduct = async (productId, token) => {
     return ResponseData(response);
 }
 
-export const ApiCreateProduct = async (name, description, price, shopId, images, token) => {
+export const ApiCreateProduct = async (name, isCombo, description, price, shopId, images, token) => {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('description', description);
     formData.append('price', price);
     formData.append('shopId', shopId);
+    formData.append('isCombo', isCombo);
     images.forEach(image => formData.append('images', image));
     const response = await fetch(`${AIP_CREATE_PRODUCT}`, {
         method: "POST",
@@ -70,8 +71,8 @@ export const ApiSendProductToStaff = async (name, description, price, shopId,ima
     return ResponseData(response);
 }
 
-export const ApiGetProductsByShopId = async (id, search, isDesc, pageIndex, pageSize, isOutOfStock,token) => {
-    const params = new URLSearchParams({id, search, isDesc, pageIndex, pageSize, isOutOfStock});
+export const ApiGetProductsByShopId = async (id, isCombo, search, isDesc, pageIndex, pageSize, isOutOfStock,token) => {
+    const params = new URLSearchParams({id, isCombo, search, isDesc, pageIndex, pageSize, isOutOfStock});
     const response = await fetch(`${API_GET_PRODUCTS_BY_SHOP_ID}?${params.toString()}`, {
         headers: HEADER_TOKEN(token),
     });

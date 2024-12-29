@@ -190,3 +190,8 @@ export const API_GET_ALL_TRANSACTION = HTTP_SERVER + "/api/Transaction/GetListTr
 export const API_GET_TOTAL_REVENUE = HTTP_SERVER + "/api/Transaction/GetTotalRevenue";
 export const API_GET_TOTAL_REVENUE_IN_SHOP = HTTP_SERVER + "/api/Transaction/GetTotalRevenueForShop/";
 export const API_GET_TOP_5_USER_PURCHARSE = HTTP_SERVER + "/api/Transaction/GetTopUserHaveHighTransaction";
+
+/*
+ ** API WALLET
+ */
+export const API_GET_WALLET_BY_TOKEN = HTTP_SERVER + "/api/Wallet/GetWalletByUserId";

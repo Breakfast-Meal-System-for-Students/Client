@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import './ProductPage.scss';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Button, Switch, FormControlLabel, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Alert } from '@mui/material';
+import { Grid, Button, Switch, FormControlLabel, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Alert, Box, TextField, Checkbox } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { ApiDeleteProduct, ApiGetProductsByShopId } from '../../services/ProductServices';
 import { io } from 'socket.io-client';
@@ -27,6 +27,7 @@ const ProductPage = () => {
     const [listCustomerId, setListCustomerId] = useState([]);
     const [confirmMessage, setConfirmMessage] = useState("");
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+    const [isCombo, setIsCombo] = useState(false); // Checkbox state
     const navigate = useNavigate();
 
     const fetchProducts = async () => {
@@ -34,7 +35,7 @@ const ProductPage = () => {
             console.error('No shopId found in local storage');
             return;
         }
-        const result = await ApiGetProductsByShopId(shopId, searchTerm, true, pageIndex, pageSize, showOutOfStock, token);
+        const result = await ApiGetProductsByShopId(shopId, isCombo, searchTerm, true, pageIndex, pageSize, showOutOfStock, token);
         if (result.ok) {
             setProducts(result.body.data.data);
             setTotalPages(result.body.data.lastPage || 0);
@@ -130,7 +131,7 @@ const ProductPage = () => {
 
     useEffect(() => {
         fetchProducts();
-    }, [pageIndex, searchTerm, showOutOfStock]);
+    }, [pageIndex, searchTerm, isCombo, showOutOfStock]);
 
     useEffect(() => {
         const socketConnection = io(HTTP_SOCKET_SERVER);
@@ -162,6 +163,13 @@ const ProductPage = () => {
         setDeleteProductId(null);
     };
 
+    const checkIsCombo = (product) => {
+        if (product.isCombo === true) {
+            return true;
+        }
+        return false;
+    }
+
     return (
         <div className="product-page">
             <h1>Product List</h1>
@@ -173,6 +181,17 @@ const ProductPage = () => {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="search-input"
+                    />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isCombo}
+                                onChange={(e) => setIsCombo(e.target.checked)}
+                                color="primary"
+                            />
+                        }
+                        label="Show Combo"
+                        style={{ whiteSpace: 'nowrap', marginInlineStart: 20 }}
                     />
                 </div>
                 <div>
@@ -216,7 +235,7 @@ const ProductPage = () => {
             </div>
             <Grid container spacing={2}>
                 {products.map((product) => (
-                    product.isOutOfStock === showOutOfStock && (
+                    product.isOutOfStock === showOutOfStock && isCombo === checkIsCombo(product) && (
                         <Grid item xs={6} sm={6} md={6} lg={4} xl={2} key={product.id}>
                             <ProductCard
                                 product={{

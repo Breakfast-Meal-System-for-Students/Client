@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './AddProductPage.scss';
 import { ApiCreateProduct, ApiSendProductToStaff } from '../../services/ProductServices';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {
+    TextField,
+    Button,
+    Typography,
+    Box,
+    Grid,
+    Checkbox,
+    FormControlLabel,
+    Card,
+    CardContent,
+    CardActions,
+} from '@mui/material';
 
 const AddProductPage = () => {
     const navigate = useNavigate();
@@ -11,6 +22,7 @@ const AddProductPage = () => {
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
     const [images, setImages] = useState([]); // Store multiple images
+    const [isCombo, setIsCombo] = useState(false); // Checkbox state
     const [errors, setErrors] = useState({});
     const [shopId, setShopId] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
@@ -54,7 +66,7 @@ const AddProductPage = () => {
             return;
         }
 
-        const result = await ApiCreateProduct(name, description, price, shopId, images, token);
+        const result = await ApiCreateProduct(name, isCombo, description, price, shopId, images, token);
         if (result.ok) {
             setSuccessMessage('Create product successfully!');
             setTimeout(() => {
@@ -76,18 +88,7 @@ const AddProductPage = () => {
 
     const handleSendToStaff = async () => {
         const token = localStorage.getItem('token');
-        const validationErrors = {};
-        if (!name) validationErrors.name = 'Product name is required';
-        if (!price) {
-            validationErrors.price = 'Price is required';
-        } else if (price <= 0) {
-            validationErrors.price = 'Price must be greater than 0';
-        }
-        if (!description) validationErrors.description = 'Description is required';
-        if (images.length === 0) validationErrors.image = 'At least one product image is required';
-
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
+        if (!validateFields()) {
             return;
         }
 
@@ -116,77 +117,126 @@ const AddProductPage = () => {
     };
 
     return (
-        <div className="add-product-page">
+        <Box sx={{ maxWidth: 600, margin: '0 auto', padding: 2 }}>
             <ToastContainer />
-            <h1 className="form-header">Add New Product</h1>
-            {successMessage && <p className="success-message">{successMessage}</p>}
-            <form className="add-product-form" onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="productName">Product Name *</label>
-                    <input
-                        type="text"
-                        id="productName"
-                        placeholder="Enter product name"
-                        value={name}
-                        onChange={(e) => setProductName(e.target.value)}
-                    />
-                    {errors.name && <div className="error">{errors.name}</div>}
-                </div>
-                <div className="form-group">
-                    <label htmlFor="price">Price *</label>
-                    <input
-                        type="number"
-                        id="price"
-                        placeholder="Enter price"
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                    />
-                    {errors.price && <div className="error">{errors.price}</div>}
-                </div>
-                <div className="form-group">
-                    <label htmlFor="description">Description *</label>
-                    <textarea
-                        id="description"
-                        placeholder="Enter description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
-                    {errors.description && <div className="error">{errors.description}</div>}
-                </div>
-                <div className="form-group">
-                    <label htmlFor="images">Product Images *</label>
-                    <input
-                        type="file"
-                        id="images"
-                        accept="image/*"
-                        multiple
-                        onChange={handleImageChange}
-                    />
-                    {errors.images && <div className="error">{errors.images}</div>}
-                    <div className="image-preview">
-                        {images.map((image, index) => (
-                            <div key={index} className="image-item">
-                                <span>{image.name}</span>
-                                <button type="button" onClick={() => handleRemoveImage(index)}>Remove</button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="form-actions">
-                    <button type="submit" className="submit-button">Save</button>
+            <Card>
+                <CardContent>
+                    <Typography variant="h4" gutterBottom>
+                        New Product Entry
+                    </Typography>
+                    {successMessage && (
+                        <Typography color="success.main" gutterBottom>
+                            {successMessage}
+                        </Typography>
+                    )}
+                    <form onSubmit={handleSubmit}>
+                        <TextField
+                            fullWidth
+                            label="Product Name"
+                            value={name}
+                            onChange={(e) => setProductName(e.target.value)}
+                            error={Boolean(errors.name)}
+                            helperText={errors.name}
+                            margin="normal"
+                        />
+                        <TextField
+                            fullWidth
+                            label="Price"
+                            type="number"
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                            error={Boolean(errors.price)}
+                            helperText={errors.price}
+                            margin="normal"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={isCombo}
+                                    onChange={(e) => setIsCombo(e.target.checked)}
+                                />
+                            }
+                            label="Combo Package"
+                        />
+                        <TextField
+                            fullWidth
+                            label="Description"
+                            multiline
+                            rows={4}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            error={Boolean(errors.description)}
+                            helperText={errors.description}
+                            margin="normal"
+                        />
+                        <Box sx={{ marginTop: 2 }}>
+                            <Button
+                                variant="outlined"
+                                component="label"
+                                fullWidth
+                            >
+                                Upload Images
+                                <input
+                                    type="file"
+                                    hidden
+                                    accept="image/*"
+                                    multiple
+                                    onChange={handleImageChange}
+                                />
+                            </Button>
+                            {errors.images && (
+                                <Typography color="error" variant="body2">
+                                    {errors.images}
+                                </Typography>
+                            )}
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, marginTop: 1 }}>
+                                {images.map((image, index) => (
+                                    <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Typography variant="body2">{image.name}</Typography>
+                                        <Button
+                                            size="small"
+                                            color="error"
+                                            onClick={() => handleRemoveImage(index)}
+                                        >
+                                            Remove
+                                        </Button>
+                                    </Box>
+                                ))}
+                            </Box>
+                        </Box>
+
+                    </form>
+                </CardContent>
+                <CardActions sx={{ justifyContent: 'space-between' }}>
+
                     {isSendToStaffVisible && (
-                        <button
-                            type="button"
-                            className="submit-button"
+                        <Button
+                            variant="outlined"
+                            color="secondary"
                             onClick={handleSendToStaff}
                         >
                             Send to Staff
-                        </button>
-                    )}
-                    <button type="button" className="cancel-button" onClick={handleCancel}>Cancel</button>
-                </div>
-            </form>
-        </div>
+                        </Button>
+                    ) || <div></div>}
+                    <div>
+                        <Button
+                            variant="contained"
+                            onClick={handleSubmit}
+                            style={{ width: 150, background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)' }}
+                        >
+                            Save
+                        </Button>
+                        <Button
+                            className='ms-2'
+                            variant="outlined"
+                            onClick={handleCancel}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </CardActions>
+            </Card>
+        </Box>
     );
 };
 
