@@ -28,6 +28,7 @@ const AddProductPage = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [saveFailCount, setSaveFailCount] = useState(0); // Track save button failures
     const [isSendToStaffVisible, setSendToStaffVisible] = useState(false); // Toggle visibility of the Send to Staff button
+    const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
         const storedShopId = localStorage.getItem('shopId');
@@ -54,14 +55,17 @@ const AddProductPage = () => {
     };
 
     const handleSubmit = async (e) => {
+        setIsProcessing(true);
         e.preventDefault();
         const token = localStorage.getItem('token');
 
         if (!validateFields()) {
+            setIsProcessing(false);
             return;
         }
 
         if (!shopId) {
+            setIsProcessing(false);
             alert('No shop ID found. Please log in as a shop.');
             return;
         }
@@ -80,9 +84,11 @@ const AddProductPage = () => {
                     setSendToStaffVisible(true);
                     toast.error('You have encountered multiple issues while saving the product. Please send the information to the staff for further assistance.');
                 }
+                setIsProcessing(false);
                 return newCount;
             });
             toast.error(result.message);
+            setIsProcessing(false);
         }
     };
 
@@ -222,9 +228,14 @@ const AddProductPage = () => {
                         <Button
                             variant="contained"
                             onClick={handleSubmit}
-                            style={{ width: 150, background: 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)' }}
+                            style={{
+                                width: 150,
+                                background: isProcessing && 'gray' || 'linear-gradient(135deg, #b4ec51, #429321, #0f9b0f)',
+                                color: 'white',
+                            }}
+                            disabled={isProcessing}
                         >
-                            Save
+                            {isProcessing && 'Processing...' || 'Save'}
                         </Button>
                         <Button
                             className='ms-2'

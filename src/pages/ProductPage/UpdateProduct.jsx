@@ -26,6 +26,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
     const [confirmMessage, setConfirmMessage] = useState("");
     const [listOrderId, setListOrderId] = useState([]);
     const [listCustomerId, setListCustomerId] = useState([]);
+    const [isProcessing, setIsProcessing] = useState(false);
     const [updatedProduct, setUpdatedProduct] = useState({
         name: product.name || '',
         description: product.description || '',
@@ -202,8 +203,10 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
     };
 
     const handleSubmit = async (e) => {
+        setIsProcessing(true);
         e.preventDefault();
         if (!validate()) {
+            setIsProcessing(false);
             return;
         }
         const result = await ApiUpdateProduct(updatedProduct, product.id, imageFiles, token);
@@ -213,6 +216,7 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
         } else {
             alert(result.message);
         }
+        setIsProcessing(false);
     };
 
     const handleShowImages = async () => {
@@ -438,9 +442,15 @@ const UpdateProduct = ({ product, onClose, onSave }) => {
                                         width: '150px',
                                     }}
                                 />
-                                <Button className='me-2' type="submit" variant="contained" color="primary">
-                                    Save
-                                </Button>
+                                {isProcessing && (
+                                    <Button className='me-2' type="submit" variant="contained" color="secondary" disabled>
+                                        Processing...
+                                    </Button>
+                                ) || (
+                                    <Button className='me-2' type="submit" variant="contained" color="primary">
+                                        Save
+                                    </Button>
+                                )}
                                 <Button onClick={onClose} variant="outlined" color="secondary">
                                     Cancel
                                 </Button>
