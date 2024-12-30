@@ -1,6 +1,6 @@
 import * as Constant from "../constants/Constant"
 
-export const ApiCreateShop = async (email, name, phone, address, description, image,universityId) => {
+export const ApiCreateShop = async (email, name, phone, address, description, image, universityId, from_hour, from_minute, to_hour, to_minute) => {
     const formData = new FormData();
     formData.append("email", email);
     formData.append("address", address);
@@ -8,10 +8,10 @@ export const ApiCreateShop = async (email, name, phone, address, description, im
     formData.append("name", name);
     formData.append("description", description);
     formData.append("universityId", universityId);
-    formData.append("from_hour", 5);
-    formData.append("from_minute", 0);
-    formData.append("to_hour", 12);
-    formData.append("to_minute", 0);
+    formData.append("from_hour", from_hour);
+    formData.append("from_minute", from_minute);
+    formData.append("to_hour", to_hour);
+    formData.append("to_minute", to_minute);
     
     if (image) {
         formData.append('image', image);

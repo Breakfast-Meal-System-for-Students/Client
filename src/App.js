@@ -124,6 +124,7 @@ function App() {
               path="/shop/operating-hours"
               element={<ProtectedRoute element={<ShopOperatingHours />} requiredRole={"Shop"} />}
             />
+            
             <Route
               path="/shop/coupon-page"
               element={<ProtectedRoute element={<CouponPage />} requiredRole={"Shop"} />}

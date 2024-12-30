@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Grid, Button, Box, Typography, FormControlLabel, Checkbox } from '@mui/material';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';  // Đảm bảo sử dụng đúng Adapter
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ApiGetOperationHoursForShop, ApiUpdateOperationHours } from '../../services/OpeningHoursService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export default function ShopOperatingHours() {
   const token = localStorage.getItem("token");
   const shopId = localStorage.getItem("shopId");
+
   const [operatingHours, setOperatingHours] = useState({
     monday: { open: '', close: '', closed: false },
     tuesday: { open: '', close: '', closed: false },
@@ -15,6 +19,7 @@ export default function ShopOperatingHours() {
     saturday: { open: '', close: '', closed: false },
     sunday: { open: '', close: '', closed: false },
   });
+
   const fetchOperationHoursForShop = async () => {
     if (!shopId || !token) {
       return;
@@ -23,6 +28,7 @@ export default function ShopOperatingHours() {
     if (result.ok) {
       const listOperationHours = result.body.data.data;
       let updatedOperatingHours = { ...operatingHours };
+      console.log(listOperationHours);
       listOperationHours.forEach((row) => {
         const dayIndex = row.day;
         const dayName = getDayName(dayIndex);
@@ -33,14 +39,15 @@ export default function ShopOperatingHours() {
         updatedOperatingHours[dayName] = {
           open: openTime,
           close: closeTime,
-          closed: false,
+          closed: !row.isOpenToday ?? false,
         };
       });
       setOperatingHours(updatedOperatingHours);
     } else {
-      alert(result.message);
+      toast.error(result.message);
     }
   }
+
   const getDayName = (dayIndex) => {
     switch (dayIndex) {
       case 1: return 'monday';
@@ -53,9 +60,11 @@ export default function ShopOperatingHours() {
       default: return '';
     }
   };
+
   useEffect(() => {
     fetchOperationHoursForShop();
   }, []);
+
   const handleTimeChange = (day, timeType, value) => {
     setOperatingHours((prevHours) => ({
       ...prevHours,
@@ -65,6 +74,7 @@ export default function ShopOperatingHours() {
       },
     }));
   };
+
   const handleClosedChange = (day, event) => {
     setOperatingHours((prevHours) => ({
       ...prevHours,
@@ -76,14 +86,17 @@ export default function ShopOperatingHours() {
       },
     }));
   };
+
   const handleSave = async () => {
     const result = await ApiUpdateOperationHours(shopId, convertToListOpeningHours(operatingHours), token);
     if (result.ok) {
       fetchOperationHoursForShop();
+      toast.success("Update Operation hours successfully!");
     } else {
-      alert(result.message);
+      toast.error(result.message);
     }
   };
+
   const convertToListOpeningHours = (operatingHours) => {
     const daysMapping = {
       monday: 1,
@@ -103,10 +116,11 @@ export default function ShopOperatingHours() {
       if (closed) {
         return {
           day: daysMapping[day],
-          from_hour: 0,
+          from_hour: 5,
           from_minute: 0,
-          to_hour: 0,
+          to_hour: 12,
           to_minute: 0,
+          isOpenToday: false
         };
       }
   
@@ -120,9 +134,11 @@ export default function ShopOperatingHours() {
         from_minute: openDate ? openDate.getMinutes() : 0,
         to_hour: closeDate ? closeDate.getHours() : 0,
         to_minute: closeDate ? closeDate.getMinutes() : 0,
+        isOpenToday: !closed ?? false
       };
     });
   };
+
   return (
     <Box sx={{ padding: 4 }}>
       <Typography variant="h4" gutterBottom>
@@ -172,6 +188,7 @@ export default function ShopOperatingHours() {
       <Button variant="contained" color="primary" onClick={handleSave} sx={{ marginTop: 4 }}>
         Save Operating Hours
       </Button>
+      <ToastContainer />
     </Box>
   );
 }
