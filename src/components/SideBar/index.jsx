@@ -62,6 +62,7 @@ const Sidebar = () => {
       { text: "ShopOverview", icon: <FaCog />, path: "/shopOverview" },
       { text: "Category", icon: <FaListAlt />, path: "/category" },
       { text: "Feedback", icon: <FaComments />, path: "/feedback" },
+      { text: "Student Confirm", icon: <FaComments />, path: "/student-confirm" },
       {
         text: "Shop Application",
         icon: <FaListAlt />,

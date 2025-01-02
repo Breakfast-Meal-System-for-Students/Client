@@ -48,6 +48,7 @@ import DetailShopApplication from "./pages/ProductApplication/DetailProductAppli
 import DashboardShop from "./pages/DashboardShop/index.jsx";
 import ShopOperatingHours from "./pages/ShopOperatingHours/index.jsx";
 import ShopPrepList from "./pages/ShopPrepList/index.jsx";
+import StaffStudentConfirm from "./pages/StaffStudentConfirm/index.jsx";
 
 function App() {
   return (
@@ -226,6 +227,15 @@ function App() {
               element={
                 <ProtectedRoute
                   element={<ShopApplication />}
+                  requiredRole={"Staff"}
+                />
+              }
+            />
+            <Route
+              path="/student-confirm"
+              element={
+                <ProtectedRoute
+                  element={<StaffStudentConfirm />}
                   requiredRole={"Staff"}
                 />
               }
