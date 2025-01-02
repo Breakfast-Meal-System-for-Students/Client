@@ -182,6 +182,7 @@ export const API_GET_TOTAL_ORDERS = HTTP_SERVER + "/api/Order/GetTotalOrder";
 export const API_GET_LIST_ORDERS = HTTP_SERVER + "/api/Order/GetListOrders";
 export const API_GET_TOTAL_ORDERS_IN_SHOP = HTTP_SERVER + "/api/Order/GetTotalOrderInShop/";
 export const API_CANCEL_LIST_ORDERS = HTTP_SERVER + "/api/Order/CancelListOrder";
+export const API_GET_ORDERS_IN_TIME_FOR_SHOP = HTTP_SERVER + "/api/Order/GetOrdersInTimeForShop/";
 
 /*
  ** API TRANSACTION
