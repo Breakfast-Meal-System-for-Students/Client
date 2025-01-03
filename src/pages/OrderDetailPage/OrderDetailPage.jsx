@@ -112,7 +112,7 @@ const OrderDetailPage = () => {
 
   const fetchUpdateOrderStatus = async () => {
     const token = localStorage.getItem('token');
-    if (status == "COMPLETE") {
+    if (status == "COMPLETE" && !order.isPayed) {
       handleOpenDialog();
       return;
     }

@@ -49,6 +49,7 @@ import DashboardShop from "./pages/DashboardShop/index.jsx";
 import ShopOperatingHours from "./pages/ShopOperatingHours/index.jsx";
 import ShopPrepList from "./pages/ShopPrepList/index.jsx";
 import StaffStudentConfirm from "./pages/StaffStudentConfirm/index.jsx";
+import ShopWallet from "./pages/ShopWallet/index.jsx";
 
 function App() {
   return (
@@ -124,9 +125,13 @@ function App() {
               path="/shop/operating-hours"
               element={<ProtectedRoute element={<ShopOperatingHours />} requiredRole={"Shop"} />}
             />
-             <Route
+            <Route
               path="/shop/prep-list"
               element={<ProtectedRoute element={<ShopPrepList />} requiredRole={"Shop"} />}
+            />
+            <Route
+              path="/shop/wallet"
+              element={<ProtectedRoute element={<ShopWallet />} requiredRole={"Shop"} />}
             />
             <Route
               path="/shop/coupon-page"
@@ -161,7 +166,7 @@ function App() {
               element={<ProtectedRoute element={<AddProduct />} requiredRole={"Shop"} />} // Add route for AddProduct
             />
 
-<Route
+            <Route
               path="/shop/location"
               element={
                 <ProtectedRoute
@@ -172,8 +177,8 @@ function App() {
             />
           </Route>
 
- {/* Staff Routes */}
- <Route element={<MainLayout />} path="/">
+          {/* Staff Routes */}
+          <Route element={<MainLayout />} path="/">
             <Route
               path="/category"
               element={
@@ -249,7 +254,7 @@ function App() {
                 />
               }
             />
-               <Route
+            <Route
               path="/detail-product-application/:id"
               element={
                 <ProtectedRoute
@@ -267,7 +272,7 @@ function App() {
                 />
               }
             />
-            
+
             <Route
               path="/shopOverview"
               element={
@@ -311,7 +316,7 @@ function App() {
                 />
               }
             />
-            
+
             <Route
               path="/profile"
               element={
@@ -321,7 +326,7 @@ function App() {
                 />
               }
             />
-                <Route
+            <Route
               path="/productApplication"
               element={
                 <ProtectedRoute

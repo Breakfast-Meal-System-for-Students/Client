@@ -196,6 +196,7 @@ export const API_GET_TOP_5_USER_PURCHARSE = HTTP_SERVER + "/api/Transaction/GetT
  ** API WALLET
  */
 export const API_GET_WALLET_BY_TOKEN = HTTP_SERVER + "/api/Wallet/GetWalletByUserId";
+export const API_GET_ALL_TRANSACTION_WALLET_OF_USER = HTTP_SERVER + "/api/Wallet/GetAllTransactionOfUserWallet";
 
 /*
  ** API STUDENT
