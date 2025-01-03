@@ -17,6 +17,7 @@ export default function Header() {
     const [anchorEl, setAnchorEl] = useState(null);
     const [notis, setNotis] = useState([]);
     const token = localStorage.getItem('token');
+    const shopId = localStorage.getItem('shopId');
     const decoded = jwtDecode(token);
     const navigate = useNavigate();
     const socket = io(HTTP_SOCKET_SERVER);
@@ -28,6 +29,9 @@ export default function Header() {
     };
 
     const fetchWallet = async () => {
+        if (!shopId) {
+            return;
+        }
         const result = await ApiGetWalletByUser(token);
         if (result.ok) {
             setWallet(result.body.data);
