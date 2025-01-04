@@ -201,6 +201,11 @@ export const API_GET_ALL_TRANSACTION_WALLET_OF_USER = HTTP_SERVER + "/api/Wallet
 /*
  ** API STUDENT
  */
- export const API_GET_STUDENT_CONFIRM_LIST = HTTP_SERVER + "/api/StudentApplication";
- export const API_CHANGE_STATUS_STUDENT = HTTP_SERVER + "/api/StudentApplication/";
+export const API_GET_STUDENT_CONFIRM_LIST = HTTP_SERVER + "/api/StudentApplication";
+export const API_CHANGE_STATUS_STUDENT = HTTP_SERVER + "/api/StudentApplication/";
+
+/*
+** API REPORT
+*/
+export const API_GET_REPORT_FOR_SHOP = HTTP_SERVER + "/api/ShopWeeklyReport/GetAllShopWeeklyReport";
 

@@ -50,6 +50,7 @@ import ShopOperatingHours from "./pages/ShopOperatingHours/index.jsx";
 import ShopPrepList from "./pages/ShopPrepList/index.jsx";
 import StaffStudentConfirm from "./pages/StaffStudentConfirm/index.jsx";
 import ShopWallet from "./pages/ShopWallet/index.jsx";
+import ShopReport from "./pages/ShopReport/index.jsx";
 
 function App() {
   return (
@@ -132,6 +133,10 @@ function App() {
             <Route
               path="/shop/wallet"
               element={<ProtectedRoute element={<ShopWallet />} requiredRole={"Shop"} />}
+            />
+            <Route
+              path="/shop/report"
+              element={<ProtectedRoute element={<ShopReport />} requiredRole={"Shop"} />}
             />
             <Route
               path="/shop/coupon-page"
