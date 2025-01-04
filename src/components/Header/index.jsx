@@ -120,6 +120,10 @@ export default function Header() {
         navigate(`/shop/orders/detail?orderId=${id}`);
     };
 
+    const handleClickWallet = () => {
+        navigate(`/shop/wallet`);
+    }
+
     return (
         <div
             className='w-100 bg-success d-flex justify-content-between align-items-center'
@@ -143,7 +147,7 @@ export default function Header() {
                 </span>
             </div>
             <div className='d-flex align-items-center'>
-                <span className='text-light mx-3'>{new Intl.NumberFormat('vi-VN', {
+                <span className='text-light mx-3 text-underline-hv' onClick={handleClickWallet}>{new Intl.NumberFormat('vi-VN', {
                       style: 'currency',
                       currency: 'VND',
                     }).format(wallet && wallet.balance)}</span>
