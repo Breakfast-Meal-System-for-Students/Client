@@ -53,6 +53,11 @@ import ShopWallet from "./pages/ShopWallet/index.jsx";
 import ShopReport from "./pages/ShopReport/index.jsx";
 import { WalletProvider } from "./context/WalletProvider.js";
 
+import UniversityList from './pages/University/UniversityList';
+import AddUniversity from './pages/University/AddUniversity';
+import EditUniversity from './pages/University/EditUniversity';
+
+
 function App() {
   return (
     <AuthProvider>
@@ -324,6 +329,33 @@ function App() {
                   />
                 }
               />
+   <Route
+                path="/university"
+                element={
+                  <ProtectedRoute
+                    element={<UniversityList />}
+                    requiredRole={"Staff"}
+                  />
+                }
+              />
+            <Route
+                path="/add-university"
+                element={
+                  <ProtectedRoute
+                    element={<AddUniversity />}
+                    requiredRole={"Staff"}
+                  />
+                }
+              />
+            <Route
+                path="/edit-university/:id/:name"
+                element={
+                  <ProtectedRoute
+                    element={<EditUniversity />}
+                    requiredRole={"Staff"}
+                  />
+                }
+              />
 
               <Route
                 path="/profile"
@@ -344,7 +376,9 @@ function App() {
                 }
               />
             </Route>
-          </Routes>
+
+
+              </Routes>
         </Router>
       </WalletProvider>
     </AuthProvider>
