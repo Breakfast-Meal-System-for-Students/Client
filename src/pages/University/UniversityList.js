@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
 
 const UniversityList = () => {
   const [universities, setUniversities] = useState([]);
@@ -57,12 +58,26 @@ const UniversityList = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this university?")) {
       try {
-        await axios.delete(`https://bms-fs-api.azurewebsites.net/api/University/${id}`);
-        setUniversities((prevUniversities) =>
-          prevUniversities.filter((university) => university.id !== id)
+        const response = await axios.delete(
+          `https://bms-fs-api.azurewebsites.net/api/University/${id}`,
+          {
+            headers: {
+              accept: "*/*",
+            },
+          }
         );
+
+        if (response.data.isSuccess) {
+          setUniversities((prevUniversities) =>
+            prevUniversities.filter((university) => university.id !== id)
+          );
+          toast.success("University deleted successfully!");
+        } else {
+          toast.error("Failed to delete university.");
+        }
       } catch (error) {
         console.error("Error deleting university:", error);
+        toast.error("An error occurred while deleting the university.");
       }
     }
   };
